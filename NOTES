@@ -1,4 +1,5 @@
 RFC 5322 + Errata (excerpts), RFC 5234, RFC 1034, RFC 2181, RFC 1035, RFC 5321, RFC 3986
+; no General-address-literal
 
  CR             =  %x0D
  LF             =  %x0A
@@ -11,12 +12,11 @@ RFC 5322 + Errata (excerpts), RFC 5234, RFC 1034, RFC 2181, RFC 1035, RFC 5321, 
  ALPHA          =  %x41-5A / %x61-7A   ; A-Z / a-z
  VCHAR          =  %x21-7E
 
-   quoted-pair     =   ("\" (VCHAR / WSP)) / obs-qp
-   FWS             =   ([*WSP CRLF] 1*WSP) /  obs-FWS	; min. 1 WSP
+   quoted-pair     =   "\" (VCHAR / WSP)
+   FWS             =   [*WSP CRLF] 1*WSP	; min. 1 WSP
    ctext           =   %d33-39 /          ; Printable US-ASCII
                        %d42-91 /          ;  characters not including
-                       %d93-126 /         ;  "(", ")", or "\"
-                       obs-ctext
+                       %d93-126           ;  "(", ")", or "\"
    ccontent        =   ctext / quoted-pair / comment
    comment         =   "(" *([FWS] ccontent) [FWS] ")"
    CFWS            =   (1*([FWS] comment) [FWS]) / FWS	; min. 1 WSP or comment
@@ -47,8 +47,7 @@ or the atext and "." characters in a dot-atom.
 
    qtext           =   %d33 /             ; Printable US-ASCII
                        %d35-91 /          ;  characters not including
-                       %d93-126 /         ;  "\" or the quote character
-                       obs-qtext
+                       %d93-126           ;  "\" or the quote character
    qcontent        =   qtext / quoted-pair
    quoted-string   =   [CFWS]
                        DQUOTE *([FWS] qcontent) [FWS] DQUOTE
@@ -64,19 +63,18 @@ quote characters.  As stated earlier, the "\" in any quoted-pair and
    to              =   "To:" address-list CRLF
 
    word            =   atom / quoted-string
-   phrase          =   1*word / obs-phrase
-   unstructured    =   (*([FWS] VCHAR) *WSP) / obs-unstruct
+   phrase          =   1*word
+   unstructured    =   *([FWS] VCHAR) *WSP
 
    address         =   mailbox / group
    mailbox         =   name-addr / addr-spec
    name-addr       =   [display-name] angle-addr
-   angle-addr      =   [CFWS] "<" addr-spec ">" [CFWS] /
-                       obs-angle-addr
+   angle-addr      =   [CFWS] "<" addr-spec ">" [CFWS]
    group           =   display-name ":" [group-list] ";" [CFWS]
    display-name    =   phrase
-   mailbox-list    =   (mailbox *("," mailbox)) / obs-mbox-list
-   address-list    =   (address *("," address)) / obs-addr-list
-   group-list      =   mailbox-list / CFWS / obs-group-list
+   mailbox-list    =   mailbox *("," mailbox)
+   address-list    =   address *("," address)
+   group-list      =   mailbox-list / CFWS
 
 [addr-spec] If the
 string can be represented as a dot-atom (that is, it contains no
@@ -86,22 +84,22 @@ string form SHOULD NOT be used.  Comments and folding white space
 SHOULD NOT be used around the "@" in the addr-spec.
 
    addr-spec       =   local-part "@" domain
-   local-part      =   dot-atom / quoted-string / obs-local-part
-   domain          =   dot-domain / domain-literal / obs-domain
+   local-part      =   dot-atom / quoted-string
+   domain          =   dot-domain / domain-literal
    domain-literal  =   [CFWS] "[" *([FWS] dtext) [FWS] "]" [CFWS]
    dtext           =   %d33-90 /          ; Printable US-ASCII
-                       %d94-126 /         ;  characters not including
-                       obs-dtext          ;  "[", "]", or "\"
+                       %d94-126           ;  characters not including
+                                          ;  "[", "]", or "\"
    dot-domain      =   [CFWS] label *("." label) [CFWS]
    label           =   (ALPHA / DIGIT) [ *(ALPHA / DIGIT / "-") (ALPHA / DIGIT) ]
+   dtext	   =   IPv4address / IPv6tagged	; no IPv6 Zone Identifiers
+   IPv6tagged	   =   "IPv6:" IPv6address	; case-insensitive tag
 
 Further constraints:
 • local-part up to 64 octets
 • domain up to 255 octets
 • label up to 63 octets
 • addr-spec up to 254 octets (due to RFC 5321 Forward-path limit)
-• dtext = IPv4address / ( "IPv6:" IPv6address ) / General-address-literal
-  (but ignore General-address-literal); no IPv6 Zone Identifiers
 
       IPv4address = dec-octet "." dec-octet "." dec-octet "." dec-octet
       dec-octet   = "25" %x30-35          ; 250-255
