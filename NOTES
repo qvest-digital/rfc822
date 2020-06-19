@@ -1,2 +1,123 @@
-RFC 5322 + Errata
+RFC 5322 + Errata (excerpts), RFC 5234
 
+ CR             =  %x0D
+ LF             =  %x0A
+ CRLF           =  CR LF
+ HTAB           =  %x09
+ SP             =  %x20
+ WSP            =  SP / HTAB
+ DQUOTE         =  %x22
+ DIGIT          =  %x30-39
+ ALPHA          =  %x41-5A / %x61-7A   ; A-Z / a-z
+ VCHAR          =  %x21-7E
+
+   quoted-pair     =   ("\" (VCHAR / WSP)) / obs-qp
+   FWS             =   ([*WSP CRLF] 1*WSP) /  obs-FWS	; min. 1 WSP
+   ctext           =   %d33-39 /          ; Printable US-ASCII
+                       %d42-91 /          ;  characters not including
+                       %d93-126 /         ;  "(", ")", or "\"
+                       obs-ctext
+   ccontent        =   ctext / quoted-pair / comment
+   comment         =   "(" *([FWS] ccontent) [FWS] ")"
+   CFWS            =   (1*([FWS] comment) [FWS]) / FWS	; min. 1 WSP or comment
+
+Runs of FWS, comment, or CFWS that occur between lexical tokens in a
+structured header field are semantically interpreted as a single
+space character.
+
+   atext           =   ALPHA / DIGIT /    ; Printable US-ASCII
+                       "!" / "#" /        ;  characters not including
+                       "$" / "%" /        ;  specials.  Used for atoms.
+                       "&" / "'" /
+                       "*" / "+" /
+                       "-" / "/" /
+                       "=" / "?" /
+                       "^" / "_" /
+                       "" / "{" /
+                       "|" / "}" /
+                       "~"
+   atom            =   [CFWS] 1*atext [CFWS]
+   dot-atom-text   =   1*atext *("." 1*atext)
+   dot-atom        =   [CFWS] dot-atom-text [CFWS]
+
+Semantically, the optional
+comments and FWS surrounding the rest of the characters are not part
+of the atom; the atom is only the run of atext characters in an atom,
+or the atext and "." characters in a dot-atom.
+
+   qtext           =   %d33 /             ; Printable US-ASCII
+                       %d35-91 /          ;  characters not including
+                       %d93-126 /         ;  "\" or the quote character
+                       obs-qtext
+   qcontent        =   qtext / quoted-pair
+   quoted-string   =   [CFWS]
+                       DQUOTE *([FWS] qcontent) [FWS] DQUOTE
+                       [CFWS]
+
+Semantically, neither the optional CFWS outside of the quote
+characters nor the quote characters themselves are part of the
+quoted-string; the quoted-string is what is contained between the two
+quote characters.  As stated earlier, the "\" in any quoted-pair and
+
+   from            =   "From:" mailbox-list CRLF
+   to              =   "To:" address-list CRLF
+
+   word            =   atom / quoted-string
+   phrase          =   1*word / obs-phrase
+   unstructured    =   (*([FWS] VCHAR) *WSP) / obs-unstruct
+
+   address         =   mailbox / group
+   mailbox         =   name-addr / addr-spec
+   name-addr       =   [display-name] angle-addr
+   angle-addr      =   [CFWS] "<" addr-spec ">" [CFWS] /
+                       obs-angle-addr
+   group           =   display-name ":" [group-list] ";" [CFWS]
+   display-name    =   phrase
+   mailbox-list    =   (mailbox *("," mailbox)) / obs-mbox-list
+   address-list    =   (address *("," address)) / obs-addr-list
+   group-list      =   mailbox-list / CFWS / obs-group-list
+
+[addr-spec] If the
+string can be represented as a dot-atom (that is, it contains no
+characters other than atext characters or "." surrounded by atext
+characters), then the dot-atom form SHOULD be used and the quoted-
+string form SHOULD NOT be used.  Comments and folding white space
+SHOULD NOT be used around the "@" in the addr-spec.
+
+      Note: A liberal syntax for the domain portion of addr-spec is
+      given here.  However, the domain portion contains addressing
+      information specified by and used in other protocols (e.g.,
+      [[252]RFC1034], [[253]RFC1035], [[254]RFC1123], [[255]RFC5321]).  It is therefore
+      incumbent upon implementations to conform to the syntax of
+      addresses for the context in which they are used.
+
+   addr-spec       =   local-part "@" domain
+   local-part      =   dot-atom / quoted-string / obs-local-part
+   domain          =   dot-atom / domain-literal / obs-domain
+   domain-literal  =   [CFWS] "[" *([FWS] dtext) [FWS] "]" [CFWS]
+   dtext           =   %d33-90 /          ; Printable US-ASCII
+                       %d94-126 /         ;  characters not including
+                       obs-dtext          ;  "[", "]", or "\"
+
+Examples
+
+   From: John Doe <jdoe@machine.example>
+   To: Mary Smith <mary@example.net>
+   Sender: Michael Jones <mjones@machine.example>
+
+   From: "Joe Q. Public" <john.q.public@example.com>
+   To: Mary Smith <mary@x.test>, jdoe@example.org, Who? <one@y.test>
+   Cc: <boss@nil.test>, "Giant; \"Big\" Box" <sysservices@example.net>
+'Joe Q. Public'
+'Giant; "Big" Box'
+
+   From: Pete <pete@silly.example>
+   To: A Group:Ed Jones <c@a.test>,joe@where.test,John <jdoe@one.test>;
+   Cc: Undisclosed recipients:;
+
+   From: Pete(A nice \) chap) <pete(his account)@silly.test(his host)>
+   To:A Group(Some people)
+        :Chris Jones <c@(Chris's host.)public.example>,
+            joe@example.org,
+     John <jdoe@one.test> (my dear friend); (the end of the group)
+   Cc:(Empty list)(start)Hidden recipients  :(nobody(that I know))  ;
