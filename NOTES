@@ -58,6 +58,7 @@ Semantically, neither the optional CFWS outside of the quote
 characters nor the quote characters themselves are part of the
 quoted-string; the quoted-string is what is contained between the two
 quote characters.  As stated earlier, the "\" in any quoted-pair and
+(folding CRLF)
 
    from            =   "From:" mailbox-list CRLF
    to              =   "To:" address-list CRLF
@@ -86,23 +87,21 @@ SHOULD NOT be used around the "@" in the addr-spec.
 
    addr-spec       =   local-part "@" domain
    local-part      =   dot-atom / quoted-string / obs-local-part
-   domain          =   dot-atom / domain-literal / obs-domain
+   domain          =   dot-domain / domain-literal / obs-domain
    domain-literal  =   [CFWS] "[" *([FWS] dtext) [FWS] "]" [CFWS]
    dtext           =   %d33-90 /          ; Printable US-ASCII
                        %d94-126 /         ;  characters not including
                        obs-dtext          ;  "[", "]", or "\"
+   dot-domain      =   [CFWS] label *("." label) [CFWS]
+   label           =   (ALPHA / DIGIT) [ *(ALPHA / DIGIT / "-") (ALPHA / DIGIT) ]
 
 Further constraints:
 • local-part up to 64 octets
 • domain up to 255 octets
+• label up to 63 octets
 • addr-spec up to 254 octets (due to RFC 5321 Forward-path limit)
 • dtext = IPv4address / ( "IPv6:" IPv6address ) / General-address-literal
   (but ignore General-address-literal); no IPv6 Zone Identifiers
-• domain.dot-atom = label *("." label)
-            ALNUM = ALPHA / DIGIT
-          ALNUMHY = ALPHA / DIGIT / "-"
-            label = ALNUM [ *ALNUMHY ALNUM ]
-• label up to 63 octets
 
       IPv4address = dec-octet "." dec-octet "." dec-octet "." dec-octet
       dec-octet   = "25" %x30-35          ; 250-255
