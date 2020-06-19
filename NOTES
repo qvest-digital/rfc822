@@ -1,4 +1,5 @@
-RFC 5322 + Errata (excerpts), RFC 5234
+RFC 5322 + Errata (excerpts), RFC 5234, RFC 1034, RFC 2181, RFC 1035, RFC 5321, RFC 3986
+; no IPv6 Zone Identifiers
 
  CR             =  %x0D
  LF             =  %x0A
@@ -98,6 +99,79 @@ SHOULD NOT be used around the "@" in the addr-spec.
    dtext           =   %d33-90 /          ; Printable US-ASCII
                        %d94-126 /         ;  characters not including
                        obs-dtext          ;  "[", "]", or "\"
+
+The maximum total length of a user name or other local-part is 64 octets.
+   The maximum total length of a domain name or number is 255 octets.
+
+The maximum total length of a reverse-path or forward-path is 256
+octets (including the punctuation and element separators). //SMTP
+   Reverse-path   = Path / "<>"
+   Forward-path   = Path
+   Path           = "<" [ A-d-l ":" ] addr-spec ">"
+
+dtext = IPv4-address-literal / IPv6-address-literal / General-address-literal
+
+   IPv4-address-literal  = IPv4address
+
+      IPv4address = dec-octet "." dec-octet "." dec-octet "." dec-octet
+      dec-octet   = "25" %x30-35          ; 250-255
+	          / "2" %x30-34 DIGIT     ; 200-249
+	          / "1" 2DIGIT            ; 100-199
+	          / %x31-39 DIGIT         ; 10-99
+	          / DIGIT                 ; 0-9
+
+   General-address-literal  = Standardized-tag ":" 1*dcontent	; exclude
+   Standardized-tag  = Ldh-str
+   Ldh-str        = *( ALPHA / DIGIT / "-" ) Let-dig
+
+   IPv6-address-literal  = "IPv6:" IPv6address
+
+      IPv6address =                            6( h16 ":" ) ls32
+                  /                       "::" 5( h16 ":" ) ls32
+                  / [               h16 ] "::" 4( h16 ":" ) ls32
+                  / [ *1( h16 ":" ) h16 ] "::" 3( h16 ":" ) ls32
+                  / [ *2( h16 ":" ) h16 ] "::" 2( h16 ":" ) ls32
+                  / [ *3( h16 ":" ) h16 ] "::"    h16 ":"   ls32
+                  / [ *4( h16 ":" ) h16 ] "::"              ls32
+                  / [ *5( h16 ":" ) h16 ] "::"              h16
+                  / [ *6( h16 ":" ) h16 ] "::"
+
+      ls32        = ( h16 ":" h16 ) / IPv4address
+                  ; least-significant 32 bits of address
+
+      h16         = 1*4HEXDIG
+                  ; 16 bits of address represented in hexadecimal
+
+More specific domain rules
+
+<domain> ::= <subdomain> | " "				; only <subdomain> valid
+<subdomain> ::= <label> | <subdomain> "." <label>	; matches dot-atom structure
+<label> ::= ALPHA [ [ <ldh-str> ] <let-dig> ]		; see below for ALPHA→alnum
+<ldh-str> ::= <let-dig-hyp> | <let-dig-hyp> <ldh-str>
+<let-dig-hyp> ::= <let-dig> | "-"
+<let-dig> ::= ALPHA | DIGIT
+
+<label>s must be 63 octets or less in length.
+
+To simplify implementations, the total number of octets that represent a
+domain name (i.e., the sum of all label octets and label lengths) is
+limited to 255. (foo.bar.baz ⇒ 3foo3bar3baz0…?)
+
+The length of
+   any one label is limited to between 1 and 63 octets.  A full domain
+   name is limited to 255 octets (including the separators).  The zero
+   length full name is defined as representing the root of the DNS tree,
+   and is typically written and displayed as ".".
+(foo.bar.baz ⇒ 3foo3bar3baz, still a limit of 254?)
+
+labels          63 octets or less
+names           255 octets or less
+
+      The syntax of a legal Internet host name was specified in [337]RFC-952
+      [DNS:4].  One aspect of host name syntax is hereby changed: the
+      restriction on the first character is relaxed to allow either a
+      letter or a digit.  Host software MUST support this more liberal
+      syntax.
 
 Examples
 
