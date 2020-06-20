@@ -146,3 +146,26 @@ Examples
             joe@example.org,
      John <jdoe@one.test> (my dear friend); (the end of the group)
    Cc:(Empty list)(start)Hidden recipients  :(nobody(that I know))  ;
+
+Parsing human-entered names
+
+      Note: The "period" (or "full stop") character (".") in obs-phrase
+      is not a form that was allowed in earlier versions of this or any
+      other specification.  Period (nor any other character from
+      specials) was not allowed in phrase because it introduced a
+      parsing difficulty distinguishing between phrases and portions of
+      an addr-spec (see [308]section 4.4).  It appears here because the
+      period character is currently used in many messages in the
+      display-name portion of addresses, especially for initials in
+      names, and therefore must be interpreted properly.
+
+(* display-name    =   phrase				*)
+   phrase          =   1*word / obs-phrase		; alteration new
+   obs-phrase      =   word *(word / "." / CFWS)
+(* word            =   atom / quoted-string		*)
+
+; so basically do this only if regular parsing fails
+; perhaps _only_ in name-addr
+
+; OTOH, MIME allows UAs to enter “mäh <foo@example.com>”
+; we might wish to allow for that (and auto-escape)?
