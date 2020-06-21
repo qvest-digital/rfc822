@@ -128,9 +128,11 @@ function doscopes {
 	local lastgav lastscope ga v scope rest
 
 	while read -r ga v scope rest; do
-		# compile scope supersets provided scope, either supersets test
+		# compile scope supersets provided, runtime, test scopes
+		# provided and runtimee scopes superset (only) test scope
 		case "$lastgav $lastscope:$scope" {
-		("$ga:$v "compile:provided|"$ga:$v "@(compile|provided):test) ;;
+		("$ga:$v "compile:@(provided|runtime|test)) ;;
+		("$ga:$v "@(provided|runtime):test) ;;
 		(*) print -r -- $ga $v $scope $rest ;;
 		}
 		lastgav=$ga:$v lastscope=$scope
