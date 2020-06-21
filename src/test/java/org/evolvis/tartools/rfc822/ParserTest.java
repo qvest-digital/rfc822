@@ -46,11 +46,23 @@ public void testPos()
 	assertNotNull(t1w);
 	assertEquals(4, t1w.size());
 
-	assertEquals("meow(🐈,☺,ä,x)", t1f);
-	assertEquals("meow:🐈", t1w.get(0));
-	assertEquals("☺", t1w.get(1));
-	assertEquals("ä", t1w.get(2));
-	assertEquals("x", t1w.get(3));
+	assertEquals("meow(🐈,☺,ä,x)", t1f, "functions didn’t pick it up");
+	assertEquals("meow:🐈", t1w.get(0), "cat went missing");
+	assertEquals("☺", t1w.get(1), "sad smiley ☹");
+	assertEquals("ä", t1w.get(2), "no umlauts!");
+	assertEquals("x", t1w.get(3), "X for an U?");
+
+	final TestParser up = new TestParser("\uD83D\uDC31");
+	assertEquals(0, up.pos());
+	assertEquals(0x1F431, up.cur(), "cat picture close-up missing");
+	assertEquals(-1, up.peek(), "cat wasn’t fully loaded");
+	assertEquals(-1, up.accept());
+	assertEquals(2, up.pos(), "cat doesn’t stretch");
+	assertEquals(-1, up.cur());
+	assertEquals(-1, up.peek());
+	up.jmp(1);
+	assertEquals(0xDC31, up.cur(), "cheap surrogate instead of coffee");
+	assertEquals(-1, up.peek());
 }
 
 @SuppressWarnings("Convert2MethodRef")

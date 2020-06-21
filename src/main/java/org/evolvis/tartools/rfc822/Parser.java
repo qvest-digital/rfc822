@@ -239,7 +239,7 @@ public class Txn implements AutoCloseable {
 	}
 
 	/**
-	 * Rolls back to the last committed position upon 'closing' the
+	 * Rolls back to the last committed position upon “closing” the
 	 * parser position transaction; see {@link #rollback()}
 	 */
 	@Override
