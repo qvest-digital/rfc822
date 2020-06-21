@@ -29,9 +29,9 @@ import java.util.function.BiFunction;
  */
 abstract class Parser {
 
-private static final String BOUNDS_INP = "input is null or size %d exceeds bounds [0;%d]";
-private static final String BOUNDS_JMP = "attempt to move (%d) beyond source string (%d)";
-private static final String ACCEPT_EOS = "cannot ACCEPT end of input";
+static final String BOUNDS_INP = "input is null or size %d exceeds bounds [0;%d]";
+static final String BOUNDS_JMP = "attempt to move (%d) beyond source string (%d)";
+static final String ACCEPT_EOS = "cannot ACCEPT end of input";
 
 /**
  * the {@link String} to analyse
@@ -79,7 +79,7 @@ Parser(final String input, final int maxlen)
 }
 
 /**
- * Jumps to a specified input character position
+ * Jumps to a specified input character position, absolute jump
  *
  * @param pos to jump to
  *
@@ -106,6 +106,21 @@ jmp(final int pos)
 }
 
 /**
+ * Jumps to a specified input character position, relative jump
+ *
+ * @param deltapos to add to the current positioin
+ *
+ * @return the codepoint at that position
+ *
+ * @throws IndexOutOfBoundsException if pos is not in or just past the input
+ */
+protected int
+bra(final int deltapos)
+{
+	return jmp(ofs + deltapos);
+}
+
+/**
  * Returns the current input character position, for saving and restoring
  * (with {@link #jmp(int)}) and for error messages
  *
@@ -115,6 +130,18 @@ protected int
 pos()
 {
 	return ofs;
+}
+
+/**
+ * Returns the input string, for use with substring comparisons
+ * (this is safe because Java™ strings are immutable)
+ *
+ * @return String input
+ */
+protected String
+s()
+{
+	return source;
 }
 
 /**

@@ -120,4 +120,23 @@ getB64UTF8Resource(final String filename) throws IOException
 	    StandardCharsets.UTF_8);
 }
 
+/**
+ * Retrieves a UTF-8-encoded, base64-encoded file from the (test) classpath
+ *
+ * @param filename to retrieve
+ *
+ * @return decoded {@link String}
+ *
+ * @throws RuntimeException if reading fails (sneaky throws)
+ */
+public static String
+staticB64UTF8Resource(final String filename)
+{
+	try {
+		return getB64UTF8Resource(filename);
+	} catch (IOException e) {
+		throw new RuntimeException(e);
+	}
+}
+
 }
