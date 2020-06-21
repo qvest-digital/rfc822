@@ -79,6 +79,10 @@ H * * * *
     </hudson.triggers.SCMTrigger>
   </triggers>
   <concurrentBuild>false</concurrentBuild>
+  <rootModule>
+    <groupId>org.evolvis.tartools</groupId>
+    <artifactId>rfc822</artifactId>
+  </rootModule>
   <goals>-Pdstrepo-$DSTREPO_PROFILE -e clean install</goals>
   <aggregatorStyleBuild>true</aggregatorStyleBuild>
   <incrementalBuild>false</incrementalBuild>
@@ -96,7 +100,7 @@ H * * * *
   <globalSettings class="jenkins.mvn.DefaultGlobalSettingsProvider"/>
   <reporters>
     <hudson.maven.reporters.MavenMailer>
-      <recipients>tartools-commits@lists.evolvis.org</recipients>
+      <recipients>useful-scripts-commits@lists.evolvis.org</recipients>
       <dontNotifyEveryUnstableBuild>false</dontNotifyEveryUnstableBuild>
       <sendToIndividuals>false</sendToIndividuals>
       <perModuleEmail>false</perModuleEmail>
