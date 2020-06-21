@@ -12,7 +12,7 @@
 	<packaging>jar</packaging>
 	<name>${project.groupId}:${project.artifactId}</name>
 	<description>eMail validation utilities</description>
-	<url>https://evolvis.org/plugins/scmgit/cgi-bin/gitweb.cgi?p=tartools/rfc822.git</url>
+	<url>https://evolvis.org/plugins/scmgit/cgi-bin/gitweb.cgi?p=useful-scripts/rfc822.git</url>
 	<licenses>
 		<!-- no copyright or licence claim on ./NOTES which are RFC excerpts -->
 		<license>
@@ -44,9 +44,9 @@
 		<maven.owasp.dependency-check.version>5.3.2</maven.owasp.dependency-check.version>
 	</properties>
 	<scm>
-		<connection>scm:git:https://evolvis.org/anonscm/git/tartools/rfc822.git</connection>
-		<developerConnection>scm:git:ssh://maven@evolvis.org/scmrepos/git/tartools/rfc822.git</developerConnection>
-		<url>https://evolvis.org/plugins/scmgit/cgi-bin/gitweb.cgi?p=tartools/rfc822.git</url>
+		<connection>scm:git:https://evolvis.org/anonscm/git/useful-scripts/rfc822.git</connection>
+		<developerConnection>scm:git:ssh://maven@evolvis.org/scmrepos/git/useful-scripts/rfc822.git</developerConnection>
+		<url>https://evolvis.org/plugins/scmgit/cgi-bin/gitweb.cgi?p=useful-scripts/rfc822.git</url>
 		<tag>HEAD</tag>
 	</scm>
 	<profiles>
