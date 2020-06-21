@@ -93,12 +93,14 @@ jmp(final int pos)
 	if (pos < 0 || pos > srcsz)
 		throw new IndexOutOfBoundsException(String.format(BOUNDS_JMP,
 		    pos, srcsz));
-	if ((succ = ofs = pos) == srcsz) {
+	ofs = pos;
+	if (ofs == srcsz) {
+		succ = ofs;
 		next = cur = -1;
 		return cur;
 	}
 	cur = source.codePointAt(ofs);
-	succ += cur <= 0xFFFF ? 1 : 2;
+	succ = ofs + (cur <= 0xFFFF ? 1 : 2);
 	next = succ < srcsz ? source.codePointAt(succ) : -1;
 	return cur;
 }
