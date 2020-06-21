@@ -197,4 +197,72 @@ skip(BiFunction<Integer, Integer, Boolean> matcher)
 	return cur;
 }
 
+/**
+ * Transactions for positioning: on creation and {@link #commit()} the position
+ * is saved, on {@link #rollback()} and closing, it is restored to the point
+ * from the last commit (or creation). Implements {@link AutoCloseable}.
+ *
+ * @author mirabilos (t.glaser@tarent.de)
+ */
+public class Txn implements AutoCloseable {
+
+	private int pos;
+
+	/**
+	 * Creates a new parser position transaction instance
+	 *
+	 * The current position, upon creation, is committed immediately.
+	 */
+	protected Txn()
+	{
+		commit();
+	}
+
+	/**
+	 * Commits the current parser position (stores it in the transaction)
+	 */
+	public void
+	commit()
+	{
+		pos = Parser.this.ofs;
+	}
+
+	/**
+	 * Rolls the parser position back to the last committed position
+	 *
+	 * @return the codepoint at the new position, see {@link Parser#cur()}
+	 */
+	public int
+	rollback()
+	{
+		return Parser.this.jmp(pos);
+	}
+
+	/**
+	 * Rolls back to the last committed position upon 'closing' the
+	 * parser position transaction; see {@link #rollback()}
+	 */
+	@Override
+	public void
+	close()
+	{
+		rollback();
+	}
+
+}
+
+/**
+ * Begins a new parser position transaction. Use the {@link Txn#commit()} and
+ * possibly {@link Txn#rollback()} methods on the returned object; the latter
+ * is called automatically if the transaction is used in a try-with-resources
+ * block (see {@link AutoCloseable}).
+ *
+ * @return {@link Txn} parser position transaction object, autoclosable
+ */
+protected Txn
+begin()
+{
+	return new Txn();
+}
+
 }

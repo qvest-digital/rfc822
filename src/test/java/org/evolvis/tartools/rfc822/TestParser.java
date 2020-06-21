@@ -46,20 +46,25 @@ isWsp(final int cur, final int next)
 String
 keyword()
 {
-	final int ofs = pos();
-	if (skip(TestParser::isWsp) == -1) {
-		jmp(ofs);
+	try (final Parser.Txn beg = begin()) {
+		if (skip(TestParser::isWsp) == -1)
+			return null;
+		try (final Parser.Txn ofs = begin()) {
+			for (final String keyword : keywords) {
+				if (s().startsWith(keyword, pos())) {
+					final int nextch = bra(keyword.length());
+					if (nextch < 'a' || nextch > 'z') {
+						// COMMIT in reverse BEGIN order
+						ofs.commit();
+						beg.commit();
+						return keyword;
+					}
+					ofs.rollback();
+				}
+			}
+		}
 		return null;
 	}
-	for (final String keyword : keywords) {
-		if (s().startsWith(keyword, pos())) {
-			final int nextch = bra(keyword.length());
-			if (nextch < 'a' || nextch > 'z')
-				return keyword;
-			jmp(ofs);
-		}
-	}
-	return null;
 }
 
 String
