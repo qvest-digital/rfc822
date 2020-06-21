@@ -168,4 +168,3 @@ skip(BiFunction<Integer, Integer, Boolean> matcher)
 	return cur;
 }
 
-}
