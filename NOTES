@@ -1,20 +1,20 @@
 RFC 5322 + Errata (excerpts), RFC 5234, RFC 1034, RFC 2181, RFC 1035, RFC 5321, RFC 3986
 ; no General-address-literal
 
- CR             =  %x0D
- LF             =  %x0A
- CRLF           =  CR LF
- HTAB           =  %x09
- SP             =  %x20
- WSP            =  SP / HTAB
- DQUOTE         =  %x22
- DIGIT          =  %x30-39
- ALPHA          =  %x41-5A / %x61-7A   ; A-Z / a-z
- VCHAR          =  %x21-7E
+  CR             =  %x0D
+  LF             =  %x0A
+  CRLF           =  CR LF
+  HTAB           =  %x09
+  SP             =  %x20
+  WSP            =  SP / HTAB
+  DQUOTE         =  %x22
+x DIGIT          =  %x30-39
+x ALPHA          =  %x41-5A / %x61-7A   ; A-Z / a-z
+  VCHAR          =  %x21-7E
 
-   quoted-pair     =   "\" (VCHAR / WSP)
+x  quoted-pair     =   "\" (VCHAR / WSP)
    FWS             =   [*WSP CRLF] 1*WSP	; min. 1 WSP
-   ctext           =   %d33-39 /          ; Printable US-ASCII
+x  ctext           =   %d33-39 /          ; Printable US-ASCII
                        %d42-91 /          ;  characters not including
                        %d93-126           ;  "(", ")", or "\"
    ccontent        =   ctext / quoted-pair / comment
@@ -25,7 +25,7 @@ Runs of FWS, comment, or CFWS that occur between lexical tokens in a
 structured header field are semantically interpreted as a single
 space character.
 
-   atext           =   ALPHA / DIGIT /    ; Printable US-ASCII
+x  atext           =   ALPHA / DIGIT /    ; Printable US-ASCII
                        "!" / "#" /        ;  characters not including
                        "$" / "%" /        ;  specials.  Used for atoms.
                        "&" / "'" /
@@ -33,23 +33,23 @@ space character.
                        "-" / "/" /
                        "=" / "?" /
                        "^" / "_" /
-                       "" / "{" /
+                       "`" / "{" /
                        "|" / "}" /
                        "~"
-   atom            =   [CFWS] 1*atext [CFWS]
-   dot-atom-text   =   1*atext *("." 1*atext)
-   dot-atom        =   [CFWS] dot-atom-text [CFWS]
+x  atom            =   [CFWS] 1*atext [CFWS]
+x  dot-atom-text   =   1*atext *("." 1*atext)
+x  dot-atom        =   [CFWS] dot-atom-text [CFWS]
 
 Semantically, the optional
 comments and FWS surrounding the rest of the characters are not part
 of the atom; the atom is only the run of atext characters in an atom,
 or the atext and "." characters in a dot-atom.
 
-   qtext           =   %d33 /             ; Printable US-ASCII
+x  qtext           =   %d33 /             ; Printable US-ASCII
                        %d35-91 /          ;  characters not including
                        %d93-126           ;  "\" or the quote character
-   qcontent        =   qtext / quoted-pair
-   quoted-string   =   [CFWS]
+x  qcontent        =   qtext / quoted-pair
+x  quoted-string   =   [CFWS]
                        DQUOTE *([FWS] qcontent) [FWS] DQUOTE
                        [CFWS]
 
@@ -62,19 +62,19 @@ quote characters.  As stated earlier, the "\" in any quoted-pair and
    from            =   "From:" mailbox-list CRLF
    to              =   "To:" address-list CRLF
 
-   word            =   atom / quoted-string
-   phrase          =   1*word
+x  word            =   atom / quoted-string
+x  phrase          =   1*word
    unstructured    =   *([FWS] VCHAR) *WSP
 
-   address         =   mailbox / group
-   mailbox         =   name-addr / addr-spec
-   name-addr       =   [display-name] angle-addr
-   angle-addr      =   [CFWS] "<" addr-spec ">" [CFWS]
-   group           =   display-name ":" [group-list] ";" [CFWS]
-   display-name    =   phrase
-   mailbox-list    =   mailbox *("," mailbox)
-   address-list    =   address *("," address)
-   group-list      =   mailbox-list / CFWS
+x  address         =   mailbox / group
+x  mailbox         =   name-addr / addr-spec
+x  name-addr       =   [display-name] angle-addr
+x  angle-addr      =   [CFWS] "<" addr-spec ">" [CFWS]
+x  group           =   display-name ":" [group-list] ";" [CFWS]
+x  display-name    =   phrase
+x  mailbox-list    =   mailbox *("," mailbox)
+x  address-list    =   address *("," address)
+x  group-list      =   mailbox-list / CFWS
 
 [addr-spec] If the
 string can be represented as a dot-atom (that is, it contains no
