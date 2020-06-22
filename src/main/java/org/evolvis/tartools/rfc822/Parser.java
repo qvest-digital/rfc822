@@ -249,6 +249,22 @@ public class Txn implements AutoCloseable {
 		rollback();
 	}
 
+	/**
+	 * Commits the current position and returns its argument.
+	 * Helper method to avoid needing braces more often than necessary.
+	 *
+	 * @param returnValue the value to return
+	 * @param <T>         the type of returnValue
+	 *
+	 * @return returnValue
+	 */
+	public <T> T
+	accept(T returnValue)
+	{
+		commit();
+		return returnValue;
+	}
+
 }
 
 /**
