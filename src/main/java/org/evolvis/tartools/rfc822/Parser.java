@@ -100,7 +100,7 @@ jmp(final int pos)
 		return cur;
 	}
 	cur = source.codePointAt(ofs);
-	succ = ofs + (cur <= 0xFFFF ? 1 : 2);
+	succ = ofs + Character.charCount(cur);
 	next = succ < srcsz ? source.codePointAt(succ) : -1;
 	return cur;
 }
