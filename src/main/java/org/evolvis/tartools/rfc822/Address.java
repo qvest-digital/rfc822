@@ -433,7 +433,7 @@ pComment()
 	}
 }
 
-final String
+protected String
 pCFWS()
 {
 	String wsp = pFWS();
@@ -460,36 +460,38 @@ isWSP(final int cur)
 	return cur == 0x20 || cur == 0x09;
 }
 
-final String
+protected String
 pFWS()
 {
-	final int beg = pos();
-	final int maybecr = skip(Address::isWSP);
-	final int wsp = pos();
-	if (maybecr == 0x0A) {
-		// CRLF /= [CR] LF ; no CR case
+	String w = null;
+
+	int c = cur();
+	if (isWSP(c)) {
+		final int beg = pos();
+		c = skip(Address::isWSP);
+		w = s().substring(beg, pos());
+	}
+
+	if (c != 0x0D && c != 0x0A)
+		return w;
+	final int c2 = peek();
+	if (c == 0x0D && c2 == 0x0A) {
+		// possibly need backtracking
+		if (!isWSP(bra(2))) {
+			bra(-2);
+			return w;
+		}
+	} else if (!isWSP(c2))
+		return w;
+	else
 		accept();
-	} else if (maybecr == 0x0D) {
-		// CRLF /= CR
-		if (accept() == 0x0A)
-			// CRLF /= [CR] LF ; one CR case
-			accept();
-	} else {
-		// no CRLF, see whether there’s at least one WSP
-		return wsp > beg ? s().substring(beg, wsp) : null;
-	}
-	// CRLF present
-	final int nl = pos();
+
+	final int p1 = pos();
 	skip(Address::isWSP);
-	final int w2 = pos();
-	if (w2 == nl) {
-		// no WSP after CRLF, track back
-		jmp(wsp);
-		return wsp > beg ? s().substring(beg, wsp) : null;
-	}
+	final int p2 = pos();
+	final String w2 = s().substring(p1, p2);
 	// unfold
-	final String ws2 = s().substring(nl, w2);
-	return wsp > beg ? s().substring(beg, wsp) + ws2 : ws2;
+	return w == null ? w2 : w + w2;
 }
 
 }
