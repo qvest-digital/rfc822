@@ -22,7 +22,13 @@ package org.evolvis.tartools.rfc822;
 
 /**
  * Represents an RFC822 (and successors) eMail address header content,
- * either From or To, or subsets.
+ * either From or To, or subsets. In domain literals (square brackets)
+ * the General-address-literal syntax is not recognised (as downstream
+ * MTAs cannot support it as no use is specified yet), and a IPv6 Zone
+ * Identifier isn’t supported as it’s special local use only.
+ *
+ * After construction, calling the {@link #asAddressList()} method for
+ * recipient validation is what most users would need.
  *
  * @author mirabilos (t.glaser@tarent.de)
  */
@@ -92,7 +98,7 @@ public Address(final String addresses)
 	super(addresses, /* might want to limit this */ Integer.MAX_VALUE);
 }
 
-// From:
+// From: Resent-From:
 public String
 asMailboxList()
 {
@@ -101,7 +107,17 @@ asMailboxList()
 	return cur() == -1 ? rv : null;
 }
 
-// To:
+// Sender: Resent-Sender
+public String
+forSender(boolean allowRFC6854forLimitedUse)
+{
+	jmp(0);
+	final String rv = allowRFC6854forLimitedUse ? pAddress() : pMailbox();
+	return cur() == -1 ? rv : null;
+}
+
+// Reply-To: To: Cc: [Bcc:] Resent-To: Resent-Cc: [Resent-Bcc:]
+// (RFC 6854) From: Resent-From: (RFC 2026 §3.3(d) Limited Use)
 public String
 asAddressList()
 {

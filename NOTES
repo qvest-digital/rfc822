@@ -1,5 +1,5 @@
 RFC 5322 + Errata (excerpts), RFC 5234, RFC 1034, RFC 2181, RFC 1035, RFC 5321, RFC 3986
-; no General-address-literal
+x ; no General-address-literal
 
   CR             =  %x0D
   LF             =  %x0A
@@ -59,8 +59,8 @@ quoted-string; the quoted-string is what is contained between the two
 quote characters.  As stated earlier, the "\" in any quoted-pair and
 (folding CRLF)
 
-   from            =   "From:" mailbox-list CRLF
-   to              =   "To:" address-list CRLF
+x  from            =   "From:" mailbox-list CRLF
+x  to              =   "To:" address-list CRLF
 
 x  word            =   atom / quoted-string
 x  phrase          =   1*word
