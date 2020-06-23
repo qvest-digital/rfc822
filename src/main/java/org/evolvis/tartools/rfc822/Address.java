@@ -401,6 +401,57 @@ pQuotedString()
 	}
 }
 
+protected String
+pCcontent()
+{
+	int c;
+	if ((c = pCtext()) != -1) return String.valueOf((char) c);
+	if ((c = pQuotedPair()) != -1) return String.valueOf((char) c);
+	return pComment();
+}
+
+protected String
+pComment()
+{
+	try (final Parser.Txn ofs = begin()) {
+		String rv = "";
+		if (cur() != '(') return null;
+		accept();
+		while (true) {
+			final String wsp = pFWS();
+			if (wsp != null) rv += wsp; //XXX pFWS must unfold (drop the CRLF)
+			final String cc = pCcontent();
+			if (cc == -1)
+				break;
+			rv += cc;
+		}
+		// [FWS] after *([FWS] ccontent) already parsed above
+		if (cur() != ')') return null;
+		accept();
+		return ofs.accept(rv);
+	}
+}
+
+final String
+pCFWS()
+{
+	String wsp = pFWS();
+	String c = pComment();
+	// second alternative (FWS⇒success or null⇒failure)?
+	if (c == null)
+		return wsp;
+	// first alternative, at least one comment, optional FWS before
+	String rv = wsp == null ? c : wsp + c;
+	while (true) {
+		wsp = pFWS();
+		if (wsp != null) rv += wsp; //XXX pFWS must unfold (drop the CRLF)
+		if ((c = pComment()) == null) {
+			// [FWS] after 1*([FWS] comment) already parsed above
+			return rv;
+		}
+		rv += c;
+	}
+}
 
 
 }

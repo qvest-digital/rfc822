@@ -17,9 +17,9 @@ x  quoted-pair     =   "\" (VCHAR / WSP)
 x  ctext           =   %d33-39 /          ; Printable US-ASCII
                        %d42-91 /          ;  characters not including
                        %d93-126           ;  "(", ")", or "\"
-   ccontent        =   ctext / quoted-pair / comment
-   comment         =   "(" *([FWS] ccontent) [FWS] ")"
-   CFWS            =   (1*([FWS] comment) [FWS]) / FWS	; min. 1 WSP or comment
+x  ccontent        =   ctext / quoted-pair / comment
+x  comment         =   "(" *([FWS] ccontent) [FWS] ")"
+x  CFWS            =   (1*([FWS] comment) [FWS]) / FWS	; min. 1 WSP or comment
 
 Runs of FWS, comment, or CFWS that occur between lexical tokens in a
 structured header field are semantically interpreted as a single
