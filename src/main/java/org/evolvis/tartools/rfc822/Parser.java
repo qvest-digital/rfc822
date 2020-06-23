@@ -21,6 +21,7 @@ package org.evolvis.tartools.rfc822;
  */
 
 import java.util.function.BiFunction;
+import java.util.function.Function;
 
 /**
  * Parser base class, abstracting initialisation and movement
@@ -193,6 +194,22 @@ protected int
 skip(BiFunction<Integer, Integer, Boolean> matcher)
 {
 	while (cur != -1 && matcher.apply(cur, next))
+		jmp(succ);
+	return cur;
+}
+
+/**
+ * Advances the current position as long as the matcher returns true
+ * and end of input is not yet reached; cf. {@link #skip(BiFunction)}
+ *
+ * @param matcher gets called with just {@link #cur()} as argument
+ *
+ * @return codepoint of the first character where the matcher returned false, or -1
+ */
+protected int
+skip(Function<Integer, Boolean> matcher)
+{
+	while (cur != -1 && matcher.apply(cur))
 		jmp(succ);
 	return cur;
 }

@@ -422,7 +422,7 @@ pComment()
 			final String wsp = pFWS();
 			if (wsp != null) rv += wsp; //XXX pFWS must unfold (drop the CRLF)
 			final String cc = pCcontent();
-			if (cc == -1)
+			if (cc == null)
 				break;
 			rv += cc;
 		}
@@ -455,7 +455,7 @@ pCFWS()
 }
 
 static boolean
-isWSP(final int cur, final int next)
+isWSP(final int cur)
 {
 	return cur == 0x20 || cur == 0x09;
 }
