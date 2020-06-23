@@ -86,10 +86,13 @@ SHOULD NOT be used around the "@" in the addr-spec.
    addr-spec       =   local-part "@" domain
    local-part      =   dot-atom / quoted-string
    domain          =   dot-domain / domain-literal
+   dot-domain      =   dot-atom
    domain-literal  =   [CFWS] "[" *([FWS] dtext) [FWS] "]" [CFWS]
    dtext           =   %d33-90 /          ; Printable US-ASCII
                        %d94-126           ;  characters not including
                                           ;  "[", "]", or "\"
+More constraints:
+
    dot-domain      =   [CFWS] label *("." label) [CFWS]
    label           =   (ALPHA / DIGIT) [ *(ALPHA / DIGIT / "-") (ALPHA / DIGIT) ]
    dtext	   =   IPv4address / IPv6tagged	; no IPv6 Zone Identifiers
