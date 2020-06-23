@@ -13,7 +13,7 @@ x ALPHA          =  %x41-5A / %x61-7A   ; A-Z / a-z
   VCHAR          =  %x21-7E
 
 x  quoted-pair     =   "\" (VCHAR / WSP)
-   FWS             =   [*WSP CRLF] 1*WSP	; min. 1 WSP
+x  FWS             =   [*WSP CRLF] 1*WSP	; min. 1 WSP
 x  ctext           =   %d33-39 /          ; Printable US-ASCII
                        %d42-91 /          ;  characters not including
                        %d93-126           ;  "(", ")", or "\"

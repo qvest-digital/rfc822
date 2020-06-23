@@ -25,7 +25,8 @@ package org.evolvis.tartools.rfc822;
  * either From or To, or subsets. In domain literals (square brackets)
  * the General-address-literal syntax is not recognised (as downstream
  * MTAs cannot support it as no use is specified yet), and a IPv6 Zone
- * Identifier isn’t supported as it’s special local use only.
+ * Identifier isn’t supported as it’s special local use only. Handling
+ * of line endings is lenient: CRLF := ([CR] LF) / CR
  *
  * After construction, calling the {@link #asAddressList()} method for
  * recipient validation is what most users would need.
@@ -453,5 +454,42 @@ pCFWS()
 	}
 }
 
+static boolean
+isWSP(final int cur, final int next)
+{
+	return cur == 0x20 || cur == 0x09;
+}
+
+final String
+pFWS()
+{
+	final int beg = pos();
+	final int maybecr = skip(Address::isWSP);
+	final int wsp = pos();
+	if (maybecr == 0x0A) {
+		// CRLF /= [CR] LF ; no CR case
+		accept();
+	} else if (maybecr == 0x0D) {
+		// CRLF /= CR
+		if (accept() == 0x0A)
+			// CRLF /= [CR] LF ; one CR case
+			accept();
+	} else {
+		// no CRLF, see whether there’s at least one WSP
+		return wsp > beg ? s().substring(beg, wsp) : null;
+	}
+	// CRLF present
+	final int nl = pos();
+	skip(Address::isWSP);
+	final int w2 = pos();
+	if (w2 == nl) {
+		// no WSP after CRLF, track back
+		jmp(wsp);
+		return wsp > beg ? s().substring(beg, wsp) : null;
+	}
+	// unfold
+	final String ws2 = s().substring(nl, w2);
+	return wsp > beg ? s().substring(beg, wsp) + ws2 : ws2;
+}
 
 }
