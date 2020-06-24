@@ -564,10 +564,11 @@ pFWS()
 			bra(-2);
 			return w;
 		}
-	} else if (!isWSP(c2)) {
-		return w;
-	} else
+	} else {
+		if (!isWSP(c2))
+			return w;
 		accept();
+	}
 
 	final int p1 = pos();
 	skip(Address::isWSP);
