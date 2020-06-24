@@ -34,21 +34,21 @@ class FQDNTest {
 private static void
 val(final String hostname)
 {
-	assertTrue(FQDN.isDomain(hostname), "not valid: " + hostname);
+	assertTrue(FQDN.isDomain(hostname), () -> "not valid: " + hostname);
 }
 
 private static void
 inv(final String hostname)
 {
-	assertFalse(FQDN.isDomain(hostname), "not invalid: " + hostname);
+	assertFalse(FQDN.isDomain(hostname), () -> "not invalid: " + hostname);
 }
 
 @Test
 public void testPos()
 {
 	final FQDN tp = FQDN.of("host.domain.tld");
-	assertNotNull(tp);
-	assertTrue(tp.isDomain());
+	assertNotNull(tp, "cannot instantiate for valid example");
+	assertTrue(tp.isDomain(), "basic valid example doesn’t validate");
 
 	inv(null);
 	inv("");

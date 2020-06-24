@@ -35,7 +35,7 @@ class AddressTest {
 public void testPos()
 {
 	final Address tp = Address.of("user@host.domain.tld");
-	assertNotNull(tp);
+	assertNotNull(tp, "cannot instantiate for basic valid example");
 }
 
 }

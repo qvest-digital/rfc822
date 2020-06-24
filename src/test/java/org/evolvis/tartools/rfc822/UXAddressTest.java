@@ -35,7 +35,7 @@ class UXAddressTest {
 public void testPos()
 {
 	final UXAddress tp = UXAddress.of("猫 <meow@host.domain.tld>");
-	assertNotNull(tp);
+	assertNotNull(tp, "cannot construct for valid input");
 }
 
 }
