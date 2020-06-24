@@ -237,6 +237,17 @@ public class Txn implements AutoCloseable {
 	}
 
 	/**
+	 * Returns the last committed position
+	 *
+	 * @return position of last commit
+	 */
+	public int
+	savepoint()
+	{
+		return pos;
+	}
+
+	/**
 	 * Commits the current parser position (stores it in the transaction)
 	 */
 	public void
@@ -253,7 +264,7 @@ public class Txn implements AutoCloseable {
 	public int
 	rollback()
 	{
-		return Parser.this.jmp(pos);
+		return Parser.this.jmp(savepoint());
 	}
 
 	/**
