@@ -188,8 +188,8 @@ checkAndAddIPv4(final List<Integer> whereToAdd)
 	final byte[] v4 = pIPv4Address();
 	if (v4 == null)
 		return false;
-	whereToAdd.add((v4[0] << 8) | v4[1]);
-	whereToAdd.add((v4[2] << 8) | v4[3]);
+	whereToAdd.add((v4[0] << 8) | (v4[1] & 0xFF));
+	whereToAdd.add((v4[2] << 8) | (v4[3] & 0xFF));
 	return true;
 }
 
