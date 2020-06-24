@@ -20,6 +20,8 @@ package org.evolvis.tartools.rfc822;
  * of said person’s immediate fault when using the work as intended.
  */
 
+import java.util.Arrays;
+
 /**
  * Represents an RFC822 (and successors) eMail address header content,
  * either From or To, or subsets. In domain literals (square brackets)
@@ -29,7 +31,8 @@ package org.evolvis.tartools.rfc822;
  * of line endings is lenient: CRLF := ([CR] LF) / CR
  *
  * After construction, calling the {@link #asAddressList()} method for
- * recipient validation is what most users would need.
+ * recipient validation is what most users would need. From and Sender
+ * use {@link #asMailboxList()} or {@link #forSender(boolean)} mostly.
  *
  * @author mirabilos (t.glaser@tarent.de)
  */
@@ -51,8 +54,8 @@ private static final byte IS_DTEXT = F_DTEXT;
 private static final byte[] ASCII = new byte[128];
 
 static {
-	for (int i = 0; i < ASCII.length; ++i)
-		ASCII[i] = 0;
+	Arrays.fill(ASCII, (byte)0);
+
 	for (char c = 'A'; c <= 'Z'; ++c)
 		ASCII[c] |= F_ALPHA;
 	for (char c = 'a'; c <= 'z'; ++c)
@@ -99,13 +102,20 @@ static {
  * Constructs a parser for eMail addresses
  *
  * @param addresses to parse
+ *
+ * @throws IllegalArgumentException if input was null or very large
  */
 public Address(final String addresses)
 {
-	super(addresses, /* might want to limit this */ Integer.MAX_VALUE);
+	super(addresses, /* arbitrary but extremely large already */ 131072);
 }
 
-// From: Resent-From:
+/**
+ * Parses the address as mailbox-list, e.g. for the From and Resent-From headers
+ * (but see {@link #asAddressList()} for RFC6854’s RFC2026 §3.3(d) Limited Use)
+ *
+ * @return parser result
+ */
 public String
 asMailboxList()
 {
@@ -114,7 +124,17 @@ asMailboxList()
 	return cur() == -1 ? rv : null;
 }
 
-// Sender: Resent-Sender
+/**
+ * Parses the address for the Sender and Resent-Sender headers
+ *
+ * These headers normally use the address production, but RFC6854 allows for
+ * the mailbox production, with the RFC2026 §3.3(d) Limited Use caveat that
+ * permits it but only for specific circumstances.
+ *
+ * @param allowRFC6854forLimitedUse use mailbox instead of address parsing
+ *
+ * @return parser result
+ */
 public String
 forSender(boolean allowRFC6854forLimitedUse)
 {
@@ -123,8 +143,15 @@ forSender(boolean allowRFC6854forLimitedUse)
 	return cur() == -1 ? rv : null;
 }
 
-// Reply-To: To: Cc: [Bcc:] Resent-To: Resent-Cc: [Resent-Bcc:]
-// (RFC6854) From: Resent-From: (RFC2026 §3.3(d) Limited Use)
+/**
+ * Parses the address as address-list, e.g. for the Reply-To, To, Cc,
+ * (optionally) Bcc, Resent-To, Resent-Cc and (optionally) Resent-Bcc
+ * headers. RFC6854 (under RFC2026 §3.3(d) Limited Use circumstances)
+ * allows using this for the From and Resent-From headers, normally
+ * covered by the {@link #asMailboxList()} method.
+ *
+ * @return parser result
+ */
 public String
 asAddressList()
 {
