@@ -64,40 +64,40 @@ static {
 		ASCII[c] |= F_ALPHA;
 	for (char c = '0'; c <= '9'; ++c)
 		ASCII[c] |= F_DIGIT;
-	ASCII['-'] = F_HYPHN;
+	ASCII['-'] |= F_HYPHN;
 
-	ASCII['!'] = F_ATEXT;
-	ASCII['#'] = F_ATEXT;
-	ASCII['$'] = F_ATEXT;
-	ASCII['%'] = F_ATEXT;
-	ASCII['&'] = F_ATEXT;
-	ASCII['\''] = F_ATEXT;
-	ASCII['*'] = F_ATEXT;
-	ASCII['+'] = F_ATEXT;
-	ASCII['/'] = F_ATEXT;
-	ASCII['='] = F_ATEXT;
-	ASCII['?'] = F_ATEXT;
-	ASCII['^'] = F_ATEXT;
-	ASCII['_'] = F_ATEXT;
-	ASCII['`'] = F_ATEXT;
-	ASCII['{'] = F_ATEXT;
-	ASCII['|'] = F_ATEXT;
-	ASCII['}'] = F_ATEXT;
-	ASCII['~'] = F_ATEXT;
+	ASCII['!'] |= F_ATEXT;
+	ASCII['#'] |= F_ATEXT;
+	ASCII['$'] |= F_ATEXT;
+	ASCII['%'] |= F_ATEXT;
+	ASCII['&'] |= F_ATEXT;
+	ASCII['\''] |= F_ATEXT;
+	ASCII['*'] |= F_ATEXT;
+	ASCII['+'] |= F_ATEXT;
+	ASCII['/'] |= F_ATEXT;
+	ASCII['='] |= F_ATEXT;
+	ASCII['?'] |= F_ATEXT;
+	ASCII['^'] |= F_ATEXT;
+	ASCII['_'] |= F_ATEXT;
+	ASCII['`'] |= F_ATEXT;
+	ASCII['{'] |= F_ATEXT;
+	ASCII['|'] |= F_ATEXT;
+	ASCII['}'] |= F_ATEXT;
+	ASCII['~'] |= F_ATEXT;
 
-	ASCII[33] = F_QTEXT;
+	ASCII[33] |= F_QTEXT;
 	for (int d = 35; d <= 91; ++d)
-		ASCII[d] = F_QTEXT;
+		ASCII[d] |= F_QTEXT;
 	for (int d = 33; d <= 39; ++d)
-		ASCII[d] = F_CTEXT;
+		ASCII[d] |= F_CTEXT;
 	for (int d = 42; d <= 91; ++d)
-		ASCII[d] = F_CTEXT;
+		ASCII[d] |= F_CTEXT;
 	for (int d = 93; d <= 126; ++d)
-		ASCII[d] = F_QTEXT | F_CTEXT;
+		ASCII[d] |= F_QTEXT | F_CTEXT;
 	for (int d = 33; d <= 90; ++d)
-		ASCII[d] = F_DTEXT;
+		ASCII[d] |= F_DTEXT;
 	for (int d = 94; d <= 126; ++d)
-		ASCII[d] = F_DTEXT;
+		ASCII[d] |= F_DTEXT;
 }
 
 /**
