@@ -26,6 +26,8 @@ import java.net.Inet4Address;
 import java.net.Inet6Address;
 import java.net.InetAddress;
 import java.net.UnknownHostException;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Represents an IP address (including Legacy IP) for use in eMail on
@@ -107,6 +109,7 @@ asIPv4Address()
 	return InetAddress.getByAddress(s(), addr);
 }
 
+@SuppressWarnings("fallthrough")
 protected byte[]
 pIPv4Address()
 {
@@ -130,10 +133,10 @@ pIPv4Address()
 				/* FALLTHROUGH */
 			case '1':
 				if (b2 >= '0' && b2 <= l2) {
-					int v = (b1 - '0') * 10 + (b2 - '0');
+					int v = Character.digit(b1, 10) * 10 + Character.digit(b2, 10);
 					final int b3 = bra(2);
 					if (b3 >= '0' && b3 <= l3) {
-						v = v * 10 + (b3 - '0');
+						v = v * 10 + Character.digit(b3, 10);
 						accept();
 					}
 					addr[a] = (byte)v;
@@ -147,10 +150,10 @@ pIPv4Address()
 			}
 			if (b1 < '1' || b1 > '9')
 				return null;
-			int v = b1 - '0';
+			int v = Character.digit(b1, 10);
 			accept();
 			if (b2 >= '0' && b2 <= '9') {
-				v = v * 10 + (b2 - '0');
+				v = v * 10 + Character.digit(b2, 10);
 				accept();
 			}
 			addr[a] = (byte)v;
@@ -159,13 +162,106 @@ pIPv4Address()
 	}
 }
 
+/**
+ * Parses the hexadecimal number in an h16. The caller must have verified
+ * that the cur()rent character IS_XDIGIT before calling this, to ensure a
+ * minimum length of 1 nybble is validated.
+ *
+ * @return the parsed number
+ */
+private int
+h16()
+{
+	int x = 0;
+	for (int i = 0; i < 4; ++i) {
+		if (!Address.is(cur(), Address.IS_XDIGIT))
+			break;
+		x = (x << 4) + Character.digit(cur(), 16);
+		accept();
+	}
+	return x;
+}
+
+private boolean
+checkAndAddIPv4(final List<Integer> whereToAdd)
+{
+	final byte[] v4 = pIPv4Address();
+	if (v4 == null)
+		return false;
+	whereToAdd.add((v4[0] << 8) | v4[1]);
+	whereToAdd.add((v4[2] << 8) | v4[3]);
+	return true;
+}
+
+private static byte[]
+rtnIPv6Address(final List<Integer> h16s)
+{
+	final byte[] addr = new byte[16];
+	for (int i = 0; i < 8; ++i) {
+		final int v = h16s.get(i);
+		addr[i * 2] = (byte)(v >>> 8);
+		addr[i * 2 + 1] = (byte)(v & 0xFF);
+	}
+	return addr;
+}
+
 protected byte[]
 pIPv6Address()
 {
 	try (final Parser.Txn ofs = begin()) {
-		byte[] addr = new byte[16];
-		int a = 0;
-		return addr;
+		final List<Integer> beforeDoubleColon = new ArrayList<>();
+		boolean hasDoubleColon = false;
+		int cnt = 0;
+		while (cnt < 8) {
+			if (cur() == ':' && peek() == ':') {
+				hasDoubleColon = true;
+				break;
+			}
+			if (cnt > 0) {
+				if (cur() != ':')
+					break;
+				accept();
+			}
+			if (cnt == 6) {
+				if (checkAndAddIPv4(beforeDoubleColon))
+					break;
+			}
+			if (!Address.is(cur(), Address.IS_XDIGIT))
+				break;
+			beforeDoubleColon.add(h16());
+			++cnt;
+		}
+		// arrive here either with double colon (0 ≤ cnt ≤ 7)
+		// or at end of h16 list (0 ≤ cnt ≤ 8)
+		if (!hasDoubleColon) {
+			if (beforeDoubleColon.size() != 8)
+				return null;
+			return ofs.accept(rtnIPv6Address(beforeDoubleColon));
+		}
+		// remainder string begins with double colon, leave ONE
+		accept();
+		final List<Integer> afterDoubleColon = new ArrayList<>();
+		int maxh16 = 7 - cnt;
+		while (maxh16 > 0) {
+			if (cur() != ':')
+				break;
+			accept();
+			if (!Address.is(cur(), Address.IS_XDIGIT))
+				break;
+			if (maxh16 >= 2) {
+				// must check this first
+				if (checkAndAddIPv4(afterDoubleColon))
+					break;
+			}
+			afterDoubleColon.add(h16());
+			--maxh16;
+		}
+		// stuff the double colon
+		while (beforeDoubleColon.size() + afterDoubleColon.size() < 8)
+			beforeDoubleColon.add(0);
+		beforeDoubleColon.addAll(afterDoubleColon);
+		// return result
+		return ofs.accept(rtnIPv6Address(beforeDoubleColon));
 	}
 }
 

@@ -46,7 +46,8 @@ private static final byte F_HYPHN = 0x04;
 private static final byte F_ATEXT = 0x08;
 private static final byte F_QTEXT = 0x10;
 private static final byte F_CTEXT = 0x20;
-private static final byte F_DTEXT = 0x20;
+private static final byte F_DTEXT = 0x40;
+private static final byte F_ABISF = (byte)0x80;
 
 static final byte IS_ATEXT = F_ALPHA | F_DIGIT | F_HYPHN | F_ATEXT;
 static final byte IS_QTEXT = F_QTEXT;
@@ -56,6 +57,7 @@ static final byte IS_ALPHA = F_ALPHA;
 static final byte IS_DIGIT = F_DIGIT;
 static final byte IS_ALNUM = F_ALPHA | F_DIGIT;
 static final byte IS_ALNUS = F_ALPHA | F_DIGIT | F_HYPHN;
+static final byte IS_XDIGIT = F_DIGIT | F_ABISF;
 
 private static final byte[] ASCII = new byte[128];
 
@@ -88,6 +90,19 @@ static {
 	ASCII['|'] |= F_ATEXT;
 	ASCII['}'] |= F_ATEXT;
 	ASCII['~'] |= F_ATEXT;
+
+	ASCII['A'] |= F_ABISF;
+	ASCII['B'] |= F_ABISF;
+	ASCII['C'] |= F_ABISF;
+	ASCII['D'] |= F_ABISF;
+	ASCII['E'] |= F_ABISF;
+	ASCII['F'] |= F_ABISF;
+	ASCII['a'] |= F_ABISF;
+	ASCII['b'] |= F_ABISF;
+	ASCII['c'] |= F_ABISF;
+	ASCII['d'] |= F_ABISF;
+	ASCII['e'] |= F_ABISF;
+	ASCII['f'] |= F_ABISF;
 
 	ASCII[33] |= F_QTEXT;
 	for (int d = 35; d <= 91; ++d)
