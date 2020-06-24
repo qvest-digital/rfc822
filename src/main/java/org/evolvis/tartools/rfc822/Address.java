@@ -48,10 +48,14 @@ private static final byte F_QTEXT = 0x10;
 private static final byte F_CTEXT = 0x20;
 private static final byte F_DTEXT = 0x20;
 
-private static final byte IS_ATEXT = F_ALPHA | F_DIGIT | F_HYPHN | F_ATEXT;
-private static final byte IS_QTEXT = F_QTEXT;
-private static final byte IS_CTEXT = F_CTEXT;
-private static final byte IS_DTEXT = F_DTEXT;
+static final byte IS_ATEXT = F_ALPHA | F_DIGIT | F_HYPHN | F_ATEXT;
+static final byte IS_QTEXT = F_QTEXT;
+static final byte IS_CTEXT = F_CTEXT;
+static final byte IS_DTEXT = F_DTEXT;
+static final byte IS_ALPHA = F_ALPHA;
+static final byte IS_DIGIT = F_DIGIT;
+static final byte IS_ALNUM = F_ALPHA | F_DIGIT;
+static final byte IS_ALNUS = F_ALPHA | F_DIGIT | F_HYPHN;
 
 private static final byte[] ASCII = new byte[128];
 
@@ -357,7 +361,7 @@ pAtom()
 	}
 }
 
-protected static boolean
+static boolean
 is(final int c, final byte what)
 {
 	if (c < 0 || c > ASCII.length)
