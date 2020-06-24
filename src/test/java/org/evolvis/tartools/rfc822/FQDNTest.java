@@ -31,11 +31,49 @@ import static org.junit.jupiter.api.Assertions.*;
  */
 class FQDNTest {
 
+private static void
+val(final String hostname)
+{
+	assertTrue(FQDN.isDomain(hostname), "not valid: " + hostname);
+}
+
+private static void
+inv(final String hostname)
+{
+	assertFalse(FQDN.isDomain(hostname), "not invalid: " + hostname);
+}
+
 @Test
 public void testPos()
 {
 	final FQDN tp = FQDN.of("host.domain.tld");
 	assertNotNull(tp);
+	assertTrue(tp.isDomain());
+
+	inv(null);
+	inv("");
+	val("eu");
+	val("example.com");
+	val("a.example.com");
+	val("ab.example.com");
+	val("a-b.example.com");
+	inv("a-.example.com");
+	inv("-a.example.com");
+	val("123.example.com");
+	val("1.2.3");
+	val("1.2.3.4");
+	val("1.2.3.4.5");
+	val("123456789012345678901234567890123456789012345678901234567890123");
+	inv("1234567890123456789012345678901234567890123456789012345678901234");
+	val("123456789012345678901234567890123456789012345678901234567890123.123456789012345678901234567890123456789012345678901234567890123.123456789012345678901234567890123456789012345678901234567890123.12345678901234567890123456789012345678901234567890123456789012");
+	inv("123456789012345678901234567890123456789012345678901234567890123.123456789012345678901234567890123456789012345678901234567890123.123456789012345678901234567890123456789012345678901234567890123.123456789012345678901234567890123456789012345678901234567890123");
+	val("a.b.c.d.e.f.g.h.i.j.k.l.m.n.o.p.q.r.s.t.u.v.w.x.y.z.A.B.C.D.E.F.G.H.I.J.K.L.M.N.O.P.Q.R.S.T.U.V.W.X.Y.Z.0.1.2.3.4.5.6.7.8.9.10.11.12.0-0.0-0-0.ab.a0.0a.c-d.e-f-g.h-i-j-k-l-m-n--o--p---q----r-----s------t.u--v--w--x--y--z---------------------A.01234567890");
+	inv("_foo.example.com");
+	inv("foo_.example.com");
+	inv("f_oo.example.com");
+	inv(" ");
+	inv(" example.com");
+	inv("example.com ");
 }
 
 }

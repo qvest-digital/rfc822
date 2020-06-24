@@ -23,6 +23,8 @@ package org.evolvis.tartools.rfc822;
 /**
  * Represents an FQDN (“domain” production) for use in eMail
  *
+ * The main entry point is the {@link #isDomain(String)} method.
+ *
  * @author mirabilos (t.glaser@tarent.de)
  */
 public class FQDN extends Parser {
@@ -49,6 +51,65 @@ of(final String hostname)
 protected FQDN(final String input)
 {
 	super(input, /* RFC5321 Forward-path limit */ 254);
+}
+
+/**
+ * Checks if a supposed hostname is a valid Fully-Qualified Domain Name.
+ *
+ * Valid FQDNs are up to 254 octets in length, comprised only of labels
+ * (letters, digits and hyphen-minus, but not beginning or ending with
+ * a hyphen-minus) up to 63 octets long, separated by dots (‘.’).
+ *
+ * Strictly speaking, FQDNs could be 255 octet in length, but these may
+ * cause problems with DNS and will not work in SMTP anyway.
+ *
+ * @return true if the hostname passed during construction is valid, else false
+ */
+public boolean
+isDomain()
+{
+	jmp(0);
+	while (true) {
+		final int begLabel = pos();
+		if (!Address.is(cur(), Address.IS_ALNUM))
+			return false;
+		while (Address.is(peek(), Address.IS_ALNUS))
+			accept();
+		if (!Address.is(cur(), Address.IS_ALNUM))
+			return false;
+		accept();
+		if (pos() - begLabel > 63)
+			return false;
+		if (cur() == -1)
+			break;
+		if (cur() != '.')
+			return false;
+		accept();
+	}
+	// domain length limit checked in constructor (characters)
+	// characters are all octets, so limit in octets also checked
+	return true;
+}
+
+/**
+ * Checks if a supposed hostname is a valid Fully-Qualified Domain Name.
+ *
+ * Valid FQDNs are up to 254 octets in length, comprised only of labels
+ * (letters, digits and hyphen-minus, but not beginning or ending with
+ * a hyphen-minus) up to 63 octets long, separated by dots (‘.’).
+ *
+ * Strictly speaking, FQDNs could be 255 octet in length, but these may
+ * cause problems with DNS and will not work in SMTP anyway.
+ *
+ * @param hostname to check
+ *
+ * @return true if hostname is valid, false otherwise
+ */
+public static boolean
+isDomain(final String hostname)
+{
+	final FQDN parser = of(hostname);
+	return parser != null && parser.isDomain();
 }
 
 }

@@ -93,15 +93,15 @@ x  dtext           =   %d33-90 /          ; Printable US-ASCII
                                           ;  "[", "]", or "\"
 More constraints: (perhaps by a flag on the parsed address?)
 
-   dot-domain      =   label *("." label) ; after stripping [CFWS] around, i.e. apply on dot-atom-text
-   label           =   (ALPHA / DIGIT) [ *(ALPHA / DIGIT / "-") (ALPHA / DIGIT) ]
+x  dot-domain      =   label *("." label) ; after stripping [CFWS] around, i.e. apply on dot-atom-text
+x  label           =   (ALPHA / DIGIT) [ *(ALPHA / DIGIT / "-") (ALPHA / DIGIT) ]
    dtext	   =   IPv4address / IPv6tagged	; no IPv6 Zone Identifiers
    IPv6tagged	   =   "IPv6:" IPv6address	; case-insensitive tag
 
 Further constraints:
 • local-part up to 64 octets
-• domain up to 255 octets
-• label up to 63 octets
+x• domain up to 255 octets
+x• label up to 63 octets
 • addr-spec up to 254 octets (due to RFC 5321 Forward-path limit)
 
       IPv4address = dec-octet "." dec-octet "." dec-octet "." dec-octet
