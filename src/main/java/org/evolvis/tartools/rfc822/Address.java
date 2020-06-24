@@ -564,9 +564,9 @@ pFWS()
 			bra(-2);
 			return w;
 		}
-	} else if (!isWSP(c2))
+	} else if (!isWSP(c2)) {
 		return w;
-	else
+	} else
 		accept();
 
 	final int p1 = pos();
