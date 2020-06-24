@@ -83,12 +83,12 @@ characters), then the dot-atom form SHOULD be used and the quoted-
 string form SHOULD NOT be used.  Comments and folding white space
 SHOULD NOT be used around the "@" in the addr-spec.
 
-   addr-spec       =   local-part "@" domain
-   local-part      =   dot-atom / quoted-string
-   domain          =   dot-domain / domain-literal
-   dot-domain      =   dot-atom
-   domain-literal  =   [CFWS] "[" *([FWS] dtext) [FWS] "]" [CFWS]
-   dtext           =   %d33-90 /          ; Printable US-ASCII
+x  addr-spec       =   local-part "@" domain
+x  local-part      =   dot-atom / quoted-string
+x  domain          =   dot-domain / domain-literal
+x  dot-domain      =   dot-atom
+x  domain-literal  =   [CFWS] "[" *([FWS] dtext) [FWS] "]" [CFWS]
+x  dtext           =   %d33-90 /          ; Printable US-ASCII
                        %d94-126           ;  characters not including
                                           ;  "[", "]", or "\"
 More constraints: (perhaps by a flag on the parsed address?)

@@ -41,10 +41,12 @@ private static final byte F_HYPHN = 0x04;
 private static final byte F_ATEXT = 0x08;
 private static final byte F_QTEXT = 0x10;
 private static final byte F_CTEXT = 0x20;
+private static final byte F_DTEXT = 0x20;
 
 private static final byte IS_ATEXT = F_ALPHA | F_DIGIT | F_HYPHN | F_ATEXT;
 private static final byte IS_QTEXT = F_QTEXT;
 private static final byte IS_CTEXT = F_CTEXT;
+private static final byte IS_DTEXT = F_DTEXT;
 
 private static final byte[] ASCII = new byte[128];
 
@@ -87,6 +89,10 @@ static {
 		ASCII[d] = F_CTEXT;
 	for (int d = 93; d <= 126; ++d)
 		ASCII[d] = F_QTEXT | F_CTEXT;
+	for (int d = 33; d <= 90; ++d)
+		ASCII[d] = F_DTEXT;
+	for (int d = 94; d <= 126; ++d)
+		ASCII[d] = F_DTEXT;
 }
 
 /**
@@ -118,7 +124,7 @@ forSender(boolean allowRFC6854forLimitedUse)
 }
 
 // Reply-To: To: Cc: [Bcc:] Resent-To: Resent-Cc: [Resent-Bcc:]
-// (RFC 6854) From: Resent-From: (RFC 2026 §3.3(d) Limited Use)
+// (RFC6854) From: Resent-From: (RFC2026 §3.3(d) Limited Use)
 public String
 asAddressList()
 {
@@ -492,6 +498,80 @@ pFWS()
 	final String w2 = s().substring(p1, p2);
 	// unfold
 	return w == null ? w2 : w + w2;
+}
+
+protected String
+pAddrSpec()
+{
+	try (final Parser.Txn ofs = begin()) {
+		final String lp = pLocalPart();
+		if (lp == null) return null;
+		if (cur() != '@') return null;
+		accept();
+		final String dom = pDomain();
+		if (dom == null) return null;
+		// pass on validation results of lp and dom
+		return ofs.accept(lp + "@" + dom);
+	}
+}
+
+protected String
+pLocalPart()
+{
+        String rv = pDotAtom();
+	if (rv == null)
+		rv = pQuotedString();
+	if (rv == null)
+		return null;
+	// validate
+	return rv;
+}
+
+protected String
+pDomain()
+{
+	String rv = pDotAtom();
+	if (rv == null)
+		rv = pDomainLiteral();
+	if (rv == null)
+		return null;
+	// validate
+	return rv;
+}
+
+protected String
+pDomainLiteral()
+{
+	try (final Parser.Txn ofs = begin()) {
+		String rv = "";
+		pCFWS();
+		if (cur() != '[') return null;
+		accept();
+		while (true) {
+			final String wsp = pFWS();
+			if (wsp != null) rv += wsp;
+			final int dt = pDtext();
+			if (dt == -1)
+				break;
+			rv += dt;
+		}
+		// [FWS] after *([FWS] dtext) already parsed above
+		if (cur() != ']') return null;
+		accept();
+		pCFWS();
+		return ofs.accept(rv);
+	}
+}
+
+protected int
+pDtext()
+{
+	final int c = cur();
+	if (is(c, IS_DTEXT)) {
+		accept();
+		return c;
+	}
+	return -1;
 }
 
 }
