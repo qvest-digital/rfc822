@@ -21,23 +21,25 @@ package org.evolvis.tartools.rfc822;
  */
 
 /**
- * Represents an FQDN (“domain” production) for use in eMail
+ * Represents an RFC822 (and successors) eMail address header content,
+ * like {@link Address}, except the parser accepts more varying input,
+ * especially input by humans, and MIME-encodes nōn-ASCII characters.
  *
  * @author mirabilos (t.glaser@tarent.de)
  */
-public class FQDN extends Parser {
+public class UXAddress extends Address {
 
 /**
- * Creates and initialises a new parser for Fully-Qualified Domain Names.
+ * Creates and initialises a new parser for eMail addresses.
  *
- * @param hostname to parse
+ * @param addresses to parse
  *
- * @return null if hostname was null or longer than 254 characters, the new instance otherwise
+ * @return null if addresses was null or very large, the new instance otherwise
  */
-public static FQDN
-of(final String hostname)
+public static UXAddress
+of(final String addresses)
 {
-	final FQDN obj = new FQDN(hostname);
+	final UXAddress obj = new UXAddress(addresses);
 	return obj.s() == null ? null : obj;
 }
 
@@ -46,9 +48,9 @@ of(final String hostname)
  *
  * @param input string to analyse
  */
-protected FQDN(final String input)
+protected UXAddress(final String input)
 {
-	super(input, /* RFC5321 Forward-path limit */ 254);
+	super(input);
 }
 
 }

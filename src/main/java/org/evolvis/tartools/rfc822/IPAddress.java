@@ -48,7 +48,7 @@ of(final String address)
  *
  * @param input string to analyse
  */
-private IPAddress(final String input)
+protected IPAddress(final String input)
 {
 	super(input, /* probably 45 */ 64);
 }

@@ -119,7 +119,7 @@ of(final String addresses)
  *
  * @param input string to analyse
  */
-private Address(final String input)
+protected Address(final String input)
 {
 	super(input, /* arbitrary but extremely large already */ 131072);
 }

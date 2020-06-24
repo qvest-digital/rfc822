@@ -20,35 +20,22 @@ package org.evolvis.tartools.rfc822;
  * of said person’s immediate fault when using the work as intended.
  */
 
+import org.junit.jupiter.api.Test;
+
+import static org.junit.jupiter.api.Assertions.*;
+
 /**
- * Represents an FQDN (“domain” production) for use in eMail
+ * Test {@link UXAddress} class
  *
  * @author mirabilos (t.glaser@tarent.de)
  */
-public class FQDN extends Parser {
+class UXAddressTest {
 
-/**
- * Creates and initialises a new parser for Fully-Qualified Domain Names.
- *
- * @param hostname to parse
- *
- * @return null if hostname was null or longer than 254 characters, the new instance otherwise
- */
-public static FQDN
-of(final String hostname)
+@Test
+public void testPos()
 {
-	final FQDN obj = new FQDN(hostname);
-	return obj.s() == null ? null : obj;
-}
-
-/**
- * Private constructor, use the factory method {@link #of(String)} instead
- *
- * @param input string to analyse
- */
-protected FQDN(final String input)
-{
-	super(input, /* RFC5321 Forward-path limit */ 254);
+	final UXAddress tp = UXAddress.of("猫 <meow@host.domain.tld>");
+	assertNotNull(tp);
 }
 
 }
