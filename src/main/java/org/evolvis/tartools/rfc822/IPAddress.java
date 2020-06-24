@@ -109,6 +109,12 @@ asIPv4Address()
 	return InetAddress.getByAddress(s(), addr);
 }
 
+private static boolean
+dec(final int c, final int limit)
+{
+	return c >= '0' && c <= limit;
+}
+
 @SuppressWarnings("fallthrough")
 protected byte[]
 pIPv4Address()
@@ -132,10 +138,10 @@ pIPv4Address()
 					l3 = '5';
 				/* FALLTHROUGH */
 			case '1':
-				if (b2 >= '0' && b2 <= l2) {
+				if (dec(b2, l2)) {
 					int v = Character.digit(b1, 10) * 10 + Character.digit(b2, 10);
 					final int b3 = bra(2);
-					if (b3 >= '0' && b3 <= l3) {
+					if (dec(b3, l3)) {
 						v = v * 10 + Character.digit(b3, 10);
 						accept();
 					}
@@ -148,11 +154,11 @@ pIPv4Address()
 				accept();
 				continue;
 			}
-			if (b1 < '1' || b1 > '9')
+			if (!dec(b1, '9'))
 				return null;
 			int v = Character.digit(b1, 10);
 			accept();
-			if (b2 >= '0' && b2 <= '9') {
+			if (dec(b2, '9')) {
 				v = v * 10 + Character.digit(b2, 10);
 				accept();
 			}
