@@ -32,7 +32,21 @@ class TestParser extends Parser {
 
 protected final String[] keywords = { "meow" };
 
-TestParser(final String input)
+/**
+ * Creates and initialises a new TestParser instance.
+ *
+ * @param input string to analyse
+ *
+ * @return null if input was null or too large, the new instance otherwise
+ */
+public static TestParser
+of(final String input)
+{
+	final TestParser obj = new TestParser(input);
+	return obj.s() == null ? null : obj;
+}
+
+private TestParser(final String input)
 {
 	super(input, 16);
 }

@@ -34,7 +34,7 @@ class AddressTest {
 @Test
 public void testPos()
 {
-	final Address tp = new Address("user@host.domain.tld");
+	final Address tp = Address.of("user@host.domain.tld");
 	assertNotNull(tp);
 }
 

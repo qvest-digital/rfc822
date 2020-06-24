@@ -30,7 +30,6 @@ import java.util.function.Function;
  */
 abstract class Parser {
 
-static final String BOUNDS_INP = "input is null or size %d exceeds bounds [0;%d]";
 static final String BOUNDS_JMP = "attempt to move (%d) beyond source string (%d)";
 static final String ACCEPT_EOS = "cannot ACCEPT end of input";
 
@@ -60,23 +59,21 @@ private int next;
 private final int srcsz;
 
 /**
- * Constructs a parser. Intended to be used by subclasses only.
+ * Constructs a parser. Intended to be used by subclasses from static
+ * factory methods *only*; see {@link Address#of(String)} for an example.
  *
  * @param input  user-provided {@link String} to parse
  * @param maxlen subclass-provided maximum input string length, in characters
- *
- * @throws IllegalArgumentException if input was null or too large
  */
-Parser(final String input, final int maxlen)
+protected Parser(final String input, final int maxlen)
 {
 	srcsz = input == null ? -1 : input.length();
 	if (srcsz < 0 || srcsz > maxlen) {
-		source = null; // avoid finaliser attack
-		throw new IllegalArgumentException(String.format(BOUNDS_INP,
-		    srcsz, maxlen));
+		source = null;
+	} else {
+		source = input;
+		jmp(0);
 	}
-	source = input;
-	jmp(0);
 }
 
 /**

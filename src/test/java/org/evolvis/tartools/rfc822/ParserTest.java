@@ -38,7 +38,7 @@ final String t1 = TestUtils.staticB64UTF8Resource("t1.b64");
 @Test
 public void testPos()
 {
-	final TestParser tp = new TestParser(t1);
+	final TestParser tp = TestParser.of(t1);
 	assertNotNull(tp);
 	final String t1f = tp.asFn();
 	assertNotNull(t1f);
@@ -52,7 +52,8 @@ public void testPos()
 	assertEquals("ä", t1w.get(2), "no umlauts!");
 	assertEquals("x", t1w.get(3), "X for an U?");
 
-	final TestParser up = new TestParser("\uD83D\uDC31");
+	final TestParser up = TestParser.of("\uD83D\uDC31");
+	assertNotNull(up, "cannot meow");
 	assertEquals(0, up.pos());
 	assertEquals(0x1F431, up.cur(), "cat picture close-up missing");
 	assertEquals(-1, up.peek(), "cat wasn’t fully loaded");
@@ -70,13 +71,10 @@ public void testPos()
 public void testNeg()
 {
 	Exception e;
-	e = assertThrows(IllegalArgumentException.class, () ->
-	    new TestParser(t1 + " "));
-	assertEquals(String.format(Parser.BOUNDS_INP, 17, 16), e.getMessage());
-	e = assertThrows(IllegalArgumentException.class, () ->
-	    new TestParser(null));
-	assertEquals(String.format(Parser.BOUNDS_INP, -1, 16), e.getMessage());
-	final TestParser tp = new TestParser("");
+	assertNull(TestParser.of(t1 + " "));
+	assertNull(TestParser.of(null));
+	final TestParser tp = TestParser.of("");
+	assertNotNull(tp);
 	assertEquals(-1, tp.cur());
 	e = assertThrows(IndexOutOfBoundsException.class, () ->
 	    tp.jmp(-1));

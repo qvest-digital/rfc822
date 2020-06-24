@@ -30,9 +30,11 @@ import java.util.Arrays;
  * Identifier isn’t supported as it’s special local use only. Handling
  * of line endings is lenient: CRLF := ([CR] LF) / CR
  *
- * After construction, calling the {@link #asAddressList()} method for
- * recipient validation is what most users would need. From and Sender
- * use {@link #asMailboxList()} or {@link #forSender(boolean)} mostly.
+ * Create a new instance via the {@link #of(String)} factory method by
+ * passing it the address list string to analyse. Then call one of the
+ * parse methods on the instance: {@link #asAddressList()} to validate
+ * recipients, {@link #asMailboxList()} or {@link #forSender(boolean)}
+ * for message senders (but read their JavaDoc).
  *
  * @author mirabilos (t.glaser@tarent.de)
  */
@@ -99,15 +101,27 @@ static {
 }
 
 /**
- * Constructs a parser for eMail addresses
+ * Creates and initialises a new parser for eMail addresses.
  *
  * @param addresses to parse
  *
- * @throws IllegalArgumentException if input was null or very large
+ * @return null if addresses was null or very large, the new instance otherwise
  */
-public Address(final String addresses)
+public static Address
+of(final String addresses)
 {
-	super(addresses, /* arbitrary but extremely large already */ 131072);
+	final Address obj = new Address(addresses);
+	return obj.s() == null ? null : obj;
+}
+
+/**
+ * Private constructor, use the factory method {@link #of(String)} instead
+ *
+ * @param input string to analyse
+ */
+private Address(final String input)
+{
+	super(input, /* arbitrary but extremely large already */ 131072);
 }
 
 /**

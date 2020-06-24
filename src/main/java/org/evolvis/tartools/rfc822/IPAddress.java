@@ -29,15 +29,28 @@ package org.evolvis.tartools.rfc822;
 public class IPAddress extends Parser {
 
 /**
- * Constructs a parser for IPv6 and IPv4 addresses (excluding IPv6 Zone ID)
+ * Creates and initialises a new parser for IPv6 and IPv4 addresses
+ * (excluding IPv6 Zone ID)
  *
  * @param address to parse (protocol depends on parser method called)
  *
- * @throws IllegalArgumentException if input was null or much too large
+ * @return null if address was null or much too large, the new instance otherwise
  */
-public IPAddress(final String address)
+public static IPAddress
+of(final String address)
 {
-	super(address, /* probably 45 */ 64);
+	final IPAddress obj = new IPAddress(address);
+	return obj.s() == null ? null : obj;
+}
+
+/**
+ * Private constructor, use the factory method {@link #of(String)} instead
+ *
+ * @param input string to analyse
+ */
+private IPAddress(final String input)
+{
+	super(input, /* probably 45 */ 64);
 }
 
 }
