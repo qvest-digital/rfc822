@@ -121,6 +121,23 @@ x• label up to 63 octets
                   / [ *5( h16 ":" ) h16 ] "::"              h16
                   / [ *6( h16 ":" ) h16 ] "::"
 
+(no ::) 8*h16
+(no ::) 6*h16 IPv4
+0   ::  7*h16
+0   ::  5*h16 IPv4
+0-1 ::  6*h16
+0-1 ::  4*h16 IPv4
+0-2 ::  5*h16
+0-2 ::  3*h16 IPv4
+0-3 ::  4*h16
+0-3 ::  2*h16 IPv4
+0-4 ::  3*h16
+0-4 ::  1*h16 IPv4
+0-5 ::  2*h16
+0-5 ::        IPv4
+0-6 ::  1*h16
+0-7 ::
+
       ls32        = ( h16 ":" h16 ) / IPv4address
                   ; least-significant 32 bits of address
 
