@@ -388,7 +388,7 @@ pQuotedString()
 		accept();
 		while (true) {
 			final String wsp = pFWS();
-			if (wsp != null) rv += wsp; //XXX pFWS must unfold (drop the CRLF)
+			if (wsp != null) rv += wsp;
 			final int qc = pQcontent();
 			if (qc == -1)
 				break;
@@ -420,7 +420,7 @@ pComment()
 		accept();
 		while (true) {
 			final String wsp = pFWS();
-			if (wsp != null) rv += wsp; //XXX pFWS must unfold (drop the CRLF)
+			if (wsp != null) rv += wsp;
 			final String cc = pCcontent();
 			if (cc == null)
 				break;
@@ -445,7 +445,7 @@ pCFWS()
 	String rv = wsp == null ? c : wsp + c;
 	while (true) {
 		wsp = pFWS();
-		if (wsp != null) rv += wsp; //XXX pFWS must unfold (drop the CRLF)
+		if (wsp != null) rv += wsp;
 		if ((c = pComment()) == null) {
 			// [FWS] after 1*([FWS] comment) already parsed above
 			return rv;
