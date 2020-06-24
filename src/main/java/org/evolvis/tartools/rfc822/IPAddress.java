@@ -116,17 +116,63 @@ asIPv4Address()
 protected byte[]
 pIPv4Address()
 {
-	byte[] addr = new byte[4];
-	int a = 0;
-	return addr;
+	try (final Parser.Txn ofs = begin()) {
+		byte[] addr = new byte[4];
+		for (int a = 0; a < addr.length; ++a) {
+			if (a > 0) {
+				if (cur() != '.')
+					return null;
+				accept();
+			}
+			final int b1 = cur();
+			final int b2 = peek();
+			int l2 = '9';
+			int l3 = '9';
+			switch (b1) {
+			case '2':
+				l2 = '5';
+				if (b2 == '5')
+					l3 = '5';
+				/* FALLTHROUGH */
+			case '1':
+				if (b2 >= '0' && b2 <= l2) {
+					int v = (b1 - '0') * 10 + (b2 - '0');
+					final int b3 = bra(2);
+					if (b3 >= '0' && b3 <= l3) {
+						v = v * 10 + (b3 - '0');
+						accept();
+					}
+					addr[a] = (byte)v;
+					continue;
+				}
+				break;
+			case '0':
+				addr[a] = (byte)0;
+				accept();
+				continue;
+			}
+			if (b1 < '1' || b1 > '9')
+				return null;
+			int v = b1 - '0';
+			accept();
+			if (b2 >= '0' && b2 <= '9') {
+				v = v * 10 + (b2 - '0');
+				accept();
+			}
+			addr[a] = (byte)v;
+		}
+		return ofs.accept(addr);
+	}
 }
 
 protected byte[]
 pIPv6Address()
 {
-	byte[] addr = new byte[16];
-	int a = 0;
-	return addr;
+	try (final Parser.Txn ofs = begin()) {
+		byte[] addr = new byte[16];
+		int a = 0;
+		return addr;
+	}
 }
 
 }
