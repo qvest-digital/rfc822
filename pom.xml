@@ -39,6 +39,7 @@
 		<archiver.copyright>Copyright © ${archiver.copyright.firstyear}; Licensor: $version_vendor</archiver.copyright>
 		<!-- dependency management -->
 		<junit.version>5.6.2</junit.version>
+		<lombok.version>1.18.12</lombok.version>
 		<trajano.version>2.1.0</trajano.version>
 		<!-- maven plugins -->
 		<maven.owasp.dependency-check.version>5.3.2</maven.owasp.dependency-check.version>
@@ -65,6 +66,11 @@
 				<dependency>
 					<groupId>org.junit.jupiter</groupId>
 					<artifactId>junit-jupiter-engine</artifactId>
+				</dependency>
+				<dependency>
+					<groupId>org.projectlombok</groupId>
+					<artifactId>lombok</artifactId>
+					<scope>provided</scope>
 				</dependency>
 			</dependencies>
 		</profile>
@@ -236,6 +242,12 @@
 				<artifactId>junit-jupiter-engine</artifactId>
 				<version>${junit.version}</version>
 				<scope>test</scope>
+			</dependency>
+			<dependency>
+				<groupId>org.projectlombok</groupId>
+				<artifactId>lombok</artifactId>
+				<version>${lombok.version}</version>
+				<scope>provided</scope>
 			</dependency>
 		</dependencies>
 	</dependencyManagement>

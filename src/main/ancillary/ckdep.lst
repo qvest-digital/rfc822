@@ -4,3 +4,4 @@ org.junit.jupiter:junit-jupiter-engine 5.6.2 test ok
 org.junit.platform:junit-platform-commons 1.6.2 test ok
 org.junit.platform:junit-platform-engine 1.6.2 test ok
 org.opentest4j:opentest4j 1.2.0 test ok
+org.projectlombok:lombok 1.18.12 provided ok

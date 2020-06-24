@@ -20,6 +20,8 @@ package org.evolvis.tartools.rfc822;
  * of said person’s immediate fault when using the work as intended.
  */
 
+import lombok.SneakyThrows;
+
 import java.net.Inet4Address;
 import java.net.Inet6Address;
 import java.net.InetAddress;
@@ -74,6 +76,7 @@ protected IPAddress(final String input)
  *
  * @return {@link InetAddress} representing the address, or null on failure
  */
+@SneakyThrows(UnknownHostException.class)
 public InetAddress
 asIPv6Address()
 {
@@ -82,12 +85,7 @@ asIPv6Address()
 	if (addr == null || cur() != -1)
 		return null;
 	// assert: addr is byte[16]
-	try {
-		return InetAddress.getByAddress(s(), addr);
-	} catch (UnknownHostException e) {
-		// can’t happen if addr is a 4‑ or 16-byte array
-		throw new RuntimeException(e);
-	}
+	return InetAddress.getByAddress(s(), addr);
 }
 
 /**
@@ -97,6 +95,7 @@ asIPv6Address()
  *
  * @return {@link InetAddress} representing the address, or null on failure
  */
+@SneakyThrows(UnknownHostException.class)
 public InetAddress
 asIPv4Address()
 {
@@ -105,12 +104,7 @@ asIPv4Address()
 	if (addr == null || cur() != -1)
 		return null;
 	// assert: addr is byte[4]
-	try {
-		return InetAddress.getByAddress(s(), addr);
-	} catch (UnknownHostException e) {
-		// can’t happen if addr is a 4‑ or 16-byte array
-		throw new RuntimeException(e);
-	}
+	return InetAddress.getByAddress(s(), addr);
 }
 
 protected byte[]
