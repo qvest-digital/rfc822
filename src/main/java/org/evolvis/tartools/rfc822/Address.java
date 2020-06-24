@@ -139,13 +139,15 @@ pAddressList()
 	try (final Parser.Txn ofs = begin()) {
 		String rv = "";
 		final String a = pAddress();
-		if (a == null) return null;
+		if (a == null)
+			return null;
 		ofs.commit();
 		rv += a;
 		while (cur() == ',') {
 			accept();
 			final String a2 = pAddress();
-			if (a2 == null) break;
+			if (a2 == null)
+				break;
 			ofs.commit();
 			rv += a2;
 		}
@@ -159,13 +161,15 @@ pMailboxList()
 	try (final Parser.Txn ofs = begin()) {
 		String rv = "";
 		final String m = pMailbox();
-		if (m == null) return null;
+		if (m == null)
+			return null;
 		ofs.commit();
 		rv += m;
 		while (cur() == ',') {
 			accept();
 			final String m2 = pMailbox();
-			if (m2 == null) break;
+			if (m2 == null)
+				break;
 			ofs.commit();
 			rv += m2;
 		}
@@ -177,8 +181,10 @@ protected String
 pAddress()
 {
 	String rv;
-	if ((rv = pMailbox()) != null) return rv;
-	if ((rv = pGroup()) != null) return rv;
+	if ((rv = pMailbox()) != null)
+		return rv;
+	if ((rv = pGroup()) != null)
+		return rv;
 	return null;
 }
 
@@ -188,13 +194,17 @@ pGroup()
 	try (final Parser.Txn ofs = begin()) {
 		String rv = "";
 		final String dn = pDisplayName();
-		if (dn == null) return null;
-		if (cur() != ':') return null;
+		if (dn == null)
+			return null;
+		if (cur() != ':')
+			return null;
 		accept();
 		rv += dn;
 		final String gl = pGroupList();
-		if (gl != null) rv += gl;
-		if (cur() != ';') return null;
+		if (gl != null)
+			rv += gl;
+		if (cur() != ';')
+			return null;
 		accept();
 		pCFWS();
 		return ofs.accept(rv);
@@ -205,7 +215,8 @@ protected String
 pGroupList()
 {
 	final String ml = pMailboxList();
-	if (ml != null) return ml;
+	if (ml != null)
+		return ml;
 	return pCFWS() == null ? null : "";
 }
 
@@ -213,9 +224,11 @@ protected String
 pMailbox()
 {
 	final String na = pNameAddr();
-	if (na != null) return na;
+	if (na != null)
+		return na;
 	final String as = pAddrSpec();
-	if (as != null) return as;
+	if (as != null)
+		return as;
 	return null;
 }
 
@@ -225,9 +238,11 @@ pNameAddr()
 	try (final Parser.Txn ofs = begin()) {
 		String rv = "";
 		final String dn = pDisplayName();
-		if (dn != null) rv += dn;
+		if (dn != null)
+			rv += dn;
 		final String aa = pAngleAddr();
-		if (aa == null) return null;
+		if (aa == null)
+			return null;
 		rv += aa;
 		return ofs.accept(rv);
 	}
@@ -239,12 +254,15 @@ pAngleAddr()
 	try (final Parser.Txn ofs = begin()) {
 		String rv = "";
 		pCFWS();
-		if (cur() != '<') return null;
+		if (cur() != '<')
+			return null;
 		accept();
 		final String as = pAddrSpec();
-		if (as == null) return null;
+		if (as == null)
+			return null;
 		rv += as;
-		if (cur() != '>') return null;
+		if (cur() != '>')
+			return null;
 		accept();
 		pCFWS();
 		return ofs.accept(rv);
@@ -262,19 +280,23 @@ pPhrase()
 {
 	String rv = "";
 	String s = pWord();
-	if (s == null) return null;
+	if (s == null)
+		return null;
 	rv += s;
-	while ((s = pWord()) != null) rv += s;
+	while ((s = pWord()) != null)
+		rv += s;
 	return rv;
 }
 
 protected String
 pWord()
 {
-        String rv;
-        if ((rv = pAtom()) != null) return rv;
-        if ((rv = pQuotedString()) != null) return rv;
-        return null;
+	String rv;
+	if ((rv = pAtom()) != null)
+		return rv;
+	if ((rv = pQuotedString()) != null)
+		return rv;
+	return null;
 }
 
 protected String
@@ -284,9 +306,11 @@ pAtom()
 		String rv = "";
 		pCFWS();
 		int c = pAtext();
-		if (c == -1) return null;
+		if (c == -1)
+			return null;
 		rv += c;
-		while ((c = pAtext()) != -1) rv += c;
+		while ((c = pAtext()) != -1)
+			rv += c;
 		pCFWS();
 		return ofs.accept(rv);
 	}
@@ -316,13 +340,16 @@ pDotAtomText()
 {
 	String rv = "";
 	int c = pAtext();
-	if (c == -1) return null;
+	if (c == -1)
+		return null;
 	rv += c;
-	while ((c = pAtext()) != -1) rv += c;
+	while ((c = pAtext()) != -1)
+		rv += c;
 	while (cur() == '.' && is(peek(), IS_ATEXT)) {
 		rv += '.';
 		accept();
-		while ((c = pAtext()) != -1) rv += c;
+		while ((c = pAtext()) != -1)
+			rv += c;
 	}
 	return rv;
 }
@@ -390,18 +417,21 @@ pQuotedString()
 	try (final Parser.Txn ofs = begin()) {
 		String rv = "";
 		pCFWS();
-		if (cur() != '"') return null;
+		if (cur() != '"')
+			return null;
 		accept();
 		while (true) {
 			final String wsp = pFWS();
-			if (wsp != null) rv += wsp;
+			if (wsp != null)
+				rv += wsp;
 			final int qc = pQcontent();
 			if (qc == -1)
 				break;
 			rv += qc;
 		}
 		// [FWS] after *([FWS] qcontent) already parsed above
-		if (cur() != '"') return null;
+		if (cur() != '"')
+			return null;
 		accept();
 		pCFWS();
 		return ofs.accept(rv);
@@ -412,8 +442,10 @@ protected String
 pCcontent()
 {
 	int c;
-	if ((c = pCtext()) != -1) return String.valueOf((char) c);
-	if ((c = pQuotedPair()) != -1) return String.valueOf((char) c);
+	if ((c = pCtext()) != -1)
+		return String.valueOf((char)c);
+	if ((c = pQuotedPair()) != -1)
+		return String.valueOf((char)c);
 	return pComment();
 }
 
@@ -422,18 +454,21 @@ pComment()
 {
 	try (final Parser.Txn ofs = begin()) {
 		String rv = "";
-		if (cur() != '(') return null;
+		if (cur() != '(')
+			return null;
 		accept();
 		while (true) {
 			final String wsp = pFWS();
-			if (wsp != null) rv += wsp;
+			if (wsp != null)
+				rv += wsp;
 			final String cc = pCcontent();
 			if (cc == null)
 				break;
 			rv += cc;
 		}
 		// [FWS] after *([FWS] ccontent) already parsed above
-		if (cur() != ')') return null;
+		if (cur() != ')')
+			return null;
 		accept();
 		return ofs.accept(rv);
 	}
@@ -451,7 +486,8 @@ pCFWS()
 	String rv = wsp == null ? c : wsp + c;
 	while (true) {
 		wsp = pFWS();
-		if (wsp != null) rv += wsp;
+		if (wsp != null)
+			rv += wsp;
 		if ((c = pComment()) == null) {
 			// [FWS] after 1*([FWS] comment) already parsed above
 			return rv;
@@ -505,11 +541,14 @@ pAddrSpec()
 {
 	try (final Parser.Txn ofs = begin()) {
 		final String lp = pLocalPart();
-		if (lp == null) return null;
-		if (cur() != '@') return null;
+		if (lp == null)
+			return null;
+		if (cur() != '@')
+			return null;
 		accept();
 		final String dom = pDomain();
-		if (dom == null) return null;
+		if (dom == null)
+			return null;
 		// pass on validation results of lp and dom
 		return ofs.accept(lp + "@" + dom);
 	}
@@ -518,7 +557,7 @@ pAddrSpec()
 protected String
 pLocalPart()
 {
-        String rv = pDotAtom();
+	String rv = pDotAtom();
 	if (rv == null)
 		rv = pQuotedString();
 	if (rv == null)
@@ -545,18 +584,21 @@ pDomainLiteral()
 	try (final Parser.Txn ofs = begin()) {
 		String rv = "";
 		pCFWS();
-		if (cur() != '[') return null;
+		if (cur() != '[')
+			return null;
 		accept();
 		while (true) {
 			final String wsp = pFWS();
-			if (wsp != null) rv += wsp;
+			if (wsp != null)
+				rv += wsp;
 			final int dt = pDtext();
 			if (dt == -1)
 				break;
 			rv += dt;
 		}
 		// [FWS] after *([FWS] dtext) already parsed above
-		if (cur() != ']') return null;
+		if (cur() != ']')
+			return null;
 		accept();
 		pCFWS();
 		return ofs.accept(rv);
