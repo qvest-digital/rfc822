@@ -70,8 +70,8 @@ keyword()
 					if (nextch < 'a' || nextch > 'z') {
 						// COMMIT in reverse BEGIN order
 						ofs.commit();
-						beg.commit();
-						return keyword;
+						// last COMMIT implied here
+						return beg.accept(keyword);
 					}
 					ofs.rollback();
 				}
@@ -103,7 +103,7 @@ private List<String> pWords()
 	String s;
 	while ((s = word()) != null)
 		res.add(s);
-	assert skip(TestParser::isWsp) == -1;
+	assert skip(Character::isWhitespace) == -1;
 	System.out.print("asWords:");
 	for (final String word : res)
 		System.out.print(String.format("(%s)", word));
