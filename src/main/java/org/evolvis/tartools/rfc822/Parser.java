@@ -89,7 +89,7 @@ protected Parser(final String input, final int maxlen)
  *
  * @throws IndexOutOfBoundsException if pos is not in or just past the input
  */
-protected int
+protected final int
 jmp(final int pos)
 {
 	if (pos < 0 || pos > srcsz)
@@ -116,7 +116,7 @@ jmp(final int pos)
  *
  * @throws IndexOutOfBoundsException if pos is not in or just past the input
  */
-protected int
+protected final int
 bra(final int deltapos)
 {
 	return jmp(ofs + deltapos);
@@ -128,7 +128,7 @@ bra(final int deltapos)
  *
  * @return position
  */
-protected int
+protected final int
 pos()
 {
 	return ofs;
@@ -140,7 +140,7 @@ pos()
  *
  * @return String input
  */
-protected String
+protected final String
 s()
 {
 	return source;
@@ -151,7 +151,7 @@ s()
  *
  * @return UCS-4 codepoint, or -1 if end of input is reached
  */
-protected int
+protected final int
 cur()
 {
 	return cur;
@@ -162,7 +162,7 @@ cur()
  *
  * @return UCS-4 codepoint, or -1 if end of input is reached
  */
-protected int
+protected final int
 peek()
 {
 	return next;
@@ -175,7 +175,7 @@ peek()
  *
  * @throws IndexOutOfBoundsException if end of input was already reached
  */
-protected int
+protected final int
 accept()
 {
 	if (cur == -1)
@@ -191,7 +191,7 @@ accept()
  *
  * @return codepoint of the first character where the matcher returned false, or -1
  */
-protected int
+protected final int
 skip(BiFunction<Integer, Integer, Boolean> matcher)
 {
 	while (cur != -1 && matcher.apply(cur, next))
@@ -207,7 +207,7 @@ skip(BiFunction<Integer, Integer, Boolean> matcher)
  *
  * @return codepoint of the first character where the matcher returned false, or -1
  */
-protected int
+protected final int
 skip(Function<Integer, Boolean> matcher)
 {
 	while (cur != -1 && matcher.apply(cur))
@@ -222,7 +222,7 @@ skip(Function<Integer, Boolean> matcher)
  *
  * @author mirabilos (t.glaser@tarent.de)
  */
-public class Txn implements AutoCloseable {
+public final class Txn implements AutoCloseable {
 
 	private int pos;
 
@@ -241,7 +241,7 @@ public class Txn implements AutoCloseable {
 	 *
 	 * @return position of last commit
 	 */
-	public int
+	public final int
 	savepoint()
 	{
 		return pos;
@@ -250,7 +250,7 @@ public class Txn implements AutoCloseable {
 	/**
 	 * Commits the current parser position (stores it in the transaction)
 	 */
-	public void
+	public final void
 	commit()
 	{
 		pos = Parser.this.ofs;
@@ -261,7 +261,7 @@ public class Txn implements AutoCloseable {
 	 *
 	 * @return the codepoint at the new position, see {@link Parser#cur()}
 	 */
-	public int
+	public final int
 	rollback()
 	{
 		return Parser.this.jmp(savepoint());
@@ -272,7 +272,7 @@ public class Txn implements AutoCloseable {
 	 * parser position transaction; see {@link #rollback()}
 	 */
 	@Override
-	public void
+	public final void
 	close()
 	{
 		rollback();
@@ -287,7 +287,7 @@ public class Txn implements AutoCloseable {
 	 *
 	 * @return returnValue
 	 */
-	public <T> T
+	public final <T> T
 	accept(T returnValue)
 	{
 		commit();
@@ -304,7 +304,7 @@ public class Txn implements AutoCloseable {
  *
  * @return {@link Txn} parser position transaction object, autoclosable
  */
-protected Txn
+protected final Txn
 begin()
 {
 	return new Txn();
