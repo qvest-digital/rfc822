@@ -91,9 +91,9 @@ SHOULD NOT be used around the "@" in the addr-spec.
    dtext           =   %d33-90 /          ; Printable US-ASCII
                        %d94-126           ;  characters not including
                                           ;  "[", "]", or "\"
-More constraints:
+More constraints: (perhaps by a flag on the parsed address?)
 
-   dot-domain      =   [CFWS] label *("." label) [CFWS]
+   dot-domain      =   label *("." label) ; after stripping [CFWS] around, i.e. apply on dot-atom-text
    label           =   (ALPHA / DIGIT) [ *(ALPHA / DIGIT / "-") (ALPHA / DIGIT) ]
    dtext	   =   IPv4address / IPv6tagged	; no IPv6 Zone Identifiers
    IPv6tagged	   =   "IPv6:" IPv6address	; case-insensitive tag
