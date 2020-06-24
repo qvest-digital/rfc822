@@ -169,15 +169,36 @@ pIPv4Address()
 }
 
 /**
- * Parses the hexadecimal number in an h16. The caller must have verified
- * that the cur()rent character IS_XDIGIT before calling this, to ensure a
- * minimum length of 1 nybble is validated.
+ * Checks for h16 or possibly an IPv4 address (ls32 production). This method
+ * solely exists because Sonar otherwise thinks {@link #pIPv6Address()} too
+ * complex for the feeble minds of Java™ programmers…
  *
- * @return the parsed number
+ * It checks whether the current char can be an h32 or IPv4 address (xdigit);
+ * if not, or if ls32 indicates we should check for IPv4 addresses and there
+ * indeed is one, i.e. when further parsing should be stopped, it returns
+ * true; otherwise, the parsed h16 is added to dst, and false returned to
+ * indicate that parsing should continue.
+ *
+ * @param dst  collecting h16s
+ * @param ls32 whether an IPv4 address is allowed here
+ *
+ * @return whether parsing should stop
  */
-private int
-h16()
+private boolean
+h16OrIPv4(final List<Integer> dst, final boolean ls32)
 {
+	if (!Address.is(cur(), Address.IS_XDIGIT)) {
+		return true;
+	}
+	if (ls32) {
+		final byte[] v4 = pIPv4Address();
+		if (v4 != null) {
+			dst.add((v4[0] << 8) | (v4[1] & 0xFF));
+			dst.add((v4[2] << 8) | (v4[3] & 0xFF));
+			return true;
+		}
+	}
+
 	int x = 0;
 	for (int i = 0; i < 4; ++i) {
 		if (!Address.is(cur(), Address.IS_XDIGIT))
@@ -185,23 +206,26 @@ h16()
 		x = (x << 4) + Character.digit(cur(), 16);
 		accept();
 	}
-	return x;
-}
-
-private boolean
-checkAndAddIPv4(final List<Integer> whereToAdd)
-{
-	final byte[] v4 = pIPv4Address();
-	if (v4 == null)
-		return false;
-	whereToAdd.add((v4[0] << 8) | (v4[1] & 0xFF));
-	whereToAdd.add((v4[2] << 8) | (v4[3] & 0xFF));
-	return true;
+	dst.add(x);
+	return false;
 }
 
 private static byte[]
-rtnIPv6Address(final List<Integer> h16s)
+rtnIPv6Address(final Parser.Txn txn, final List<Integer> h16s,
+    final List<Integer> afterDoubleColon)
 {
+	if (afterDoubleColon != null) {
+		// stuff the double colon
+		final int afters = afterDoubleColon.size();
+		while (h16s.size() + afters < 8)
+			h16s.add(0);
+		h16s.addAll(afterDoubleColon);
+	}
+
+	if (h16s.size() != 8)
+		return null;
+	txn.commit();
+
 	final byte[] addr = new byte[16];
 	for (int i = 0; i < 8; ++i) {
 		final int v = h16s.get(i);
@@ -228,22 +252,14 @@ pIPv6Address()
 					break;
 				accept();
 			}
-			if (cnt == 6) {
-				if (checkAndAddIPv4(beforeDoubleColon))
-					break;
-			}
-			if (!Address.is(cur(), Address.IS_XDIGIT))
+			if (h16OrIPv4(beforeDoubleColon, cnt == 6))
 				break;
-			beforeDoubleColon.add(h16());
 			++cnt;
 		}
 		// arrive here either with double colon (0 ≤ cnt ≤ 7)
 		// or at end of h16 list (0 ≤ cnt ≤ 8)
-		if (!hasDoubleColon) {
-			if (beforeDoubleColon.size() != 8)
-				return null;
-			return ofs.accept(rtnIPv6Address(beforeDoubleColon));
-		}
+		if (!hasDoubleColon)
+			return rtnIPv6Address(ofs, beforeDoubleColon, null);
 		// remainder string begins with double colon, leave ONE
 		accept();
 		final List<Integer> afterDoubleColon = new ArrayList<>();
@@ -252,22 +268,13 @@ pIPv6Address()
 			if (cur() != ':')
 				break;
 			accept();
-			if (!Address.is(cur(), Address.IS_XDIGIT))
+			// must check this first
+			if (h16OrIPv4(afterDoubleColon, maxh16 >= 2))
 				break;
-			if (maxh16 >= 2) {
-				// must check this first
-				if (checkAndAddIPv4(afterDoubleColon))
-					break;
-			}
-			afterDoubleColon.add(h16());
 			--maxh16;
 		}
-		// stuff the double colon
-		while (beforeDoubleColon.size() + afterDoubleColon.size() < 8)
-			beforeDoubleColon.add(0);
-		beforeDoubleColon.addAll(afterDoubleColon);
 		// return result
-		return ofs.accept(rtnIPv6Address(beforeDoubleColon));
+		return rtnIPv6Address(ofs, beforeDoubleColon, afterDoubleColon);
 	}
 }
 
