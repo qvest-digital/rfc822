@@ -1,0 +1,36 @@
+┌────────────────────────────────┐
+│ eMail address parser/validator │
+└────────────────────────────────┘
+
+The purpose of this library is primarily to enable users to verify
+eMail addresses, which cannot be done with a regular expression.
+More eMail-related parsers, validators, emitters, etc. later.
+
+Preliminary release note
+────────────────────────
+
+The first version of this library has a tight deadline. As such,
+it only parses address/mailbox lists and their dependents and can
+validate, using eMail rules, localparts and domains (IP address or
+FQDN, also usable separately). While comments are parsed, they are
+not retained in the parser return structures nor is the whitespace
+used. A later version should be able to parse “human-friendly” as
+well (that is, if normal parsing fails it should accept semicolons
+as list separators, obs-display-name, perhaps even accept arbitrary
+string + angle-addr, MIME-encoding for display-name).
+
+Installation
+────────────
+
+Add a suitable dependency to your project, for example with Maven:
+
+<dependency>
+	<groupId>org.evolvis.tartools</groupId>
+	<artifactId>rfc822</artifactId>
+	<version>0.1</version>
+</dependency>
+
+Make sure your project can handle Java 8 bytecode.
+
+Usage
+─────

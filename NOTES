@@ -149,3 +149,48 @@ Parsing human-entered names
 
 ; OTOH, MIME allows UAs to enter “mäh <foo@example.com>”
 ; we might wish to allow for that (and auto-escape)?
+
+; we’ll ignore comments in return values in the first version
+; so the release will be made in time
+
+Address.Address {
+	String label;
+	boolean isGroup;
+	Address.AddrSpec mailbox; // if !isGroup
+	List<Address.Address> mailboxen; // if isGroup 0-n
+	boolean valid; // true if mailbox/all mailboxen are valid
+	String toString()
+}
+
+Address.AddrSpec {
+	boolean valid;
+	String localPart;
+	String domain;
+	String toString()
+}
+
+pMailboxList, pAddressList → Address.AddressList or null on failure
+
+Address.AddressList {
+	boolean valid; // if at least one in addresses and no invalid ones
+	boolean hasGroups; // true if pAddressList
+	List<Address.Address> addresses;
+	List<String> flattenAddresses()
+	List<String> flattenAddrSpecs()
+	String toString() = ", ".join(flattenAddresses())
+}
+
+pMailboxList	→ List<pMailbox>(1-n)
+
+pAddressList	→ List<pAddress>(1-n)
+			↓
+		pMailbox or pGroup
+
+pMailbox	→ [display-name] addr-spec
+		* isGroup=false, displayName:string, addrSpec:?
+
+pGroup		→ display-name List<pMailbox>(0-n)
+		* isGroup=true, displayName:string, mailboxen:?
+
+addr-spec	→ local-part domain
+		* valid:bool, address:String, localPart:String, domain:String
