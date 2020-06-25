@@ -56,6 +56,7 @@ public void testPos()
 	assertNotNull(up, "cannot meow");
 	assertEquals(0, up.pos(), "init pos wrong");
 	assertEquals(0x1F431, up.cur(), "cat picture close-up missing");
+	assertEquals(0x1F431, up.skip(Character::isWhitespace), "cat isn’t spaced out");
 	assertEquals(-1, up.peek(), "cat wasn’t fully loaded");
 	assertEquals(-1, up.accept(), "accept ≠ peek");
 	assertEquals(2, up.pos(), "cat doesn’t stretch");
