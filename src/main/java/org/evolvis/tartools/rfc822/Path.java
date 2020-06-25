@@ -26,7 +26,11 @@ import lombok.Getter;
 import lombok.NonNull;
 import lombok.val;
 
+import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.List;
+import java.util.function.Predicate;
+import java.util.stream.Collectors;
 
 /**
  * Represents an RFC822 (and successors) eMail address header content,
@@ -135,12 +139,26 @@ static {
 @Getter
 public final class AddrSpec {
 
+	/**
+	 * The local-part of the addr-spec, as it occurs in the addr-spec,
+	 * i.e. dot-atom or quoted-string in their wire representation
+	 */
 	@NonNull
 	final Substring localPart;
 
+	/**
+	 * The domain of the addr-spec, either dot-atom (host.example.com)
+	 * or one of two forms of domain-literal: [192.0.2.1] for Legacy IP,
+	 * [IPv6:2001:DB8:CAFE:1::1] for IP addresses
+	 */
 	@NonNull
 	final Substring domain;
 
+	/**
+	 * Whether this addr-spec is actually valid according to DNS, SMTP,
+	 * etc. (true) or merely parses as RFC822 addr-spec (false) and fails
+	 * further validation (length limits, FQDN label syntax, etc.)
+	 */
 	final boolean valid;
 
 	/**
@@ -157,7 +175,178 @@ public final class AddrSpec {
 
 }
 
+/**
+ * Representation for an address (either mailbox or group)
+ *
+ * @author mirabilos (t.glaser@tarent.de)
+ */
+@Getter
 public final class Address {
+
+	/**
+	 * Whether this address is a group (true) or a mailbox (false)
+	 */
+	final boolean group;
+
+	/**
+	 * The display-name of this mailbox.name-addr (optional) or group (mandatory)
+	 */
+	final Substring label;
+
+	/**
+	 * The addr-spec behind this mailbox [isGroup()==false]
+	 */
+	final AddrSpec mailbox;
+
+	/**
+	 * The group-list behind this group [isGroup()==true], may be empty
+	 */
+	final List<Address> mailboxen;
+
+	/**
+	 * Whether all constituents are valid
+	 */
+	final boolean valid;
+
+	protected Address(final Substring label, @NonNull final AddrSpec mailbox)
+	{
+		this.group = false;
+		this.label = label;
+		this.mailbox = mailbox;
+		this.mailboxen = null;
+		this.valid = mailbox.isValid();
+	}
+
+	protected Address(@NonNull final Substring label, @NonNull final List<Address> mailboxen)
+	{
+		this.group = true;
+		this.label = label;
+		this.mailbox = null;
+		this.mailboxen = mailboxen;
+		this.valid = mailboxen.stream().allMatch(Address::isValid);
+		// normally we’d need to check that all mailboxen are not group
+	}
+
+	/**
+	 * Renders the mailbox or group as (non-wrapped) string, i.e.:
+	 *
+	 * <ul>
+	 *         <li>localPart@domain (mailbox)</li>
+	 *         <li>label &lt;localPart@domain&gt; (mailbox)</li>
+	 *         <li>label:[group-list]; (group)</li>
+	 * </ul>
+	 *
+	 * @return String rendered address
+	 */
+	@Override
+	public String
+	toString()
+	{
+		if (!group)
+			return label == null ? mailbox.toString() :
+			    String.format("%s <%s>", label, mailbox);
+		return String.format("%s:%s;", label, mailboxen.stream().
+		    map(Address::toString).collect(Collectors.joining(", ")));
+	}
+
+}
+
+/**
+ * Representation for an address-list or a mailbox-list
+ *
+ * @author mirabilos (t.glaser@tarent.de)
+ */
+@Getter
+public final class AddressList {
+
+	/**
+	 * The actual address-list or mailbox-list behind the scenes
+	 * (which one it is depends on by which parser function this
+	 * object was returned)
+	 */
+	final List<Address> addresses;
+
+	/**
+	 * Whether all constituents are valid
+	 */
+	final boolean valid;
+
+	/**
+	 * Whether this is definitely an address-list (group addresses are
+	 * present); note that if this is false, it may be either a mailbox-list
+	 * or an address-list whose address members are all mailbox)
+	 */
+	final boolean addressList;
+
+	protected AddressList(@NonNull final List<Address> addresses)
+	{
+		this.addresses = addresses;
+		valid = !addresses.isEmpty() &&
+		    addresses.stream().allMatch(Address::isValid);
+		addressList = addresses.stream().anyMatch(Address::isGroup);
+	}
+
+	/**
+	 * Returns the address-list or mailbox-list as (non-wrapped) string
+	 *
+	 * @return String address/mailbox *( ", " address/mailbox )
+	 */
+	@Override
+	public String
+	toString()
+	{
+		return addresses.stream().
+		    map(Address::toString).collect(Collectors.joining(", "));
+	}
+
+	/**
+	 * Returns all invalid constituents as ", "-separated string,
+	 * for error message construction
+	 *
+	 * @return null if all constituents are valid, a String otherwise
+	 */
+	public String
+	invalidsToString()
+	{
+		if (valid)
+			return null;
+		return addresses.stream().
+		    filter(((Predicate<Address>)Address::isValid).negate()).
+		    map(Address::toString).collect(Collectors.joining(", "));
+
+	}
+
+	/**
+	 * Flattens the constituents into a list of their formatted
+	 * representations, see {@link Address#toString()}
+	 *
+	 * @return list of formatted strings, each an address (or mailbox)
+	 */
+	public List<String>
+	flattenAddresses()
+	{
+		return addresses.stream().
+		    map(Address::toString).collect(Collectors.toList());
+	}
+
+	/**
+	 * Flattens the constituents into their individual addr-spec members,
+	 * for use by e.g. SMTP sending (Forward-Path construction)
+	 *
+	 * @return list of addr-spec strings
+	 */
+	public List<String>
+	flattenAddrSpecs()
+	{
+		val rv = new ArrayList<String>();
+		for (final Address address : addresses)
+			if (address.isGroup())
+				for (final Address mailbox : address.mailboxen)
+					rv.add(mailbox.mailbox.toString());
+			else
+				rv.add(address.mailbox.toString());
+		return rv;
+	}
 
 }
 
