@@ -44,7 +44,7 @@ import java.util.Arrays;
  *
  * @author mirabilos (t.glaser@tarent.de)
  */
-public class Address extends Parser {
+public class Path extends Parser {
 
 private static final byte F_ALPHA = 0x01;
 private static final byte F_DIGIT = 0x02;
@@ -157,7 +157,7 @@ public final class AddrSpec {
 
 }
 
-public final class Address.Address {
+public final class Address {
 
 }
 
@@ -168,10 +168,10 @@ public final class Address.Address {
  *
  * @return null if addresses was null or very large, the new instance otherwise
  */
-public static Address
+public static Path
 of(final String addresses)
 {
-	final Address obj = new Address(addresses);
+	final Path obj = new Path(addresses);
 	return obj.s() == null ? null : obj;
 }
 
@@ -180,7 +180,7 @@ of(final String addresses)
  *
  * @param input string to analyse
  */
-protected Address(final String input)
+protected Path(final String input)
 {
 	super(input, /* arbitrary but extremely large already */ 131072);
 }
@@ -612,7 +612,7 @@ pFWS()
 	int c = cur();
 	if (isWSP(c)) {
 		final int beg = pos();
-		c = skip(Address::isWSP);
+		c = skip(Path::isWSP);
 		w = s().substring(beg, pos());
 	}
 
@@ -632,7 +632,7 @@ pFWS()
 	}
 
 	final int p1 = pos();
-	skip(Address::isWSP);
+	skip(Path::isWSP);
 	final int p2 = pos();
 	final String w2 = s().substring(p1, p2);
 	// unfold

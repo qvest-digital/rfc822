@@ -153,28 +153,28 @@ Parsing human-entered names
 ; we’ll ignore comments in return values in the first version
 ; so the release will be made in time
 
-Address.Address {
+Path.Address {
 	String label;
 	boolean isGroup;
-	Address.AddrSpec mailbox; // if !isGroup
-	List<Address.Address> mailboxen; // if isGroup 0-n
+	Path.AddrSpec mailbox; // if !isGroup
+	List<Path.Address> mailboxen; // if isGroup 0-n
 	boolean valid; // true if mailbox/all mailboxen are valid
 	String toString()
 }
 
-Address.AddrSpec {
+Path.AddrSpec {
 	boolean valid;
 	String localPart;
 	String domain;
 	String toString()
 }
 
-pMailboxList, pAddressList → Address.AddressList or null on failure
+pMailboxList, pAddressList → Path.AddressList or null on failure
 
-Address.AddressList {
+Path.AddressList {
 	boolean valid; // if at least one in addresses and no invalid ones
 	boolean hasGroups; // true if pAddressList
-	List<Address.Address> addresses;
+	List<Path.Address> addresses;
 	List<String> flattenAddresses()
 	List<String> flattenAddrSpecs()
 	String toString() = ", ".join(flattenAddresses())

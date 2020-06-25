@@ -71,11 +71,11 @@ isDomain()
 	jmp(0);
 	while (true) {
 		final int begLabel = pos();
-		if (!Address.is(cur(), Address.IS_ALNUM))
+		if (!Path.is(cur(), Path.IS_ALNUM))
 			return false;
-		while (Address.is(peek(), Address.IS_ALNUS))
+		while (Path.is(peek(), Path.IS_ALNUS))
 			accept();
-		if (!Address.is(cur(), Address.IS_ALNUM))
+		if (!Path.is(cur(), Path.IS_ALNUM))
 			return false;
 		accept();
 		if (pos() - begLabel > 63)

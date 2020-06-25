@@ -25,16 +25,16 @@ import org.junit.jupiter.api.Test;
 import static org.junit.jupiter.api.Assertions.*;
 
 /**
- * Test {@link Address} class
+ * Test {@link Path} class
  *
  * @author mirabilos (t.glaser@tarent.de)
  */
-class AddressTest {
+class PathTest {
 
 @Test
 public void testPos()
 {
-	final Address tp = Address.of("user@host.domain.tld");
+	final Path tp = Path.of("user@host.domain.tld");
 	assertNotNull(tp, "cannot instantiate for basic valid example");
 }
 

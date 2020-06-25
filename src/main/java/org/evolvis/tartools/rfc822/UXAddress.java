@@ -22,12 +22,12 @@ package org.evolvis.tartools.rfc822;
 
 /**
  * Represents an RFC822 (and successors) eMail address header content,
- * like {@link Address}, except the parser accepts more varying input,
+ * like {@link Path}, except the parser accepts more varying input,
  * especially input by humans, and MIME-encodes nōn-ASCII characters.
  *
  * @author mirabilos (t.glaser@tarent.de)
  */
-public class UXAddress extends Address {
+public class UXAddress extends Path {
 
 /**
  * Creates and initialises a new parser for eMail addresses.

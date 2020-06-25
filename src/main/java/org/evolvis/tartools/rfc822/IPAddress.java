@@ -188,7 +188,7 @@ pIPv4Address()
 private boolean
 h16OrIPv4(final List<Integer> dst, final boolean ls32)
 {
-	if (!Address.is(cur(), Address.IS_XDIGIT)) {
+	if (!Path.is(cur(), Path.IS_XDIGIT)) {
 		return true;
 	}
 	if (ls32) {
@@ -202,7 +202,7 @@ h16OrIPv4(final List<Integer> dst, final boolean ls32)
 
 	int x = 0;
 	for (int i = 0; i < 4; ++i) {
-		if (!Address.is(cur(), Address.IS_XDIGIT))
+		if (!Path.is(cur(), Path.IS_XDIGIT))
 			break;
 		x = (x << 4) + Character.digit(cur(), 16);
 		accept();

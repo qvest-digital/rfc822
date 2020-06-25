@@ -60,7 +60,7 @@ private final int srcsz;
 
 /**
  * Constructs a parser. Intended to be used by subclasses from static
- * factory methods *only*; see {@link Address#of(String)} for an example.
+ * factory methods *only*; see {@link Path#of(String)} for an example.
  *
  * Note that subclass constructors must also be of protected visibility
  * to allow for inheritance, but they should both be documented and
