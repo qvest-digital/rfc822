@@ -192,7 +192,7 @@ accept()
  * @return codepoint of the first character where the matcher returned false, or -1
  */
 protected final int
-skip(BiFunction<Integer, Integer, Boolean> matcher)
+skip(final BiFunction<Integer, Integer, Boolean> matcher)
 {
 	while (cur != -1 && matcher.apply(cur, next))
 		jmp(succ);
@@ -208,7 +208,7 @@ skip(BiFunction<Integer, Integer, Boolean> matcher)
  * @return codepoint of the first character where the matcher returned false, or -1
  */
 protected final int
-skip(Function<Integer, Boolean> matcher)
+skip(final Function<Integer, Boolean> matcher)
 {
 	while (cur != -1 && matcher.apply(cur))
 		jmp(succ);
