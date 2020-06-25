@@ -22,6 +22,7 @@ package org.evolvis.tartools.rfc822;
 
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
+import lombok.Getter;
 import lombok.NonNull;
 import lombok.val;
 
@@ -124,7 +125,14 @@ static {
 		ASCII[d] |= F_DTEXT;
 }
 
+/**
+ * Representation for an addr-spec (eMail address)
+ * comprised of localPart and domain
+ *
+ * @author mirabilos (t.glaser@tarent.de)
+ */
 @AllArgsConstructor(access = AccessLevel.PROTECTED)
+@Getter
 public final class AddrSpec {
 
 	@NonNull
@@ -135,6 +143,11 @@ public final class AddrSpec {
 
 	final boolean valid;
 
+	/**
+	 * Returns the addr-spec as eMail address
+	 *
+	 * @return String localPart@domain
+	 */
 	@Override
 	public String
 	toString()
