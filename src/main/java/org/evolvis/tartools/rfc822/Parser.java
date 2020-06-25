@@ -296,18 +296,4 @@ public final class Txn implements AutoCloseable {
 
 }
 
-/**
- * Begins a new parser position transaction. Use the {@link Txn#commit()} and
- * possibly {@link Txn#rollback()} methods on the returned object; the latter
- * is called automatically if the transaction is used in a try-with-resources
- * block (see {@link AutoCloseable}).
- *
- * @return {@link Txn} parser position transaction object, autoclosable
- */
-protected final Txn
-begin()
-{
-	return new Txn();
-}
-
 }
