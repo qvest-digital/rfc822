@@ -20,6 +20,8 @@ package org.evolvis.tartools.rfc822;
  * of said person’s immediate fault when using the work as intended.
  */
 
+import lombok.val;
+
 import java.util.function.BiFunction;
 import java.util.function.Function;
 
@@ -77,6 +79,29 @@ protected Parser(final String input, final int maxlen)
 	} else {
 		source = input;
 		jmp(0);
+	}
+}
+
+/**
+ * Constructs a parser. Intended to be used by subclasses from static
+ * factory methods *only*; see {@link Path#of(String)} for an example.
+ *
+ * @param cls   subclass of Parser to construct
+ * @param input user-provided {@link String} to parse
+ * @param <T>   subclass of Parser to construct
+ *
+ * @return null if input was null or too large, the new instance otherwise
+ */
+protected static <T extends Parser> T
+of(final Class<T> cls, final String input)
+{
+	try {
+		val creator = cls.getDeclaredConstructor(String.class);
+		final T obj = creator.newInstance(input);
+		return obj.s() == null ? null : obj;
+	} catch (ReflectiveOperationException e) {
+		// should not happen, only subclasses can call it, they’d fail
+		return null;
 	}
 }
 

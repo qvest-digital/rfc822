@@ -171,8 +171,7 @@ public final class Address {
 public static Path
 of(final String addresses)
 {
-	final Path obj = new Path(addresses);
-	return obj.s() == null ? null : obj;
+	return Parser.of(Path.class, addresses);
 }
 
 /**

@@ -39,8 +39,7 @@ public class UXAddress extends Path {
 public static UXAddress
 of(final String addresses)
 {
-	final UXAddress obj = new UXAddress(addresses);
-	return obj.s() == null ? null : obj;
+	return Parser.of(UXAddress.class, addresses);
 }
 
 /**

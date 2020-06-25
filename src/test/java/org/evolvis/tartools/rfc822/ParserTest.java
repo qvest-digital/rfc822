@@ -99,6 +99,8 @@ public void testNeg()
 	assertThrows(AssertionError.class, () -> ap.testSubstringConstructor(-1, 2));
 	assertThrows(AssertionError.class, () -> ap.testSubstringConstructor(1, 4));
 	assertEquals("bc", ap.testSubstringConstructor(1, 3).toString());
+
+	assertNull(Parser.of(Parser.class, ""), "unexpectedly able to instantiate Parser");
 }
 
 }

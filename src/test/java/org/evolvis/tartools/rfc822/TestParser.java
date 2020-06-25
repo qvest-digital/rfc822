@@ -44,8 +44,7 @@ protected final String[] keywords = { "meow" };
 public static TestParser
 of(final String input)
 {
-	final TestParser obj = new TestParser(input);
-	return obj.s() == null ? null : obj;
+	return Parser.of(TestParser.class, input);
 }
 
 private TestParser(final String input)

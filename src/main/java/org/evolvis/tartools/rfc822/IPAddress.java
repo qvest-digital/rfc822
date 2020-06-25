@@ -50,8 +50,7 @@ public class IPAddress extends Parser {
 public static IPAddress
 of(final String address)
 {
-	final IPAddress obj = new IPAddress(address);
-	return obj.s() == null ? null : obj;
+	return Parser.of(IPAddress.class, address);
 }
 
 /**

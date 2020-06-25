@@ -39,8 +39,7 @@ public class FQDN extends Parser {
 public static FQDN
 of(final String hostname)
 {
-	final FQDN obj = new FQDN(hostname);
-	return obj.s() == null ? null : obj;
+	return Parser.of(FQDN.class, hostname);
 }
 
 /**
