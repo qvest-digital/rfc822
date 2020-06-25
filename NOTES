@@ -12,6 +12,7 @@ x DIGIT          =  %x30-39
 x ALPHA          =  %x41-5A / %x61-7A   ; A-Z / a-z
   VCHAR          =  %x21-7E
 
+   quoted-pairSMTP =   "\" %x20-7E		; no HTAB
 x  quoted-pair     =   "\" (VCHAR / WSP)
 x  FWS             =   [*WSP CRLF] 1*WSP	; min. 1 WSP
 x  ctext           =   %d33-39 /          ; Printable US-ASCII
@@ -52,6 +53,10 @@ x  qcontent        =   qtext / quoted-pair
 x  quoted-string   =   [CFWS]
                        DQUOTE *([FWS] qcontent) [FWS] DQUOTE
                        [CFWS]
+
+ Note: RFC5321 doesn’t allow [CFWS] outside (so trim it, see below),
+ nor CRLF between the DQUOTEs (the FWS *must* be unfolded), not HTAB
+ in either FWS *or* quoted-pair (mark invalid).
 
 Semantically, neither the optional CFWS outside of the quote
 characters nor the quote characters themselves are part of the
