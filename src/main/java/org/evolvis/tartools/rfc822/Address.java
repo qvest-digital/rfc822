@@ -157,6 +157,10 @@ public final class AddrSpec {
 
 }
 
+public final class Address.Address {
+
+}
+
 /**
  * Creates and initialises a new parser for eMail addresses.
  *
