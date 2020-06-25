@@ -20,6 +20,8 @@ package org.evolvis.tartools.rfc822;
  * of said person’s immediate fault when using the work as intended.
  */
 
+import lombok.val;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -60,10 +62,10 @@ isWsp(final int cur, final int next)
 String
 keyword()
 {
-	try (final Parser.Txn beg = new Parser.Txn()) {
+	try (val beg = new Parser.Txn()) {
 		if (skip(TestParser::isWsp) == -1)
 			return null;
-		try (final Parser.Txn ofs = new Parser.Txn()) {
+		try (val ofs = new Parser.Txn()) {
 			for (final String keyword : keywords) {
 				if (s().startsWith(keyword, pos())) {
 					final int nextch = bra(keyword.length());

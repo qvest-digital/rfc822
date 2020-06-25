@@ -20,6 +20,7 @@ package org.evolvis.tartools.rfc822;
  * of said person’s immediate fault when using the work as intended.
  */
 
+import lombok.val;
 import org.junit.jupiter.api.Test;
 
 import java.util.List;
@@ -91,7 +92,7 @@ public void testNeg()
 
 	final TestParser ap = TestParser.of("abc");
 	assertNotNull(ap, "cannot instantiate for \"abc\"");
-	final Parser.Substring as = ap.testSubstringConstructor(1, 2);
+	val as = ap.testSubstringConstructor(1, 2);
 	assertNotNull(as);
 	assertEquals("b", as.toString());
 	assertThrows(AssertionError.class, () -> ap.testSubstringConstructor(2, 1));
