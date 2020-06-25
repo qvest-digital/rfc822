@@ -222,7 +222,7 @@ skip(final Function<Integer, Boolean> matcher)
  *
  * @author mirabilos (t.glaser@tarent.de)
  */
-public final class Txn implements AutoCloseable {
+final class Txn implements AutoCloseable {
 
 	private int pos;
 
@@ -241,7 +241,7 @@ public final class Txn implements AutoCloseable {
 	 *
 	 * @return position of last commit
 	 */
-	public final int
+	final int
 	savepoint()
 	{
 		return pos;
@@ -250,7 +250,7 @@ public final class Txn implements AutoCloseable {
 	/**
 	 * Commits the current parser position (stores it in the transaction)
 	 */
-	public final void
+	final void
 	commit()
 	{
 		pos = Parser.this.ofs;
@@ -261,7 +261,7 @@ public final class Txn implements AutoCloseable {
 	 *
 	 * @return the codepoint at the new position, see {@link Parser#cur()}
 	 */
-	public final int
+	final int
 	rollback()
 	{
 		return Parser.this.jmp(savepoint());
@@ -287,7 +287,7 @@ public final class Txn implements AutoCloseable {
 	 *
 	 * @return returnValue
 	 */
-	public final <T> T
+	final <T> T
 	accept(final T returnValue)
 	{
 		commit();
