@@ -35,12 +35,6 @@ public class ParserTest {
 
 final String t1 = TestUtils.staticB64UTF8Resource("t1.b64");
 
-private static boolean
-trueMatcher(final int c)
-{
-	return true;
-}
-
 @Test
 public void testPos()
 {
@@ -93,8 +87,6 @@ public void testNeg()
 	e = assertThrows(IndexOutOfBoundsException.class, () ->
 	    tp.accept(), "accepting EOS doesn’t throw");
 	assertEquals(Parser.ACCEPT_EOS, e.getMessage());
-	assertEquals(-1, tp.jmp(0), "jmp to 0=EOF weird");
-	assertEquals(-1, tp.skip(ParserTest::trueMatcher));
 }
 
 }
