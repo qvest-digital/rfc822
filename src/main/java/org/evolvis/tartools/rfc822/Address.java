@@ -20,6 +20,10 @@ package org.evolvis.tartools.rfc822;
  * of said person’s immediate fault when using the work as intended.
  */
 
+import lombok.AccessLevel;
+import lombok.AllArgsConstructor;
+import lombok.NonNull;
+
 import java.util.Arrays;
 
 /**
@@ -117,6 +121,26 @@ static {
 		ASCII[d] |= F_DTEXT;
 	for (int d = 94; d <= 126; ++d)
 		ASCII[d] |= F_DTEXT;
+}
+
+@AllArgsConstructor(access = AccessLevel.PROTECTED)
+public final class AddrSpec {
+
+	@NonNull
+	final Substring localPart;
+
+	@NonNull
+	final Substring domain;
+
+	final boolean valid;
+
+	@Override
+	public String
+	toString()
+	{
+		return localPart + "@" + domain;
+	}
+
 }
 
 /**
