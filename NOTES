@@ -199,3 +199,17 @@ pGroup		→ display-name List<pMailbox>(0-n)
 
 addr-spec	→ local-part domain
 		* valid:bool, address:String, localPart:String, domain:String
+
+cannot occur within loop:
+domain-literal: strip CFWS around, return entire content with brackets, unfolded
+dot-atom: strip CFWS around, return raw Substring
+
+atom, quoted-string must return Word { int eod; Substring data; }
+
+occurs within loop:
+quoted-string: strip CFWS around, return entire content with DQUOTEs, unfolded
+		(data: DQUOTEs removed, quoted-pair backslash-removed)
+atom: strip CFWS around, return raw Substring
+word: return whatever atom or quoted-string returns
+phrase: strip leading CFWS, take position, collect words,
+	return new unfolded substring from taken pos to eod of last word
