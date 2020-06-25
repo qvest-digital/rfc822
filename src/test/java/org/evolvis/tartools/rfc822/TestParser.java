@@ -68,10 +68,14 @@ keyword()
 				if (s().startsWith(keyword, pos())) {
 					final int nextch = bra(keyword.length());
 					if (nextch < 'a' || nextch > 'z') {
+						final Substring s = ofs.substring();
 						// COMMIT in reverse BEGIN order
 						ofs.commit();
 						// last COMMIT implied here
-						return beg.accept(keyword);
+						//return beg.accept(keyword);
+						// the above would be normal but
+						// we must test the below:
+						return beg.accept(s.toString());
 					}
 					ofs.rollback();
 				}
@@ -153,6 +157,12 @@ asFn()
 {
 	jmp(0);
 	return pFn();
+}
+
+Parser.Substring
+testSubstringConstructor(final int beg, final int end)
+{
+	return new Substring(beg, end);
 }
 
 }

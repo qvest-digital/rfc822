@@ -216,6 +216,41 @@ skip(final Function<Integer, Boolean> matcher)
 }
 
 /**
+ * Representation for consecutive substrings of the input string,
+ * for result passing.
+ *
+ * @author mirabilos (t.glaser@tarent.de)
+ */
+protected final class Substring {
+
+	private final int beg;
+	private final int end;
+
+	/**
+	 * Creates a new input substring from parser positions
+	 *
+	 * @param beg offset of the beginning of the substring
+	 * @param end offset of the codepoint after the end
+	 */
+	protected Substring(final int beg, final int end)
+	{
+		// for internal consistency, not fatal if disabled at runtime
+		assert end >= beg : "end after beginning";
+		assert beg >= 0 : "negative beginning";
+		assert end <= Parser.this.srcsz : "past end of input";
+		this.beg = beg;
+		this.end = end;
+	}
+
+	@Override
+	public final String toString()
+	{
+		return Parser.this.s().substring(beg, end);
+	}
+
+}
+
+/**
  * Transactions for positioning: on creation and {@link #commit()} the position
  * is saved, on {@link #rollback()} and closing, it is restored to the point
  * from the last commit (or creation). Implements {@link AutoCloseable}.
@@ -292,6 +327,18 @@ final class Txn implements AutoCloseable {
 	{
 		commit();
 		return returnValue;
+	}
+
+	/**
+	 * Returns a new {@link Substring} spanning from the last {@link #savepoint()}
+	 * to the current parser position
+	 *
+	 * @return {@link Substring} object
+	 */
+	final Substring
+	substring()
+	{
+		return new Substring(savepoint(), Parser.this.ofs);
 	}
 
 }

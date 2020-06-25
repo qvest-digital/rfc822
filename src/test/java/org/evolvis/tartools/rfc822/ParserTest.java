@@ -88,6 +88,16 @@ public void testNeg()
 	e = assertThrows(IndexOutOfBoundsException.class, () ->
 	    tp.accept(), "accepting EOS doesn’t throw");
 	assertEquals(Parser.ACCEPT_EOS, e.getMessage());
+
+	final TestParser ap = TestParser.of("abc");
+	assertNotNull(ap, "cannot instantiate for \"abc\"");
+	final Parser.Substring as = ap.testSubstringConstructor(1, 2);
+	assertNotNull(as);
+	assertEquals("b", as.toString());
+	assertThrows(AssertionError.class, () -> ap.testSubstringConstructor(2, 1));
+	assertThrows(AssertionError.class, () -> ap.testSubstringConstructor(-1, 2));
+	assertThrows(AssertionError.class, () -> ap.testSubstringConstructor(1, 4));
+	assertEquals("bc", ap.testSubstringConstructor(1, 3).toString());
 }
 
 }
