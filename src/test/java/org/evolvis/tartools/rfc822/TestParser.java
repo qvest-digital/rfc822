@@ -47,7 +47,7 @@ of(final String input)
 	return Parser.of(TestParser.class, input);
 }
 
-private TestParser(final String input)
+protected TestParser(final String input)
 {
 	super(input, 16);
 }
