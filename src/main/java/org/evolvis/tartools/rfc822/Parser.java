@@ -20,6 +20,7 @@ package org.evolvis.tartools.rfc822;
  * of said person’s immediate fault when using the work as intended.
  */
 
+import lombok.Getter;
 import lombok.val;
 
 import java.util.function.BiFunction;
@@ -252,6 +253,9 @@ protected final class Substring {
 	private final int beg;
 	private final int end;
 
+	@Getter
+	private final Object data;
+
 	/**
 	 * Creates a new input substring from parser positions
 	 *
@@ -260,6 +264,18 @@ protected final class Substring {
 	 */
 	protected Substring(final int beg, final int end)
 	{
+		this(beg, end, null);
+	}
+
+	/**
+	 * Creates a new input substring from parser positions
+	 *
+	 * @param beg  offset of the beginning of the substring
+	 * @param end  offset of the codepoint after the end
+	 * @param data user-specified data optionally associated with this object
+	 */
+	protected Substring(final int beg, final int end, final Object data)
+	{
 		// for internal consistency, not fatal if disabled at runtime
 		assert end >= beg : "end after beginning";
 		assert beg >= 0 : "negative beginning";
@@ -267,6 +283,7 @@ protected final class Substring {
 		// ↑ coverage: https://github.com/jacoco/jacoco/pull/613
 		this.beg = beg;
 		this.end = end;
+		this.data = data;
 	}
 
 	@Override
@@ -366,6 +383,20 @@ final class Txn implements AutoCloseable {
 	substring()
 	{
 		return new Substring(savepoint(), Parser.this.ofs);
+	}
+
+	/**
+	 * Returns a new {@link Substring} spanning from the last {@link #savepoint()}
+	 * to the current parser position
+	 *
+	 * @param data user-specified data optionally associated with the Substring
+	 *
+	 * @return {@link Substring} object
+	 */
+	final Substring
+	substring(final Object data)
+	{
+		return new Substring(savepoint(), Parser.this.ofs, data);
 	}
 
 }
