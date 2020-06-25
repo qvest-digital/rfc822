@@ -247,6 +247,7 @@ skip(final Function<Integer, Boolean> matcher)
  * @author mirabilos (t.glaser@tarent.de)
  */
 protected final class Substring {
+	// ↑ coverage:https://github.com/jacoco/jacoco/issues/1063
 
 	private final int beg;
 	private final int end;
@@ -263,6 +264,7 @@ protected final class Substring {
 		assert end >= beg : "end after beginning";
 		assert beg >= 0 : "negative beginning";
 		assert end <= Parser.this.srcsz : "past end of input";
+		// ↑ coverage: https://github.com/jacoco/jacoco/pull/613
 		this.beg = beg;
 		this.end = end;
 	}
