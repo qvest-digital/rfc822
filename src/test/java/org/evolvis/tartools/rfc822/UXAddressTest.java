@@ -20,6 +20,7 @@ package org.evolvis.tartools.rfc822;
  * of said person’s immediate fault when using the work as intended.
  */
 
+import lombok.val;
 import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -34,8 +35,15 @@ class UXAddressTest {
 @Test
 public void testPos()
 {
-	final UXAddress tp = UXAddress.of("猫 <meow@host.domain.tld>");
+	val tp = UXAddress.of("猫 <meow@host.domain.tld>");
 	assertNotNull(tp, "cannot construct for valid input");
+}
+
+@Test
+public void testNeg()
+{
+	val tp = UXAddress.of(null);
+	assertNull(tp, "can construct for nil input");
 }
 
 }
