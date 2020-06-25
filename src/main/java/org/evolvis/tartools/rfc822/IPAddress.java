@@ -65,7 +65,7 @@ protected IPAddress(final String input)
 
 @SneakyThrows(UnknownHostException.class)
 private InetAddress
-toAddress(byte[] addr)
+toAddress(final byte[] addr)
 {
 	if (addr == null || cur() != -1)
 		return null;

@@ -169,7 +169,7 @@ asMailboxList()
  * @return parser result
  */
 public String
-forSender(boolean allowRFC6854forLimitedUse)
+forSender(final boolean allowRFC6854forLimitedUse)
 {
 	jmp(0);
 	final String rv = allowRFC6854forLimitedUse ? pAddress() : pMailbox();

@@ -288,7 +288,7 @@ public final class Txn implements AutoCloseable {
 	 * @return returnValue
 	 */
 	public final <T> T
-	accept(T returnValue)
+	accept(final T returnValue)
 	{
 		commit();
 		return returnValue;
