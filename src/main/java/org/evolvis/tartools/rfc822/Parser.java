@@ -247,11 +247,11 @@ skip(final Function<Integer, Boolean> matcher)
  *
  * @author mirabilos (t.glaser@tarent.de)
  */
-protected final class Substring {
+protected class Substring {
 	// ↑ coverage:https://github.com/jacoco/jacoco/issues/1063
 
-	private final int beg;
-	private final int end;
+	protected final int beg;
+	protected final int end;
 
 	@Getter
 	private final Object data;
@@ -287,7 +287,7 @@ protected final class Substring {
 	}
 
 	@Override
-	public final String toString()
+	public String toString()
 	{
 		return Parser.this.s().substring(beg, end);
 	}
