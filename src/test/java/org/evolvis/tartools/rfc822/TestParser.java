@@ -97,7 +97,8 @@ word()
 	return s().substring(beg, end);
 }
 
-private List<String> pWords()
+private List<String>
+pWords()
 {
 	final List<String> res = new ArrayList<>();
 	String s;
@@ -111,7 +112,8 @@ private List<String> pWords()
 	return res;
 }
 
-private String pFn()
+private String
+pFn()
 {
 	final int ofs = pos();
 	final String kw = keyword();
@@ -139,13 +141,15 @@ private String pFn()
 
 }
 
-public List<String> asWords()
+public List<String>
+asWords()
 {
 	jmp(0);
 	return pWords();
 }
 
-public String asFn()
+public String
+asFn()
 {
 	jmp(0);
 	return pFn();
