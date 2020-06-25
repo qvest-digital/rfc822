@@ -119,7 +119,7 @@ dec(final int c, final int limit)
 protected byte[]
 pIPv4Address()
 {
-	try (final Txn ofs = new Txn(this)) {
+	try (final Parser.Txn ofs = begin()) {
 		byte[] addr = new byte[4];
 		for (int a = 0; a < addr.length; ++a) {
 			if (a > 0) {
@@ -211,7 +211,7 @@ h16OrIPv4(final List<Integer> dst, final boolean ls32)
 }
 
 private static byte[]
-rtnIPv6Address(final Txn txn, final List<Integer> h16s,
+rtnIPv6Address(final Parser.Txn txn, final List<Integer> h16s,
     final List<Integer> afterDoubleColon)
 {
 	if (afterDoubleColon != null) {
@@ -238,7 +238,7 @@ rtnIPv6Address(final Txn txn, final List<Integer> h16s,
 protected byte[]
 pIPv6Address()
 {
-	try (final Txn ofs = new Txn(this)) {
+	try (final Parser.Txn ofs = begin()) {
 		final List<Integer> beforeDoubleColon = new ArrayList<>();
 		boolean hasDoubleColon = false;
 		int cnt = 0;

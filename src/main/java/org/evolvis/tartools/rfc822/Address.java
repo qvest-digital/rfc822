@@ -196,7 +196,7 @@ asAddressList()
 protected String
 pAddressList()
 {
-	try (final Txn ofs = new Txn(this)) {
+	try (final Parser.Txn ofs = begin()) {
 		String rv = "";
 		final String a = pAddress();
 		if (a == null)
@@ -218,7 +218,7 @@ pAddressList()
 protected String
 pMailboxList()
 {
-	try (final Txn ofs = new Txn(this)) {
+	try (final Parser.Txn ofs = begin()) {
 		String rv = "";
 		final String m = pMailbox();
 		if (m == null)
@@ -251,7 +251,7 @@ pAddress()
 protected String
 pGroup()
 {
-	try (final Txn ofs = new Txn(this)) {
+	try (final Parser.Txn ofs = begin()) {
 		String rv = "";
 		final String dn = pDisplayName();
 		if (dn == null)
@@ -295,7 +295,7 @@ pMailbox()
 protected String
 pNameAddr()
 {
-	try (final Txn ofs = new Txn(this)) {
+	try (final Parser.Txn ofs = begin()) {
 		String rv = "";
 		final String dn = pDisplayName();
 		if (dn != null)
@@ -311,7 +311,7 @@ pNameAddr()
 protected String
 pAngleAddr()
 {
-	try (final Txn ofs = new Txn(this)) {
+	try (final Parser.Txn ofs = begin()) {
 		String rv = "";
 		pCFWS();
 		if (cur() != '<')
@@ -362,7 +362,7 @@ pWord()
 protected String
 pAtom()
 {
-	try (final Txn ofs = new Txn(this)) {
+	try (final Parser.Txn ofs = begin()) {
 		String rv = "";
 		pCFWS();
 		int c = pAtext();
@@ -474,7 +474,7 @@ pQcontent()
 protected String
 pQuotedString()
 {
-	try (final Txn ofs = new Txn(this)) {
+	try (final Parser.Txn ofs = begin()) {
 		String rv = "";
 		pCFWS();
 		if (cur() != '"')
@@ -512,7 +512,7 @@ pCcontent()
 protected String
 pComment()
 {
-	try (final Txn ofs = new Txn(this)) {
+	try (final Parser.Txn ofs = begin()) {
 		String rv = "";
 		if (cur() != '(')
 			return null;
@@ -600,7 +600,7 @@ pFWS()
 protected String
 pAddrSpec()
 {
-	try (final Txn ofs = new Txn(this)) {
+	try (final Parser.Txn ofs = begin()) {
 		final String lp = pLocalPart();
 		if (lp == null)
 			return null;
@@ -642,7 +642,7 @@ pDomain()
 protected String
 pDomainLiteral()
 {
-	try (final Txn ofs = new Txn(this)) {
+	try (final Parser.Txn ofs = begin()) {
 		String rv = "";
 		pCFWS();
 		if (cur() != '[')

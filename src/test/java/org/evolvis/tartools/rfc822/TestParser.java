@@ -60,10 +60,10 @@ isWsp(final int cur, final int next)
 String
 keyword()
 {
-	try (final Txn beg = new Txn(this)) {
+	try (final Parser.Txn beg = begin()) {
 		if (skip(TestParser::isWsp) == -1)
 			return null;
-		try (final Txn ofs = new Txn(this)) {
+		try (final Parser.Txn ofs = begin()) {
 			for (final String keyword : keywords) {
 				if (s().startsWith(keyword, pos())) {
 					final int nextch = bra(keyword.length());
