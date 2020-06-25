@@ -63,6 +63,16 @@ protected IPAddress(final String input)
 	super(input, /* probably 45 */ 64);
 }
 
+@SneakyThrows(UnknownHostException.class)
+private InetAddress
+toAddress(byte[] addr)
+{
+	if (addr == null || cur() != -1)
+		return null;
+	// assert: addr is byte[4] or byte[16]
+	return InetAddress.getByAddress(s(), addr);
+}
+
 /**
  * Parses the passed address as IP address (IPv6).
  *
@@ -78,16 +88,11 @@ protected IPAddress(final String input)
  *
  * @return {@link InetAddress} representing the address, or null on failure
  */
-@SneakyThrows(UnknownHostException.class)
 public InetAddress
 asIPv6Address()
 {
 	jmp(0);
-	byte[] addr = pIPv6Address();
-	if (addr == null || cur() != -1)
-		return null;
-	// assert: addr is byte[16]
-	return InetAddress.getByAddress(s(), addr);
+	return toAddress(pIPv6Address());
 }
 
 /**
@@ -97,16 +102,11 @@ asIPv6Address()
  *
  * @return {@link InetAddress} representing the address, or null on failure
  */
-@SneakyThrows(UnknownHostException.class)
 public InetAddress
 asIPv4Address()
 {
 	jmp(0);
-	byte[] addr = pIPv4Address();
-	if (addr == null || cur() != -1)
-		return null;
-	// assert: addr is byte[4]
-	return InetAddress.getByAddress(s(), addr);
+	return toAddress(pIPv4Address());
 }
 
 private static boolean
