@@ -26,6 +26,7 @@ import lombok.Getter;
 import lombok.NonNull;
 import lombok.val;
 
+import java.net.InetAddress;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -63,8 +64,6 @@ static final byte IS_ATEXT = F_ALPHA | F_DIGIT | F_HYPHN | F_ATEXT;
 static final byte IS_QTEXT = F_QTEXT;
 static final byte IS_CTEXT = F_CTEXT;
 static final byte IS_DTEXT = F_DTEXT;
-static final byte IS_ALPHA = F_ALPHA;
-static final byte IS_DIGIT = F_DIGIT;
 static final byte IS_ALNUM = F_ALPHA | F_DIGIT;
 static final byte IS_ALNUS = F_ALPHA | F_DIGIT | F_HYPHN;
 static final byte IS_XDIGIT = F_DIGIT | F_ABISF;
@@ -129,6 +128,119 @@ static {
 		ASCII[d] |= F_DTEXT;
 }
 
+protected static boolean
+is(final int c, final byte what)
+{
+	if (c < 0 || c > ASCII.length)
+		return false;
+	return (ASCII[c] & what) != 0;
+}
+
+protected static boolean
+isAtext(final int c)
+{
+	return is(c, IS_ATEXT);
+}
+
+protected static boolean
+isCtext(final int c)
+{
+	return is(c, IS_CTEXT);
+}
+
+protected static boolean
+isDtext(final int c)
+{
+	return is(c, IS_DTEXT);
+}
+
+protected static boolean
+isQtext(final int c)
+{
+	return is(c, IS_QTEXT);
+}
+
+/**
+ * Representation for a substring of the input string, FWS unfolded
+ *
+ * @author mirabilos (t.glaser@tarent.de)
+ */
+protected class UnfoldedSubstring extends Substring {
+
+	private final String string;
+
+	private UnfoldedSubstring(final Substring ss, final String us)
+	{
+		super(ss.beg, ss.end, ss.getData());
+		string = us;
+	}
+
+	@Override
+	public String toString()
+	{
+		return string;
+	}
+
+}
+
+/**
+ * Removes all occurrences of CR and/or LF from a string.
+ *
+ * @param s input string
+ *
+ * @return null if there was nothing to remove, a new shorter String otherwise
+ */
+public static String
+unfold(final String s)
+{
+	final char[] buf = s.toCharArray();
+	int src = 0;
+	int dst = 0;
+	while (src < buf.length) {
+		switch (buf[src]) {
+		case 0x0D:
+		case 0x0A:
+			break;
+		default:
+			buf[dst++] = buf[src];
+			break;
+		}
+		++src;
+	}
+	return dst == src ? null : new String(buf, 0, dst);
+}
+
+/**
+ * Unfolds FWS in the passed Substring if necessary
+ *
+ * @param ss {@link Substring} to unfold
+ *
+ * @return instance of an unfolded equivalent of the original substring
+ */
+protected /*Substring*/ UnfoldedSubstring
+unfold(final Substring ss)
+{
+	final String s = ss.toString();
+	final String u = unfold(s);
+	//if (u == null)
+	//	return ss;
+	return new UnfoldedSubstring(ss, u);
+}
+
+/**
+ * Represents the return value of something that can be a word production
+ * (atom or quoted-string); the optional trailing CFWS is <em>not</em> unfolded
+ *
+ * @author mirabilos (t.glaser@tarent.de)
+ */
+@AllArgsConstructor
+private static final class Word {
+
+	protected final Substring body;
+	protected final Substring cfws;
+
+}
+
 /**
  * Representation for an addr-spec (eMail address)
  * comprised of localPart and domain
@@ -141,18 +253,20 @@ public final class AddrSpec {
 
 	/**
 	 * The local-part of the addr-spec, as it occurs in the addr-spec,
-	 * i.e. dot-atom or quoted-string in their wire representation
+	 * i.e. dot-atom or quoted-string in their wire representation;
+	 * the parsed string content is available as String getData()
 	 */
 	@NonNull
-	final Substring localPart;
+	final UnfoldedSubstring localPart;
 
 	/**
 	 * The domain of the addr-spec, either dot-atom (host.example.com)
 	 * or one of two forms of domain-literal: [192.0.2.1] for Legacy IP,
-	 * [IPv6:2001:DB8:CAFE:1::1] for IP addresses
+	 * [IPv6:2001:DB8:CAFE:1::1] for IP addresses; getData() contains
+	 * either the domain as String or the IP address as {@link InetAddress}
 	 */
 	@NonNull
-	final Substring domain;
+	final UnfoldedSubstring domain;
 
 	/**
 	 * Whether this addr-spec is actually valid according to DNS, SMTP,
@@ -162,7 +276,7 @@ public final class AddrSpec {
 	final boolean valid;
 
 	/**
-	 * Returns the addr-spec as eMail address
+	 * Returns the addr-spec as eMail address (in wire format)
 	 *
 	 * @return String localPart@domain
 	 */
@@ -189,9 +303,11 @@ public final class Address {
 	final boolean group;
 
 	/**
-	 * The display-name of this mailbox.name-addr (optional) or group (mandatory)
+	 * The display-name of this mailbox.name-addr (optional) or
+	 * group (mandatory) with the human-readable / parsed form
+	 * with comments available via String {@link Substring#getData()}
 	 */
-	final Substring label;
+	final UnfoldedSubstring label;
 
 	/**
 	 * The addr-spec behind this mailbox [isGroup()==false]
@@ -208,7 +324,7 @@ public final class Address {
 	 */
 	final boolean valid;
 
-	protected Address(final Substring label, @NonNull final AddrSpec mailbox)
+	protected Address(final UnfoldedSubstring label, @NonNull final AddrSpec mailbox)
 	{
 		this.group = false;
 		this.label = label;
@@ -217,7 +333,7 @@ public final class Address {
 		this.valid = mailbox.isValid();
 	}
 
-	protected Address(@NonNull final Substring label, @NonNull final List<Address> mailboxen)
+	protected Address(@NonNull final UnfoldedSubstring label, @NonNull final List<Address> mailboxen)
 	{
 		this.group = true;
 		this.label = label;
@@ -377,13 +493,13 @@ protected Path(final String input)
  * Parses the address as mailbox-list, e.g. for the From and Resent-From headers
  * (but see {@link #asAddressList()} for RFC6854’s RFC2026 §3.3(d) Limited Use)
  *
- * @return parser result
+ * @return parser result; remember to call {@link AddressList#isValid()} first!
  */
-public String
+public AddressList
 asMailboxList()
 {
 	jmp(0);
-	final String rv = pMailboxList();
+	final AddressList rv = pMailboxList();
 	return cur() == -1 ? rv : null;
 }
 
@@ -396,13 +512,13 @@ asMailboxList()
  *
  * @param allowRFC6854forLimitedUse use mailbox instead of address parsing
  *
- * @return parser result
+ * @return parser result; remember to call {@link Address#isValid()} first!
  */
-public String
+public Address
 forSender(final boolean allowRFC6854forLimitedUse)
 {
 	jmp(0);
-	final String rv = allowRFC6854forLimitedUse ? pAddress() : pMailbox();
+	final Address rv = allowRFC6854forLimitedUse ? pAddress() : pMailbox();
 	return cur() == -1 ? rv : null;
 }
 
@@ -413,64 +529,64 @@ forSender(final boolean allowRFC6854forLimitedUse)
  * allows using this for the From and Resent-From headers, normally
  * covered by the {@link #asMailboxList()} method.
  *
- * @return parser result
+ * @return parser result; remember to call {@link AddressList#isValid()} first!
  */
-public String
+public AddressList
 asAddressList()
 {
 	jmp(0);
-	final String rv = pAddressList();
+	final AddressList rv = pAddressList();
 	return cur() == -1 ? rv : null;
 }
 
-protected String
+protected AddressList
 pAddressList()
 {
 	try (val ofs = new Parser.Txn()) {
-		String rv = "";
-		final String a = pAddress();
+		final Address a = pAddress();
 		if (a == null)
 			return null;
 		ofs.commit();
-		rv += a;
+		val rv = new ArrayList<Address>();
+		rv.add(a);
 		while (cur() == ',') {
 			accept();
-			final String a2 = pAddress();
+			final Address a2 = pAddress();
 			if (a2 == null)
 				break;
 			ofs.commit();
-			rv += a2;
+			rv.add(a2);
 		}
-		return rv;
+		return new AddressList(rv);
 	}
 }
 
-protected String
+protected AddressList
 pMailboxList()
 {
 	try (val ofs = new Parser.Txn()) {
-		String rv = "";
-		final String m = pMailbox();
+		final Address m = pMailbox();
 		if (m == null)
 			return null;
 		ofs.commit();
-		rv += m;
+		val rv = new ArrayList<Address>();
+		rv.add(m);
 		while (cur() == ',') {
 			accept();
-			final String m2 = pMailbox();
+			final Address m2 = pMailbox();
 			if (m2 == null)
 				break;
 			ofs.commit();
-			rv += m2;
+			rv.add(m2);
 		}
-		return rv;
+		return new AddressList(rv);
 	}
 }
 
-protected String
+protected Address
 pAddress()
 {
-	String rv;
+	Address rv;
 	if ((rv = pMailbox()) != null)
 		return rv;
 	if ((rv = pGroup()) != null)
@@ -478,110 +594,109 @@ pAddress()
 	return null;
 }
 
-protected String
+protected Address
 pGroup()
 {
 	try (val ofs = new Parser.Txn()) {
-		String rv = "";
-		final String dn = pDisplayName();
+		final UnfoldedSubstring dn = pDisplayName();
 		if (dn == null)
 			return null;
 		if (cur() != ':')
 			return null;
 		accept();
-		rv += dn;
-		final String gl = pGroupList();
-		if (gl != null)
-			rv += gl;
+		// [pGroupList] {
+		final AddressList ml = pMailboxList();
+		if (ml == null)
+			pCFWS();
+		val gl = ml == null ? new ArrayList<Address>() : ml.addresses;
+		// [pGroupList] }
 		if (cur() != ';')
 			return null;
 		accept();
 		pCFWS();
-		return ofs.accept(rv);
+		return ofs.accept(new Address(dn, gl));
 	}
 }
 
-protected String
-pGroupList()
-{
-	final String ml = pMailboxList();
-	if (ml != null)
-		return ml;
-	return pCFWS() == null ? null : "";
-}
-
-protected String
+protected Address
 pMailbox()
 {
-	final String na = pNameAddr();
+	final Address na = pNameAddr();
 	if (na != null)
 		return na;
-	final String as = pAddrSpec();
+	final AddrSpec as = pAddrSpec();
 	if (as != null)
-		return as;
+		return new Address(null, as);
 	return null;
 }
 
-protected String
+protected Address
 pNameAddr()
 {
 	try (val ofs = new Parser.Txn()) {
-		String rv = "";
-		final String dn = pDisplayName();
-		if (dn != null)
-			rv += dn;
-		final String aa = pAngleAddr();
+		final UnfoldedSubstring dn = pDisplayName();
+		final AddrSpec aa = pAngleAddr();
 		if (aa == null)
 			return null;
-		rv += aa;
-		return ofs.accept(rv);
+		return ofs.accept(new Address(dn, aa));
 	}
 }
 
-protected String
+protected AddrSpec
 pAngleAddr()
 {
 	try (val ofs = new Parser.Txn()) {
-		String rv = "";
 		pCFWS();
 		if (cur() != '<')
 			return null;
 		accept();
-		final String as = pAddrSpec();
+		final AddrSpec as = pAddrSpec();
 		if (as == null)
 			return null;
-		rv += as;
 		if (cur() != '>')
 			return null;
 		accept();
 		pCFWS();
-		return ofs.accept(rv);
+		return ofs.accept(as);
 	}
 }
 
-protected String
+protected UnfoldedSubstring
 pDisplayName()
 {
 	return pPhrase();
 }
 
-protected String
+protected UnfoldedSubstring
 pPhrase()
 {
-	String rv = "";
-	String s = pWord();
-	if (s == null)
+	final int beg = pos();
+	pCFWS();
+	final int ofs = pos();
+	// jmp(beg); but pWord() starts with pCFWS() in all cases anyway
+	Word w = pWord();
+	if (w == null) {
+		jmp(beg);
 		return null;
-	rv += s;
-	while ((s = pWord()) != null)
-		rv += s;
-	return rv;
+	}
+	StringBuilder d = new StringBuilder();
+	int lpos;
+	do {
+		d.append(w.body.getData() == null ? w.body.toString() :
+		    (String)w.body.getData());
+		lpos = w.body.end;
+		val wsp = w.cfws;
+		w = pWord();
+		if (w != null && wsp != null)
+			d.append(unfold(wsp).toString());
+	} while (w != null);
+	return unfold(new Substring(ofs, lpos, d.toString()));
 }
 
-protected String
+protected Word
 pWord()
 {
-	String rv;
+	Word rv;
 	if ((rv = pAtom()) != null)
 		return rv;
 	if ((rv = pQuotedString()) != null)
@@ -589,95 +704,29 @@ pWord()
 	return null;
 }
 
-protected String
+/**
+ * Returns the parse result of the atom production:
+ *
+ * result.body is a raw Substring of the atom, with surrounding CFWS stripped
+ * (no unfolding necessary), no extra data
+ *
+ * result.cfws is null or the trailing CFWS as raw Substring, not unfolded
+ *
+ * @return result (see above)
+ */
+protected Word
 pAtom()
 {
 	try (val ofs = new Parser.Txn()) {
-		String rv = "";
 		pCFWS();
-		int c = pAtext();
-		if (c == -1)
+		if (!isAtext(cur()))
 			return null;
-		rv += c;
-		while ((c = pAtext()) != -1)
-			rv += c;
-		pCFWS();
-		return ofs.accept(rv);
+		ofs.commit();
+		skip(Path::isAtext);
+		val atom = ofs.substring();
+		val wsp = pCFWS();
+		return ofs.accept(new Word(atom, wsp));
 	}
-}
-
-static boolean
-is(final int c, final byte what)
-{
-	if (c < 0 || c > ASCII.length)
-		return false;
-	return (ASCII[c] & what) != 0;
-}
-
-protected int
-pAtext()
-{
-	final int c = cur();
-	if (is(c, IS_ATEXT)) {
-		accept();
-		return c;
-	}
-	return -1;
-}
-
-protected String
-pDotAtomText()
-{
-	String rv = "";
-	int c = pAtext();
-	if (c == -1)
-		return null;
-	rv += c;
-	while ((c = pAtext()) != -1)
-		rv += c;
-	while (cur() == '.' && is(peek(), IS_ATEXT)) {
-		rv += '.';
-		accept();
-		while ((c = pAtext()) != -1)
-			rv += c;
-	}
-	return rv;
-}
-
-protected String
-pDotAtom()
-{
-	final int ofs = pos();
-	pCFWS();
-	final String rv = pDotAtomText();
-	if (rv == null) {
-		jmp(ofs);
-		return null;
-	}
-	pCFWS();
-	return rv;
-}
-
-protected int
-pQtext()
-{
-	final int c = cur();
-	if (is(c, IS_QTEXT)) {
-		accept();
-		return c;
-	}
-	return -1;
-}
-
-protected int
-pCtext()
-{
-	final int c = cur();
-	if (is(c, IS_CTEXT)) {
-		accept();
-		return c;
-	}
-	return -1;
 }
 
 protected int
@@ -686,8 +735,7 @@ pQuotedPair()
 	if (cur() == '\\') {
 		final int c = peek();
 		if ((c >= 0x20 && c <= 0x7E) || c == 0x09) {
-			accept();
-			accept();
+			bra(2);
 			return c;
 		}
 	}
@@ -697,35 +745,98 @@ pQuotedPair()
 protected int
 pQcontent()
 {
-	final int qt = pQtext();
-	return qt != -1 ? qt : pQuotedPair();
+	final int c = cur();
+	if (isQtext(c)) {
+		accept();
+		return c;
+	}
+	return pQuotedPair();
 }
 
-protected String
+/**
+ * Returns the parse result of the quoted-string production:
+ *
+ * result.body is an {@link UnfoldedSubstring} of the entire quoted string, with
+ * surrounding double quotes; its String data is dequoted and backslash-removed
+ *
+ * result.cfws is null or the trailing CFWS as raw Substring, not unfolded
+ *
+ * @return result (see above)
+ */
+protected Word
 pQuotedString()
 {
 	try (val ofs = new Parser.Txn()) {
-		String rv = "";
 		pCFWS();
 		if (cur() != '"')
 			return null;
+		val content = new Parser.Txn();
 		accept();
+
+		StringBuilder rv = new StringBuilder();
 		while (true) {
-			final String wsp = pFWS();
+			val wsp = pFWS();
 			if (wsp != null)
-				rv += wsp;
+				rv.append(unfold(wsp).toString());
 			final int qc = pQcontent();
 			if (qc == -1)
 				break;
-			rv += qc;
+			rv.append(qc);
 		}
 		// [FWS] after *([FWS] qcontent) already parsed above
 		if (cur() != '"')
 			return null;
 		accept();
-		pCFWS();
-		return ofs.accept(rv);
+		val qs = unfold(content.substring(rv.toString()));
+		val wsp = pCFWS();
+		return ofs.accept(new Word(qs, wsp));
 	}
+}
+
+static boolean
+isWSP(final int cur)
+{
+	return cur == 0x20 || cur == 0x09;
+}
+
+/**
+ * Parses FWS
+ *
+ * @return raw Substring, not unfolded
+ */
+protected Substring
+pFWS()
+{
+	String w = null;
+
+	int c = cur();
+	if (isWSP(c)) {
+		final int beg = pos();
+		c = skip(Path::isWSP);
+		w = s().substring(beg, pos());
+	}
+
+	if (c != 0x0D && c != 0x0A)
+		return w;
+	final int c2 = peek();
+	if (c == 0x0D && c2 == 0x0A) {
+		// possibly need backtracking
+		if (!isWSP(bra(2))) {
+			bra(-2);
+			return w;
+		}
+	} else {
+		if (!isWSP(c2))
+			return w;
+		accept();
+	}
+
+	final int p1 = pos();
+	skip(Path::isWSP);
+	final int p2 = pos();
+	final String w2 = s().substring(p1, p2);
+	// unfold
+	return w == null ? w2 : w + w2;
 }
 
 protected String
@@ -764,10 +875,15 @@ pComment()
 	}
 }
 
-protected String
+/**
+ * Parses CFWS
+ *
+ * @return raw Substring, not unfolded
+ */
+protected Substring
 pCFWS()
 {
-	String wsp = pFWS();
+	Substring wsp = pFWS();
 	String c = pComment();
 	// second alternative (FWS⇒success or null⇒failure)?
 	if (c == null)
@@ -786,48 +902,40 @@ pCFWS()
 	}
 }
 
-static boolean
-isWSP(final int cur)
-{
-	return cur == 0x20 || cur == 0x09;
-}
-
 protected String
-pFWS()
+pDotAtomText()
 {
-	String w = null;
-
-	int c = cur();
-	if (isWSP(c)) {
-		final int beg = pos();
-		c = skip(Path::isWSP);
-		w = s().substring(beg, pos());
-	}
-
-	if (c != 0x0D && c != 0x0A)
-		return w;
-	final int c2 = peek();
-	if (c == 0x0D && c2 == 0x0A) {
-		// possibly need backtracking
-		if (!isWSP(bra(2))) {
-			bra(-2);
-			return w;
-		}
-	} else {
-		if (!isWSP(c2))
-			return w;
+	String rv = "";
+	int c = pAtext();
+	if (c == -1)
+		return null;
+	rv += c;
+	while ((c = pAtext()) != -1)
+		rv += c;
+	while (cur() == '.' && is(peek(), IS_ATEXT)) {
+		rv += '.';
 		accept();
+		while ((c = pAtext()) != -1)
+			rv += c;
 	}
-
-	final int p1 = pos();
-	skip(Path::isWSP);
-	final int p2 = pos();
-	final String w2 = s().substring(p1, p2);
-	// unfold
-	return w == null ? w2 : w + w2;
+	return rv;
 }
 
 protected String
+pDotAtom()
+{
+	final int ofs = pos();
+	pCFWS();
+	final String rv = pDotAtomText();
+	if (rv == null) {
+		jmp(ofs);
+		return null;
+	}
+	pCFWS();
+	return rv;
+}
+
+protected AddrSpec
 pAddrSpec()
 {
 	try (val ofs = new Parser.Txn()) {
@@ -894,17 +1002,6 @@ pDomainLiteral()
 		pCFWS();
 		return ofs.accept(rv);
 	}
-}
-
-protected int
-pDtext()
-{
-	final int c = cur();
-	if (is(c, IS_DTEXT)) {
-		accept();
-		return c;
-	}
-	return -1;
 }
 
 }

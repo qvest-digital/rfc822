@@ -213,3 +213,7 @@ atom: strip CFWS around, return raw Substring
 word: return whatever atom or quoted-string returns
 phrase: strip leading CFWS, take position, collect words,
 	return new unfolded substring from taken pos to eod of last word
+	and String data
+
+comment: returns not-unfolded Substring, user must unfold it;
+	 unfolded form is human-visible form
