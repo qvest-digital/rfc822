@@ -30,6 +30,7 @@ import java.net.InetAddress;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Locale;
 import java.util.function.Predicate;
 import java.util.stream.Collectors;
 
@@ -954,10 +955,7 @@ pLocalPart()
 	// us is always unfolded because:
 	// - pDotAtom returns a raw Substring comprised of atext and ‘.’ only
 	// - pQuotedString returns UnfoldedSubstring
-	boolean v = true;
-	//XXX validate us
-	// TODO: quoted-string must not contain HTAB
-	// TODO: up to 64 octets ( = chars, because only ASCII is valid, checked)
+	boolean v = us.length() <= 64 && us.indexOf(0x09) == -1;
 	return new AddrSpecSIDE(ss, us, v);
 }
 
@@ -991,8 +989,7 @@ pDomain()
 	if (da != null) {
 		// dot-atom form of domain, does not need unfolding
 		final String us = da.toString();
-		boolean v = true;
-		//XXX validate us
+		boolean v = FQDN.isDomain(us);
 		return new AddrSpecSIDE(da, us, v);
 	}
 	final Substring dl = pDomainLiteral();
@@ -1002,8 +999,16 @@ pDomain()
 	final String dlu = unfold(dls);
 	final String us = dlu == null ? dls : dlu;
 	// validation "must not contain HTAB" implicit from IPAddress check
-	InetAddress v = null;
-	//XXX validate us
+	InetAddress v;
+	if (us.toLowerCase(Locale.ROOT).startsWith("[ipv6:")) {
+		final String addr = us.substring(6, us.length() - 1);
+		final IPAddress p = IPAddress.of(addr);
+		v = p == null ? null : p.asIPv6Address();
+	} else {
+		final String addr = us.substring(1, us.length() - 1);
+		final IPAddress p = IPAddress.of(addr);
+		v = p == null ? null : p.asIPv4Address();
+	}
 	return new UnfoldedSubstring(dl, us, v);
 }
 
@@ -1020,10 +1025,19 @@ pAddrSpec()
 		val dom = pDomain();
 		if (dom == null)
 			return null;
-		final boolean v = lp.isValid() && ((dom instanceof AddrSpecSIDE) ?
-		    ((AddrSpecSIDE)dom).isValid() : dom.getData() != null);
-		//XXX other validation checks necessary?
-		// TODO: addr-spec up to 254 octets (= chars, already checked)
+		//final boolean v = lp.isValid() && ((dom instanceof AddrSpecSIDE) ?
+		//    ((AddrSpecSIDE)dom).isValid() : dom.getData() != null) &&
+		//    /* local-part + '@' + domain; octets = characters (ASCII) */
+		//    (lp.toString().length() + 1 + dom.toString().length()) <= 254;
+		boolean v = true;
+		if (!lp.isValid())
+			v = false;
+		else if ((dom instanceof AddrSpecSIDE) && !((AddrSpecSIDE)dom).isValid())
+			v = false;
+		else if (!(dom instanceof AddrSpecSIDE) && dom.getData() == null)
+			v = false;
+		else if ((lp.toString().length() + 1 + dom.toString().length()) > 254)
+			v = false;
 		return ofs.accept(new AddrSpec(lp, dom, v));
 	}
 }
