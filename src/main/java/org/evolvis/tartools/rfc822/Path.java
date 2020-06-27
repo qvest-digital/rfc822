@@ -171,7 +171,15 @@ protected class UnfoldedSubstring extends Substring {
 
 	private UnfoldedSubstring(final Substring ss, final String us)
 	{
-		super(ss.beg, ss.end, ss.getData());
+		super(ss);
+		string = us;
+	}
+
+	//XXX tbd later
+	private UnfoldedSubstring(final Substring ss, final String us,
+	    final Object data)
+	{
+		super(ss, data);
 		string = us;
 	}
 
@@ -179,6 +187,30 @@ protected class UnfoldedSubstring extends Substring {
 	public String toString()
 	{
 		return string;
+	}
+
+}
+
+/**
+ * Representation for a local-part (FWS unfolded) or a domain (dot-atom only)
+ *
+ * @author mirabilos (t.glaser@tarent.de)
+ */
+@Getter
+protected class AddrSpecSIDE extends /*Substring*/ UnfoldedSubstring {
+
+	private final boolean valid;
+
+	private AddrSpecSIDE(final Substring src, final String us, final boolean v)
+	{
+		super(src, us, us);
+		valid = v;
+	}
+
+	@Override
+	public String toString()
+	{
+		return (String)getData();
 	}
 
 }
@@ -890,105 +922,106 @@ pCFWS()
 	return new Substring(beg, pos());
 }
 
-protected String
-pDotAtomText()
-{
-	String rv = "";
-	int c = pAtext();
-	if (c == -1)
-		return null;
-	rv += c;
-	while ((c = pAtext()) != -1)
-		rv += c;
-	while (cur() == '.' && is(peek(), IS_ATEXT)) {
-		rv += '.';
-		accept();
-		while ((c = pAtext()) != -1)
-			rv += c;
-	}
-	return rv;
-}
-
-protected String
+protected Substring
 pDotAtom()
 {
-	final int ofs = pos();
-	pCFWS();
-	final String rv = pDotAtomText();
-	if (rv == null) {
-		jmp(ofs);
-		return null;
+	try (val ofs = new Parser.Txn()) {
+		pCFWS();
+		if (isAtext(cur()))
+			return null;
+		ofs.commit();
+		// pDotAtomText {
+		int c;
+		do {
+			accept(); // first round: first atext; other rounds: dot
+			c = skip(Path::isAtext);
+		} while (c == '.' && isAtext(peek()));
+		// pDotAtomText }
+		val rv = ofs.substring();
+		pCFWS();
+		return ofs.accept(rv);
 	}
-	pCFWS();
-	return rv;
+}
+
+protected AddrSpecSIDE
+pLocalPart()
+{
+	final Substring da = pDotAtom();
+	final Word qs = da == null ? pQuotedString() : null;
+	if (da == null && qs == null)
+		return null;
+	final Substring ss = da == null ? qs.body : da;
+	final String us = ss.toString();
+	// us is always unfolded because:
+	// - pDotAtom returns a raw Substring comprised of atext and ‘.’ only
+	// - pQuotedString returns UnfoldedSubstring
+	boolean v = true;
+	//XXX validate us
+	return new AddrSpecSIDE(ss, us, v);
+}
+
+protected Substring
+pDomainLiteral()
+{
+	try (val ofs = new Parser.Txn()) {
+		pCFWS();
+		if (cur() != '[')
+			return null;
+		val content = new Parser.Txn();
+		accept();
+		pFWS();
+		while (isDtext(cur())) {
+			accept();
+			pFWS();
+		}
+		if (cur() != ']')
+			return null;
+		accept();
+		val rv = content.substring();
+		pCFWS();
+		return ofs.accept(rv);
+	}
+}
+
+protected UnfoldedSubstring
+pDomain()
+{
+	final Substring da = pDotAtom();
+	if (da != null) {
+		// dot-atom form of domain, does not need unfolding
+		final String us = da.toString();
+		boolean v = true;
+		//XXX validate us
+		return new AddrSpecSIDE(da, us, v);
+	}
+	final Substring dl = pDomainLiteral();
+	if (dl == null)
+		return null;
+	final String dls = dl.toString();
+	final String dlu = unfold(dls);
+	final String us = dlu == null ? dls : dlu;
+	InetAddress v = null;
+	//XXX validate us
+	return new UnfoldedSubstring(dl, us, v);
 }
 
 protected AddrSpec
 pAddrSpec()
 {
 	try (val ofs = new Parser.Txn()) {
-		final String lp = pLocalPart();
+		val lp = pLocalPart();
 		if (lp == null)
 			return null;
 		if (cur() != '@')
 			return null;
 		accept();
-		final String dom = pDomain();
+		val dom = pDomain();
 		if (dom == null)
 			return null;
-		// pass on validation results of lp and dom
-		return ofs.accept(lp + "@" + dom);
-	}
-}
-
-protected String
-pLocalPart()
-{
-	String rv = pDotAtom();
-	if (rv == null)
-		rv = pQuotedString();
-	if (rv == null)
-		return null;
-	// validate
-	return rv;
-}
-
-protected String
-pDomain()
-{
-	String rv = pDotAtom();
-	if (rv == null)
-		rv = pDomainLiteral();
-	if (rv == null)
-		return null;
-	// validate
-	return rv;
-}
-
-protected String
-pDomainLiteral()
-{
-	try (val ofs = new Parser.Txn()) {
-		String rv = "";
-		pCFWS();
-		if (cur() != '[')
-			return null;
-		accept();
-		while (true) {
-			final String wsp = pFWS();
-			if (wsp != null)
-				rv += wsp;
-			final int dt = pDtext();
-			if (dt == -1)
-				break;
-			rv += dt;
-		}
-		// [FWS] after *([FWS] dtext) already parsed above
-		if (cur() != ']')
-			return null;
-		accept();
-		pCFWS();
-		return ofs.accept(rv);
+		final boolean v = lp.isValid() && ((dom instanceof AddrSpecSIDE) ?
+		    ((AddrSpecSIDE)dom).isValid() : dom.getData() != null);
+		//XXX other validation checks necessary?
+		return ofs.accept(new AddrSpec(lp, dom, v));
 	}
 }
 
