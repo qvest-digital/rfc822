@@ -20,7 +20,6 @@ package org.evolvis.tartools.rfc822;
  * of said person’s immediate fault when using the work as intended.
  */
 
-import lombok.Cleanup;
 import lombok.val;
 
 import java.util.ArrayList;
@@ -62,27 +61,29 @@ isWsp(final int cur, final int next)
 String
 keyword()
 {
-	@Cleanup val beg = new Parser.Txn();
-	if (skip(TestParser::isWsp) == -1)
-		return null;
-	@Cleanup val ofs = new Parser.Txn();
-	for (final String keyword : keywords) {
-		if (s().startsWith(keyword, pos())) {
-			final int nextch = bra(keyword.length());
-			if (nextch < 'a' || nextch > 'z') {
-				final Substring s = ofs.substring();
-				// COMMIT in reverse BEGIN order
-				ofs.commit();
-				// last COMMIT implied here
-				//return beg.accept(keyword);
-				// the above would be normal but
-				// we must test the below:
-				return beg.accept(s.toString());
+	try (val beg = new Parser.Txn()) {
+		if (skip(TestParser::isWsp) == -1)
+			return null;
+		try (val ofs = new Parser.Txn()) {
+			for (final String keyword : keywords) {
+				if (s().startsWith(keyword, pos())) {
+					final int nextch = bra(keyword.length());
+					if (nextch < 'a' || nextch > 'z') {
+						final Substring s = ofs.substring();
+						// COMMIT in reverse BEGIN order
+						ofs.commit();
+						// last COMMIT implied here
+						//return beg.accept(keyword);
+						// the above would be normal but
+						// we must test the below:
+						return beg.accept(s.toString());
+					}
+					ofs.rollback();
+				}
 			}
-			ofs.rollback();
 		}
+		return null;
 	}
-	return null;
 }
 
 String
