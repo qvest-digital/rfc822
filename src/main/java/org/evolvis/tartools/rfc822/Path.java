@@ -635,12 +635,12 @@ pGroup()
 		if (cur() != ':')
 			return null;
 		accept();
-		// [pGroupList] {
+		// { [pGroupList]
 		final AddressList ml = pMailboxList();
 		if (ml == null)
 			pCFWS();
 		val gl = ml == null ? new ArrayList<Address>() : ml.addresses;
-		// [pGroupList] }
+		// } [pGroupList]
 		if (cur() != ';')
 			return null;
 		accept();
@@ -929,13 +929,13 @@ pDotAtom()
 		if (isAtext(cur()))
 			return null;
 		ofs.commit();
-		// pDotAtomText {
+		// { pDotAtomText
 		int c;
 		do {
 			accept(); // first round: first atext; other rounds: dot
 			c = skip(Path::isAtext);
 		} while (c == '.' && isAtext(peek()));
-		// pDotAtomText }
+		// } pDotAtomText
 		val rv = ofs.substring();
 		pCFWS();
 		return ofs.accept(rv);
