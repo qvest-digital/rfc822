@@ -268,6 +268,27 @@ protected class Substring {
 	}
 
 	/**
+	 * Copy constructor
+	 *
+	 * @param src Substring to copy positions and user data from
+	 */
+	protected Substring(final Substring src)
+	{
+		this(src.beg, src.end, src.data);
+	}
+
+	/**
+	 * Copy constructor with data override
+	 *
+	 * @param src  Substring to copy positions from
+	 * @param data user-specified data to associate with the new object
+	 */
+	protected Substring(final Substring src, final Object data)
+	{
+		this(src.beg, src.end, data);
+	}
+
+	/**
 	 * Creates a new input substring from parser positions
 	 *
 	 * @param beg  offset of the beginning of the substring
