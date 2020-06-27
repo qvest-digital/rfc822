@@ -956,6 +956,8 @@ pLocalPart()
 	// - pQuotedString returns UnfoldedSubstring
 	boolean v = true;
 	//XXX validate us
+	// TODO: quoted-string must not contain HTAB
+	// TODO: up to 64 octets ( = chars, because only ASCII is valid, checked)
 	return new AddrSpecSIDE(ss, us, v);
 }
 
@@ -999,6 +1001,7 @@ pDomain()
 	final String dls = dl.toString();
 	final String dlu = unfold(dls);
 	final String us = dlu == null ? dls : dlu;
+	// validation "must not contain HTAB" implicit from IPAddress check
 	InetAddress v = null;
 	//XXX validate us
 	return new UnfoldedSubstring(dl, us, v);
@@ -1020,6 +1023,7 @@ pAddrSpec()
 		final boolean v = lp.isValid() && ((dom instanceof AddrSpecSIDE) ?
 		    ((AddrSpecSIDE)dom).isValid() : dom.getData() != null);
 		//XXX other validation checks necessary?
+		// TODO: addr-spec up to 254 octets (= chars, already checked)
 		return ofs.accept(new AddrSpec(lp, dom, v));
 	}
 }

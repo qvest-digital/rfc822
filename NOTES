@@ -12,7 +12,7 @@ x DIGIT          =  %x30-39
 x ALPHA          =  %x41-5A / %x61-7A   ; A-Z / a-z
   VCHAR          =  %x21-7E
 
-   quoted-pairSMTP =   "\" %x20-7E		; no HTAB
+x  quoted-pairSMTP =   "\" %x20-7E		; no HTAB
 x  quoted-pair     =   "\" (VCHAR / WSP)
 x  FWS             =   [*WSP CRLF] 1*WSP	; min. 1 WSP
 x  ctext           =   %d33-39 /          ; Printable US-ASCII
@@ -104,10 +104,10 @@ x  label           =   (ALPHA / DIGIT) [ *(ALPHA / DIGIT / "-") (ALPHA / DIGIT) 
    IPv6tagged	   =   "IPv6:" IPv6address	; case-insensitive tag
 
 Further constraints:
-• local-part up to 64 octets
+x• local-part up to 64 octets
 x• domain up to 255 octets
 x• label up to 63 octets
-• addr-spec up to 254 octets (due to RFC 5321 Forward-path limit)
+x• addr-spec up to 254 octets (due to RFC 5321 Forward-path limit)
 
 Examples
 
