@@ -807,13 +807,13 @@ isWSP(final int cur)
 protected Substring
 pFWS()
 {
-	String w = null;
+	final int beg = pos();
+	Substring w = null;
 
 	int c = cur();
 	if (isWSP(c)) {
-		final int beg = pos();
 		c = skip(Path::isWSP);
-		w = s().substring(beg, pos());
+		w = new Substring(beg, pos());
 	}
 
 	if (c != 0x0D && c != 0x0A)
@@ -831,47 +831,41 @@ pFWS()
 		accept();
 	}
 
-	final int p1 = pos();
 	skip(Path::isWSP);
-	final int p2 = pos();
-	final String w2 = s().substring(p1, p2);
-	// unfold
-	return w == null ? w2 : w + w2;
+	return new Substring(beg, pos());
 }
 
-protected String
+protected boolean
 pCcontent()
 {
-	int c;
-	if ((c = pCtext()) != -1)
-		return String.valueOf((char)c);
-	if ((c = pQuotedPair()) != -1)
-		return String.valueOf((char)c);
-	return pComment();
+	if (isCtext(cur())) {
+		accept();
+		return true;
+	}
+	return pQuotedPair() != -1 || pComment() != null;
 }
 
-protected String
+/**
+ * Parses comment
+ *
+ * @return raw Substring, not unfolded
+ *     (unfolded is human-visible form for now; may wish to simplify quoted-pairs)
+ */
+protected Substring
 pComment()
 {
 	try (val ofs = new Parser.Txn()) {
-		String rv = "";
 		if (cur() != '(')
 			return null;
 		accept();
-		while (true) {
-			final String wsp = pFWS();
-			if (wsp != null)
-				rv += wsp;
-			final String cc = pCcontent();
-			if (cc == null)
-				break;
-			rv += cc;
-		}
+		do {
+			pFWS();
+		} while (pCcontent());
 		// [FWS] after *([FWS] ccontent) already parsed above
 		if (cur() != ')')
 			return null;
 		accept();
-		return ofs.accept(rv);
+		return ofs.accept(ofs.substring());
 	}
 }
 
@@ -883,23 +877,17 @@ pComment()
 protected Substring
 pCFWS()
 {
-	Substring wsp = pFWS();
-	String c = pComment();
+	final int beg = pos();
+	val wsp = pFWS();
 	// second alternative (FWS⇒success or null⇒failure)?
-	if (c == null)
+	if (pComment() == null)
 		return wsp;
 	// first alternative, at least one comment, optional FWS before
-	String rv = wsp == null ? c : wsp + c;
-	while (true) {
-		wsp = pFWS();
-		if (wsp != null)
-			rv += wsp;
-		if ((c = pComment()) == null) {
-			// [FWS] after 1*([FWS] comment) already parsed above
-			return rv;
-		}
-		rv += c;
-	}
+	do {
+		pFWS();
+	} while (pComment() != null);
+	// [FWS] after 1*([FWS] comment) already parsed above
+	return new Substring(beg, pos());
 }
 
 protected String
