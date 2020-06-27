@@ -422,6 +422,7 @@ public final class AddressList {
 	 * present); note that if this is false, it may be either a mailbox-list
 	 * or an address-list whose address members are all mailbox)
 	 */
+	@SuppressWarnings("squid:S1700")
 	final boolean addressList;
 
 	private AddressList(@NonNull final List<Address> addresses)
