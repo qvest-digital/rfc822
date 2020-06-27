@@ -20,6 +20,7 @@ package org.evolvis.tartools.rfc822;
  * of said person’s immediate fault when using the work as intended.
  */
 
+import lombok.Cleanup;
 import lombok.SneakyThrows;
 import lombok.val;
 
@@ -119,53 +120,53 @@ dec(final int c, final int limit)
 protected byte[]
 pIPv4Address()
 {
-	try (val ofs = new Parser.Txn()) {
-		byte[] addr = new byte[4];
-		for (int a = 0; a < addr.length; ++a) {
-			if (a > 0) {
-				if (cur() != '.')
-					return null;
-				accept();
-			}
-			final int b1 = cur();
-			final int b2 = peek();
-			int l2 = '9';
-			int l3 = '9';
-			switch (b1) {
-			case '2':
-				l2 = '5';
-				if (b2 == '5')
-					l3 = '5';
-				/* FALLTHROUGH */
-			case '1':
-				if (dec(b2, l2)) {
-					int v = Character.digit(b1, 10) * 10 + Character.digit(b2, 10);
-					final int b3 = bra(2);
-					if (dec(b3, l3)) {
-						v = v * 10 + Character.digit(b3, 10);
-						accept();
-					}
-					addr[a] = (byte)v;
-					continue;
+	@Cleanup val ofs = new Parser.Txn();
+	byte[] addr = new byte[4];
+	for (int a = 0; a < addr.length; ++a) {
+		if (a > 0) {
+			if (cur() != '.')
+				return null;
+			accept();
+		}
+		final int b1 = cur();
+		final int b2 = peek();
+		int l2 = '9';
+		int l3 = '9';
+		switch (b1) {
+		case '2':
+			l2 = '5';
+			if (b2 == '5')
+				l3 = '5';
+			/* FALLTHROUGH */
+		case '1':
+			if (dec(b2, l2)) {
+				int v = Character.digit(b1, 10) * 10 +
+				    Character.digit(b2, 10);
+				final int b3 = bra(2);
+				if (dec(b3, l3)) {
+					v = v * 10 + Character.digit(b3, 10);
+					accept();
 				}
-				break;
-			case '0':
-				addr[a] = (byte)0;
-				accept();
+				addr[a] = (byte)v;
 				continue;
 			}
-			if (!dec(b1, '9'))
-				return null;
-			int v = Character.digit(b1, 10);
+			break;
+		case '0':
+			addr[a] = (byte)0;
 			accept();
-			if (dec(b2, '9')) {
-				v = v * 10 + Character.digit(b2, 10);
-				accept();
-			}
-			addr[a] = (byte)v;
+			continue;
 		}
-		return ofs.accept(addr);
+		if (!dec(b1, '9'))
+			return null;
+		int v = Character.digit(b1, 10);
+		accept();
+		if (dec(b2, '9')) {
+			v = v * 10 + Character.digit(b2, 10);
+			accept();
+		}
+		addr[a] = (byte)v;
 	}
+	return ofs.accept(addr);
 }
 
 /**
@@ -238,44 +239,43 @@ rtnIPv6Address(final Parser.Txn txn, final List<Integer> h16s,
 protected byte[]
 pIPv6Address()
 {
-	try (val ofs = new Parser.Txn()) {
-		final List<Integer> beforeDoubleColon = new ArrayList<>();
-		boolean hasDoubleColon = false;
-		int cnt = 0;
-		while (cnt < 8) {
-			if (cur() == ':' && peek() == ':') {
-				hasDoubleColon = true;
-				break;
-			}
-			if (cnt > 0) {
-				if (cur() != ':')
-					break;
-				accept();
-			}
-			if (h16OrIPv4(beforeDoubleColon, cnt == 6))
-				break;
-			++cnt;
+	@Cleanup val ofs = new Parser.Txn();
+	final List<Integer> beforeDoubleColon = new ArrayList<>();
+	boolean hasDoubleColon = false;
+	int cnt = 0;
+	while (cnt < 8) {
+		if (cur() == ':' && peek() == ':') {
+			hasDoubleColon = true;
+			break;
 		}
-		// arrive here either with double colon (0 ≤ cnt ≤ 7)
-		// or at end of h16 list (0 ≤ cnt ≤ 8)
-		if (!hasDoubleColon)
-			return rtnIPv6Address(ofs, beforeDoubleColon, null);
-		// remainder string begins with double colon, leave ONE
-		accept();
-		final List<Integer> afterDoubleColon = new ArrayList<>();
-		int maxh16 = 7 - cnt;
-		while (maxh16 > 0) {
+		if (cnt > 0) {
 			if (cur() != ':')
 				break;
 			accept();
-			// must check this first
-			if (h16OrIPv4(afterDoubleColon, maxh16 >= 2))
-				break;
-			--maxh16;
 		}
-		// return result
-		return rtnIPv6Address(ofs, beforeDoubleColon, afterDoubleColon);
+		if (h16OrIPv4(beforeDoubleColon, cnt == 6))
+			break;
+		++cnt;
 	}
+	// arrive here either with double colon (0 ≤ cnt ≤ 7)
+	// or at end of h16 list (0 ≤ cnt ≤ 8)
+	if (!hasDoubleColon)
+		return rtnIPv6Address(ofs, beforeDoubleColon, null);
+	// remainder string begins with double colon, leave ONE
+	accept();
+	final List<Integer> afterDoubleColon = new ArrayList<>();
+	int maxh16 = 7 - cnt;
+	while (maxh16 > 0) {
+		if (cur() != ':')
+			break;
+		accept();
+		// must check this first
+		if (h16OrIPv4(afterDoubleColon, maxh16 >= 2))
+			break;
+		--maxh16;
+	}
+	// return result
+	return rtnIPv6Address(ofs, beforeDoubleColon, afterDoubleColon);
 }
 
 }
