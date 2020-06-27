@@ -801,7 +801,7 @@ pQuotedString()
 		pCFWS();
 		if (cur() != '"')
 			return null;
-		val content = new Parser.Txn();
+		final int content = pos();
 		accept();
 
 		StringBuilder rv = new StringBuilder();
@@ -818,7 +818,7 @@ pQuotedString()
 		if (cur() != '"')
 			return null;
 		accept();
-		val qs = unfold(content.substring(rv.toString()));
+		val qs = unfold(new Substring(content, pos(), rv.toString()));
 		val wsp = pCFWS();
 		return ofs.accept(new Word(qs, wsp));
 	}
@@ -966,7 +966,7 @@ pDomainLiteral()
 		pCFWS();
 		if (cur() != '[')
 			return null;
-		val content = new Parser.Txn();
+		final int content = pos();
 		accept();
 		pFWS();
 		while (isDtext(cur())) {
@@ -976,7 +976,7 @@ pDomainLiteral()
 		if (cur() != ']')
 			return null;
 		accept();
-		val rv = content.substring();
+		val rv = new Substring(content, pos());
 		pCFWS();
 		return ofs.accept(rv);
 	}
