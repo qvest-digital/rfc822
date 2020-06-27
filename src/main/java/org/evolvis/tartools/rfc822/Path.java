@@ -175,7 +175,6 @@ protected class UnfoldedSubstring extends Substring {
 		string = us;
 	}
 
-	//XXX tbd later
 	private UnfoldedSubstring(final Substring ss, final String us,
 	    final Object data)
 	{
@@ -197,13 +196,13 @@ protected class UnfoldedSubstring extends Substring {
  * @author mirabilos (t.glaser@tarent.de)
  */
 @Getter
-protected class AddrSpecSIDE extends /*Substring*/ UnfoldedSubstring {
+protected class AddrSpecSIDE extends Substring {
 
 	private final boolean valid;
 
 	private AddrSpecSIDE(final Substring src, final String us, final boolean v)
 	{
-		super(src, us, us);
+		super(src, us);
 		valid = v;
 	}
 
@@ -249,13 +248,12 @@ unfold(final String s)
  *
  * @return instance of an unfolded equivalent of the original substring
  */
-protected /*Substring*/ UnfoldedSubstring
+protected Substring
 unfold(final Substring ss)
 {
-	final String s = ss.toString();
-	final String u = unfold(s);
-	//if (u == null)
-	//	return ss;
+	final String u = unfold(ss.toString());
+	if (u == null)
+		return ss;
 	return new UnfoldedSubstring(ss, u);
 }
 
@@ -289,7 +287,7 @@ public final class AddrSpec {
 	 * the parsed string content is available as String getData()
 	 */
 	@NonNull
-	final UnfoldedSubstring localPart;
+	final Substring localPart;
 
 	/**
 	 * The domain of the addr-spec, either dot-atom (host.example.com)
@@ -298,7 +296,7 @@ public final class AddrSpec {
 	 * either the domain as String or the IP address as {@link InetAddress}
 	 */
 	@NonNull
-	final UnfoldedSubstring domain;
+	final Substring domain;
 
 	/**
 	 * Whether this addr-spec is actually valid according to DNS, SMTP,
@@ -339,7 +337,7 @@ public final class Address {
 	 * group (mandatory) with the human-readable / parsed form
 	 * with comments available via String {@link Substring#getData()}
 	 */
-	final UnfoldedSubstring label;
+	final Substring label;
 
 	/**
 	 * The addr-spec behind this mailbox [isGroup()==false]
@@ -356,7 +354,7 @@ public final class Address {
 	 */
 	final boolean valid;
 
-	private Address(final UnfoldedSubstring label, @NonNull final AddrSpec mailbox)
+	private Address(final Substring label, @NonNull final AddrSpec mailbox)
 	{
 		this.group = false;
 		this.label = label;
@@ -365,7 +363,7 @@ public final class Address {
 		this.valid = mailbox.isValid();
 	}
 
-	private Address(@NonNull final UnfoldedSubstring label, @NonNull final List<Address> mailboxen)
+	private Address(@NonNull final Substring label, @NonNull final List<Address> mailboxen)
 	{
 		this.group = true;
 		this.label = label;
@@ -630,7 +628,7 @@ protected Address
 pGroup()
 {
 	try (val ofs = new Parser.Txn()) {
-		final UnfoldedSubstring dn = pDisplayName();
+		final Substring dn = pDisplayName();
 		if (dn == null)
 			return null;
 		if (cur() != ':')
@@ -666,7 +664,7 @@ protected Address
 pNameAddr()
 {
 	try (val ofs = new Parser.Txn()) {
-		final UnfoldedSubstring dn = pDisplayName();
+		final Substring dn = pDisplayName();
 		final AddrSpec aa = pAngleAddr();
 		if (aa == null)
 			return null;
@@ -693,13 +691,13 @@ pAngleAddr()
 	}
 }
 
-protected UnfoldedSubstring
+protected Substring
 pDisplayName()
 {
 	return pPhrase();
 }
 
-protected UnfoldedSubstring
+protected Substring
 pPhrase()
 {
 	final int beg = pos();
@@ -983,7 +981,7 @@ pDomainLiteral()
 	}
 }
 
-protected UnfoldedSubstring
+protected Substring
 pDomain()
 {
 	final Substring da = pDotAtom();
