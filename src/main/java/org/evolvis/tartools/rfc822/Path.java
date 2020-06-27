@@ -356,7 +356,7 @@ public final class Address {
 	 */
 	final boolean valid;
 
-	protected Address(final UnfoldedSubstring label, @NonNull final AddrSpec mailbox)
+	private Address(final UnfoldedSubstring label, @NonNull final AddrSpec mailbox)
 	{
 		this.group = false;
 		this.label = label;
@@ -365,7 +365,7 @@ public final class Address {
 		this.valid = mailbox.isValid();
 	}
 
-	protected Address(@NonNull final UnfoldedSubstring label, @NonNull final List<Address> mailboxen)
+	private Address(@NonNull final UnfoldedSubstring label, @NonNull final List<Address> mailboxen)
 	{
 		this.group = true;
 		this.label = label;
@@ -426,7 +426,7 @@ public final class AddressList {
 	 */
 	final boolean addressList;
 
-	protected AddressList(@NonNull final List<Address> addresses)
+	private AddressList(@NonNull final List<Address> addresses)
 	{
 		this.addresses = addresses;
 		valid = !addresses.isEmpty() &&
