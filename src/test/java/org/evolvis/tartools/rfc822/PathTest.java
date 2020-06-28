@@ -252,16 +252,10 @@ public void testPos()
 		    val s = Collections.singletonList("a@example.com");
 		    assertIterableEquals(s, l.flattenAddrSpecs());
 	    });
-	t(S(RN), S(VI), S(RN), S(VI), "Meine Liste:a@example.com, b@example.com;", (l) -> {
+	val lto = "Test:a@example.com,b@example.com;";
+	t(S(RN), S(VO, lto), S(RN), S(VO, lto), "Test:a@example.com, b@example.com;", (l) -> {
 		assertNull(l.invalidsToString(), "invalids present");
-		val a = Collections.singletonList("Meine Liste:a@example.com, b@example.com;");
-		assertIterableEquals(a, l.flattenAddresses());
-		val s = Arrays.asList("a@example.com", "b@example.com");
-		assertIterableEquals(s, l.flattenAddrSpecs());
-	});
-	t(S(RN), S(VI), S(RN), S(VI), "Test:a@example.com, b@example.com;", (l) -> {
-		assertNull(l.invalidsToString(), "invalids present");
-		val a = Collections.singletonList("Test:a@example.com, b@example.com;");
+		val a = Collections.singletonList(lto);
 		assertIterableEquals(a, l.flattenAddresses());
 		val s = Arrays.asList("a@example.com", "b@example.com");
 		assertIterableEquals(s, l.flattenAddrSpecs());

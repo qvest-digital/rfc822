@@ -393,7 +393,7 @@ public final class Address {
 			return label == null ? mailbox.toString() :
 			    String.format("%s <%s>", label, mailbox);
 		return String.format("%s:%s;", label, mailboxen.stream().
-		    map(Address::toString).collect(Collectors.joining(", ")));
+		    map(Address::toString).collect(Collectors.joining(",")));
 	}
 
 }
