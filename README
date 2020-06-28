@@ -74,8 +74,7 @@ You can also validate hostnames…
 … and IP addresses, both IP and Legacy IP (a.k.a. IPv4):
 
 	final String ip = "2001:db8::1";
-	final IPAddress p = IPAddress.of(ip);
-	final InetAddress ip = p == null ? null : p.asIPv6Address();
+	final InetAddress ip = IPAddress.v6(ip);
 
 This API is what you get in the 0.1 release. (There are several
 other methods, especially toString() is useful.)

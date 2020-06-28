@@ -1002,12 +1002,10 @@ pDomain()
 	InetAddress v;
 	if (us.toLowerCase(Locale.ROOT).startsWith("[ipv6:")) {
 		final String addr = us.substring(6, us.length() - 1);
-		final IPAddress p = IPAddress.of(addr);
-		v = p == null ? null : p.asIPv6Address();
+		v = IPAddress.v6(addr);
 	} else {
 		final String addr = us.substring(1, us.length() - 1);
-		final IPAddress p = IPAddress.of(addr);
-		v = p == null ? null : p.asIPv4Address();
+		v = IPAddress.v4(addr);
 	}
 	return new UnfoldedSubstring(dl, us, v);
 }

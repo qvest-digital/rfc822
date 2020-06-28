@@ -70,7 +70,11 @@ val6(final String ip)
 public void testPos()
 {
 	inv4(null, false);
+	assertNull(IPAddress.v4(null));
+	assertNull(IPAddress.v6(null));
 	inv4("", true);
+	assertNull(IPAddress.v4(""));
+	assertNull(IPAddress.v6(""));
 	inv4(String.format("%65s", ""), false);
 	inv4("0.0.0.256", true);
 	inv4("256.0.0.0", true);

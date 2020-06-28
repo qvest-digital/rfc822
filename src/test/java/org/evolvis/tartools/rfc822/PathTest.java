@@ -236,7 +236,7 @@ public void testPos()
 	});
 	t(SN, SN, SN, SN, "@", null);
 	val s1 = S(VO, "a@example.com");
-	t(s1, s1, s1, s1, " a @ example.com ", (l) -> {
+	t(s1, s1, s1, s1, " a @ example.com \t ", (l) -> {
 		assertNull(l.invalidsToString(), "invalids present");
 		val e = Collections.singletonList("a@example.com");
 		assertIterableEquals(e, l.flattenAddresses());
@@ -438,6 +438,8 @@ public void testPos()
 	    "user@domain (comment(nested(ad(absurdum \\(-:))(et\\c)).pp)", null);
 	t(SN, null, null, null, "user@domain (comment", null);
 	t(SN, null, null, null, "user@", null);
+	t(SN, null, null, null, "user@domain.", null);
+	t(S(PO, "user@[do main]"), null, null, null, "user@[do\r\n main]", null);
 	t(SN, null, null, null, "user@[IPv6:fec0::1", null);
 	t(SV, null, null, SV, "user@[IPv6:fec0::1]", (l) -> {
 		val al = l.getAddresses();
@@ -490,6 +492,13 @@ public void testPos()
 	val lhmax = lp64 + "@" + lh33 + lh33 + lh33 + lh33 + lh33 + lp16 + ".1234567";
 	t(SV, null, null, null, lhmax, null);
 	t(SI, null, null, null, lhmax + "8", null);
+	t(SN, SV, SN, SV, "dis\"play\"name:;", null);
+	t(SI, null, null, null, "\"\\\t\"@domain", null);
+	val ut = Path.of("\\\n\\\u007F");
+	assertNotNull(ut, "failure in unit test for quoted-pair");
+	assertEquals(-1, ut.pQuotedPair());
+	ut.jmp(2);
+	assertEquals(-1, ut.pQuotedPair());
 }
 
 }

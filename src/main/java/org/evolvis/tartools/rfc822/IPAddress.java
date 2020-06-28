@@ -109,6 +109,42 @@ asIPv4Address()
 	return toAddress(pIPv4Address());
 }
 
+/**
+ * Parses the passed address as IP address (IPv6), excluding Zone ID.
+ *
+ * Note that the returned InetAddress object can be an {@link Inet4Address}
+ * object, for example if the passed address represents a v4-mapped address;
+ * in most cases it will be an {@link Inet6Address} object though. In either
+ * case, if the address is no valid IPv6 address (e.g. because it is an IPv4
+ * address), null will be returned instead, so the return value can be used
+ * to distinguish the address families, even if a v4-mapped address occurs.
+ *
+ * The {@link InetAddress#getHostName()} method will return the original
+ * string in all cases anyway.
+ *
+ * @return {@link InetAddress} representing the address, or null on failure
+ */
+public static InetAddress
+v6(final String address)
+{
+	val p = of(address);
+	return p == null ? null : p.asIPv6Address();
+}
+
+/**
+ * Parses the passed address as Legacy IP address (IPv4).
+ *
+ * The {@link InetAddress#getHostName()} method will return the original string.
+ *
+ * @return {@link InetAddress} representing the address, or null on failure
+ */
+public static InetAddress
+v4(final String address)
+{
+	val p = of(address);
+	return p == null ? null : p.asIPv4Address();
+}
+
 private static boolean
 dec(final int c, final int limit)
 {
