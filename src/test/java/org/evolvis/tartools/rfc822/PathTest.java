@@ -24,6 +24,7 @@ import lombok.AllArgsConstructor;
 import lombok.val;
 import org.junit.jupiter.api.Test;
 
+import java.net.InetAddress;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.function.Consumer;
@@ -221,9 +222,11 @@ public void testCtypes()
 @Test
 public void testPos()
 {
+	assertNull(Path.of(null));
 	val SN = S(RN);
 	val SI = S(PI);
 	val SV = S(VI);
+	t(SN, SN, SN, SN, "", null);
 	t(SV, SV, SV, SV, "user@host.domain.tld", null);
 	t(SN, SN, SV, SV, "a@example.com, b@example.com", (l) -> {
 		assertNull(l.invalidsToString(), "invalids present");
@@ -367,6 +370,37 @@ public void testPos()
 		assertIterableEquals(a, l.flattenAddresses());
 		val s = Arrays.asList("c@public.example", "joe@example.org", "jdoe@one.test");
 		assertIterableEquals(s, l.flattenAddrSpecs());
+		assertTrue(l.isValid());
+		val al = l.getAddresses();
+		assertNotNull(al);
+		assertEquals(1, al.size());
+		val a1 = al.get(0);
+		assertTrue(a1.isValid());
+		assertTrue(a1.isGroup());
+		assertNotNull(a1.getLabel());
+		assertEquals("A Group", a1.getLabel().toString());
+		assertNull(a1.getMailbox());
+		val ml = a1.getMailboxen();
+		assertNotNull(ml);
+		assertEquals(3, ml.size());
+		val m1 = ml.get(0);
+		assertTrue(m1.isValid());
+		assertFalse(m1.isGroup());
+		assertNotNull(m1.getLabel());
+		assertEquals("Chris Jones", m1.getLabel().toString());
+		val mbx = m1.getMailbox();
+		assertNotNull(mbx);
+		assertNull(m1.getMailboxen());
+		assertTrue(mbx.isValid());
+		val lp = mbx.getLocalPart();
+		val dom = mbx.getDomain();
+		assertNotNull(lp);
+		assertNotNull(dom);
+		assertEquals("c", lp.toString());
+		assertEquals("c", lp.getData());
+		assertTrue(dom instanceof Path.AddrSpecSIDE);
+		assertEquals("public.example", dom.toString());
+		assertEquals("public.example", dom.getData());
 	});
 	val i16 = "(Empty list)(start)Hidden recipients  :(nobody(that I know))  ; ";
 	val a16 = "Hidden recipients:;";
@@ -378,6 +412,82 @@ public void testPos()
 		val s = Collections.emptyList();
 		assertIterableEquals(s, l.flattenAddrSpecs());
 	});
+	// more synthetic ones
+	val lp16 = "0123456789ABCDEF";
+	val lp32 = lp16 + lp16;
+	val lp64 = lp32 + lp32;
+	t(SV, null, null, null, "long localpart <" + lp64 + "@mail>", null);
+	t(SI, null, null, null, "long localpart <" + lp64 + "g@mail>", null);
+	t(SN, null, null, null, "un\r\nfold <user@domain>", null);
+	val SU = S(VO, "un fold <user@domain>");
+	t(SU, null, null, null, "un\r\n fold <user@domain>", null);
+	t(SN, null, null, null, "un\rfold <user@domain>", null);
+	t(SU, null, null, null, "un\r fold <user@domain>", null); // not RFC
+	t(SN, null, null, null, "un\nfold <user@domain>", null);
+	t(SU, null, null, null, "un\n fold <user@domain>", null); // not RFC
+	t(null, null, SN, SN, "user@domain,", null);
+	t(null, SN, null, null, "displayname", null);
+	t(null, SN, null, null, "displayname:", null);
+	t(SN, null, null, null, "user <", null);
+	t(SN, null, null, null, "user <user@domain", null);
+	t(SN, null, null, null, "user <>", null);
+	t(SN, null, null, null, "\"Joe Q. Public <john.q.public@example.com>", null);
+	t(S(VO, "user@domain"), null, null, null,
+	    "user@domain (comment(nested(ad(absurdum \\(-:))(et\\c)).pp)", null);
+	t(SN, null, null, null, "user@domain (comment", null);
+	t(SN, null, null, null, "user@", null);
+	t(SN, null, null, null, "user@[IPv6:fec0::1", null);
+	t(SV, null, null, SV, "user@[IPv6:fec0::1]", (l) -> {
+		val al = l.getAddresses();
+		assertNotNull(al);
+		assertEquals(1, al.size());
+		val m1 = al.get(0);
+		assertTrue(m1.isValid());
+		assertFalse(m1.isGroup());
+		assertNull(m1.getLabel());
+		val mbx = m1.getMailbox();
+		assertNotNull(mbx);
+		assertNull(m1.getMailboxen());
+		assertTrue(mbx.isValid());
+		val lp = mbx.getLocalPart();
+		val dom = mbx.getDomain();
+		assertNotNull(lp);
+		assertNotNull(dom);
+		assertEquals("user", lp.toString());
+		assertEquals("user", lp.getData());
+		assertFalse(dom instanceof Path.AddrSpecSIDE);
+		assertEquals("[IPv6:fec0::1]", dom.toString());
+		val ip = assertDoesNotThrow(() -> InetAddress.getByName("fec0::1"));
+		assertEquals(ip, dom.getData());
+	});
+	t(SV, null, null, SV, "user@[192.168.0.1]", (l) -> {
+		val al = l.getAddresses();
+		assertNotNull(al);
+		assertEquals(1, al.size());
+		val m1 = al.get(0);
+		assertTrue(m1.isValid());
+		assertFalse(m1.isGroup());
+		assertNull(m1.getLabel());
+		val mbx = m1.getMailbox();
+		assertNotNull(mbx);
+		assertNull(m1.getMailboxen());
+		assertTrue(mbx.isValid());
+		val lp = mbx.getLocalPart();
+		val dom = mbx.getDomain();
+		assertNotNull(lp);
+		assertNotNull(dom);
+		assertEquals("user", lp.toString());
+		assertEquals("user", lp.getData());
+		assertFalse(dom instanceof Path.AddrSpecSIDE);
+		assertEquals("[192.168.0.1]", dom.toString());
+		val ip = assertDoesNotThrow(() -> InetAddress.getByName("192.168.0.1"));
+		assertEquals(ip, dom.getData());
+	});
+	t(SI, null, null, null, "user@_xmpp.domain", null);
+	val lh33 = lp32 + ".";
+	val lhmax = lp64 + "@" + lh33 + lh33 + lh33 + lh33 + lh33 + lp16 + ".1234567";
+	t(SV, null, null, null, lhmax, null);
+	t(SI, null, null, null, lhmax + "8", null);
 }
 
 }
