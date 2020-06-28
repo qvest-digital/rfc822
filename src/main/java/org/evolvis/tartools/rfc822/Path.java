@@ -542,7 +542,7 @@ asMailboxList()
  * the mailbox production, with the RFC2026 §3.3(d) Limited Use caveat that
  * permits it but only for specific circumstances.
  *
- * @param allowRFC6854forLimitedUse use mailbox instead of address parsing
+ * @param allowRFC6854forLimitedUse use address instead of mailbox parsing
  *
  * @return parser result; remember to call isValid() on it first!
  */
