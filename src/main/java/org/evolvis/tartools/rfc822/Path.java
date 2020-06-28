@@ -927,7 +927,7 @@ pDotAtom()
 {
 	try (val ofs = new Parser.Txn()) {
 		pCFWS();
-		if (isAtext(cur()))
+		if (!isAtext(cur()))
 			return null;
 		ofs.commit();
 		// { pDotAtomText
