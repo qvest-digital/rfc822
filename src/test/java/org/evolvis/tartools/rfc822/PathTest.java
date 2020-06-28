@@ -221,14 +221,17 @@ public void testCtypes()
 @Test
 public void testPos()
 {
-	t(S(VI), S(VI), S(VI), S(VI), "user@host.domain.tld", null);
-	t(S(RN), S(RN), S(VI), S(VI), "a@example.com, b@example.com", (l) -> {
+	val SN = S(RN);
+	val SI = S(PI);
+	val SV = S(VI);
+	t(SV, SV, SV, SV, "user@host.domain.tld", null);
+	t(SN, SN, SV, SV, "a@example.com, b@example.com", (l) -> {
 		assertNull(l.invalidsToString(), "invalids present");
 		val e = Arrays.asList("a@example.com", "b@example.com");
 		assertIterableEquals(e, l.flattenAddresses());
 		assertIterableEquals(e, l.flattenAddrSpecs());
 	});
-	t(S(RN), S(RN), S(RN), S(RN), "@", null);
+	t(SN, SN, SN, SN, "@", null);
 	val s1 = S(VO, "a@example.com");
 	t(s1, s1, s1, s1, " a @ example.com ", (l) -> {
 		assertNull(l.invalidsToString(), "invalids present");
@@ -253,18 +256,11 @@ public void testPos()
 		    assertIterableEquals(s, l.flattenAddrSpecs());
 	    });
 	val lto = "Test:a@example.com,b@example.com;";
-	t(S(RN), S(VO, lto), S(RN), S(VO, lto), "Test:a@example.com, b@example.com;", (l) -> {
+	t(SN, S(VO, lto), SN, S(VO, lto), "Test:a@example.com, b@example.com;", (l) -> {
 		assertNull(l.invalidsToString(), "invalids present");
 		val a = Collections.singletonList(lto);
 		assertIterableEquals(a, l.flattenAddresses());
 		val s = Arrays.asList("a@example.com", "b@example.com");
-		assertIterableEquals(s, l.flattenAddrSpecs());
-	});
-	t(S(RN), S(VI), S(RN), S(VI), "Undisclosed recipients:;", (l) -> {
-		assertNull(l.invalidsToString(), "invalids present");
-		val a = Collections.singletonList("Undisclosed recipients:;");
-		assertIterableEquals(a, l.flattenAddresses());
-		val s = Collections.emptyList();
 		assertIterableEquals(s, l.flattenAddrSpecs());
 	});
 	// the second entry is, surprisingly, not valid in SMTP;
@@ -275,6 +271,111 @@ public void testPos()
 		val a = Arrays.asList("One <a@example.com>", "Two <b@[example.com]>");
 		assertIterableEquals(a, l.flattenAddresses());
 		val s = Arrays.asList("a@example.com", "b@[example.com]");
+		assertIterableEquals(s, l.flattenAddrSpecs());
+	});
+	// from RFC5322
+	val s4 = "John Doe <jdoe@machine.example>";
+	t(SV, SV, SV, SV, s4, (l) -> {
+		assertNull(l.invalidsToString(), "invalids present");
+		val a = Collections.singletonList(s4);
+		assertIterableEquals(a, l.flattenAddresses());
+		val s = Collections.singletonList("jdoe@machine.example");
+		assertIterableEquals(s, l.flattenAddrSpecs());
+	});
+	val s5 = "Mary Smith <mary@example.net>";
+	t(SV, SV, SV, SV, s5, (l) -> {
+		assertNull(l.invalidsToString(), "invalids present");
+		val a = Collections.singletonList(s5);
+		assertIterableEquals(a, l.flattenAddresses());
+		val s = Collections.singletonList("mary@example.net");
+		assertIterableEquals(s, l.flattenAddrSpecs());
+	});
+	val s6 = "Michael Jones <mjones@machine.example>";
+	t(SV, SV, SV, SV, s6, (l) -> {
+		assertNull(l.invalidsToString(), "invalids present");
+		val a = Collections.singletonList(s6);
+		assertIterableEquals(a, l.flattenAddresses());
+		val s = Collections.singletonList("mjones@machine.example");
+		assertIterableEquals(s, l.flattenAddrSpecs());
+	});
+	val s7 = "\"Joe Q. Public\" <john.q.public@example.com>";
+	t(SV, SV, SV, SV, s7, (l) -> {
+		assertNull(l.invalidsToString(), "invalids present");
+		val a = Collections.singletonList(s7);
+		assertIterableEquals(a, l.flattenAddresses());
+		val s = Collections.singletonList("john.q.public@example.com");
+		assertIterableEquals(s, l.flattenAddrSpecs());
+	});
+	val s8 = "Mary Smith <mary@x.test>, jdoe@example.org, Who? <one@y.test>";
+	t(null, null, SV, SV, s8, (l) -> {
+		assertNull(l.invalidsToString(), "invalids present");
+		val a = Arrays.asList("Mary Smith <mary@x.test>", "jdoe@example.org", "Who? <one@y.test>");
+		assertIterableEquals(a, l.flattenAddresses());
+		val s = Arrays.asList("mary@x.test", "jdoe@example.org", "one@y.test");
+		assertIterableEquals(s, l.flattenAddrSpecs());
+	});
+	val s9 = "<boss@nil.test>, \"Giant; \\\"Big\\\" Box\" <sysservices@example.net>";
+	val S9 = S(VO, "boss@nil.test, \"Giant; \\\"Big\\\" Box\" <sysservices@example.net>");
+	t(null, null, S9, S9, s9, (l) -> {
+		assertNull(l.invalidsToString(), "invalids present");
+		val a = Arrays.asList("boss@nil.test", "\"Giant; \\\"Big\\\" Box\" <sysservices@example.net>");
+		assertIterableEquals(a, l.flattenAddresses());
+		val s = Arrays.asList("boss@nil.test", "sysservices@example.net");
+		assertIterableEquals(s, l.flattenAddrSpecs());
+	});
+	val s10 = "Pete <pete@silly.example>";
+	t(SV, SV, SV, SV, s10, (l) -> {
+		assertNull(l.invalidsToString(), "invalids present");
+		val a = Collections.singletonList(s10);
+		assertIterableEquals(a, l.flattenAddresses());
+		val s = Collections.singletonList("pete@silly.example");
+		assertIterableEquals(s, l.flattenAddrSpecs());
+	});
+	val s11 = "A Group:Ed Jones <c@a.test>,joe@where.test,John <jdoe@one.test>;";
+	t(SN, SV, SN, SV, s11, (l) -> {
+		assertNull(l.invalidsToString(), "invalids present");
+		val a = Collections.singletonList(s11);
+		assertIterableEquals(a, l.flattenAddresses());
+		val s = Arrays.asList("c@a.test", "joe@where.test", "jdoe@one.test");
+		assertIterableEquals(s, l.flattenAddrSpecs());
+	});
+	val s12 = "Undisclosed recipients:;";
+	t(SN, SV, SN, SV, s12, (l) -> {
+		assertNull(l.invalidsToString(), "invalids present");
+		val a = Collections.singletonList("Undisclosed recipients:;");
+		assertIterableEquals(a, l.flattenAddresses());
+		val s = Collections.emptyList();
+		assertIterableEquals(s, l.flattenAddrSpecs());
+	});
+	val i14 = "Pete(A nice \\) chap) <pete(his account)@silly.test(his host)>";
+	val a14 = "Pete <pete@silly.test>";
+	val s14 = "pete@silly.test";
+	val S14 = S(VO, a14);
+	t(S14, S14, S14, S14, i14, (l) -> {
+		assertNull(l.invalidsToString(), "invalids present");
+		val a = Collections.singletonList(a14);
+		assertIterableEquals(a, l.flattenAddresses());
+		val s = Collections.singletonList(s14);
+		assertIterableEquals(s, l.flattenAddrSpecs());
+	});
+	val i15 =
+	    "A Group(Some people)\n        :Chris Jones <c@(Chris's host.)public.example>,\r            joe@example.org,\r\n     John <jdoe@one.test> (my dear friend); (the end of the group)";
+	val a15 = "A Group:Chris Jones <c@public.example>,joe@example.org,John <jdoe@one.test>;";
+	val S15 = S(VO, a15);
+	t(SN, S15, SN, S15, i15, (l) -> {
+		val a = Collections.singletonList(a15);
+		assertIterableEquals(a, l.flattenAddresses());
+		val s = Arrays.asList("c@public.example", "joe@example.org", "jdoe@one.test");
+		assertIterableEquals(s, l.flattenAddrSpecs());
+	});
+	val i16 = "(Empty list)(start)Hidden recipients  :(nobody(that I know))  ; ";
+	val a16 = "Hidden recipients:;";
+	val S16 = S(VO, a16);
+	t(SN, S16, SN, S16, i16, (l) -> {
+		assertNull(l.invalidsToString(), "invalids present");
+		val a = Collections.singletonList(a16);
+		assertIterableEquals(a, l.flattenAddresses());
+		val s = Collections.emptyList();
 		assertIterableEquals(s, l.flattenAddrSpecs());
 	});
 }
