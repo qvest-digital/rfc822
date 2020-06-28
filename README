@@ -66,6 +66,17 @@ you’ll intend to send out eMails, which needs just addresses:
 
 	return adrList.flattenAddrSpecs();  // List<String>
 
+You can also validate hostnames…
+
+	final String hostname = "foo.example.com";
+	final boolean ok = FQDN.isDomain(hostname);
+
+… and IP addresses, both IP and Legacy IP (a.k.a. IPv4):
+
+	final String ip = "2001:db8::1";
+	final IPAddress p = IPAddress.of(ip);
+	final InetAddress ip = p == null ? null : p.asIPv6Address();
+
 This API is what you get in the 0.1 release. (There are several
 other methods, especially toString() is useful.)
 
