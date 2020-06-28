@@ -1025,19 +1025,10 @@ pAddrSpec()
 		val dom = pDomain();
 		if (dom == null)
 			return null;
-		//final boolean v = lp.isValid() && ((dom instanceof AddrSpecSIDE) ?
-		//    ((AddrSpecSIDE)dom).isValid() : dom.getData() != null) &&
-		//    /* local-part + '@' + domain; octets = characters (ASCII) */
-		//    (lp.toString().length() + 1 + dom.toString().length()) <= 254;
-		boolean v = true;
-		if (!lp.isValid())
-			v = false;
-		else if ((dom instanceof AddrSpecSIDE) && !((AddrSpecSIDE)dom).isValid())
-			v = false;
-		else if (!(dom instanceof AddrSpecSIDE) && dom.getData() == null)
-			v = false;
-		else if ((lp.toString().length() + 1 + dom.toString().length()) > 254)
-			v = false;
+		final boolean v = lp.isValid() && ((dom instanceof AddrSpecSIDE) ?
+		    ((AddrSpecSIDE)dom).isValid() : dom.getData() != null) &&
+		    /* local-part + '@' + domain; octets = characters (ASCII) */
+		    (lp.toString().length() + 1 + dom.toString().length()) <= 254;
 		return ofs.accept(new AddrSpec(lp, dom, v));
 	}
 }
