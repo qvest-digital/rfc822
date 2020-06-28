@@ -34,3 +34,37 @@ Make sure your project can handle Java 8 bytecode.
 
 Usage
 ─────
+
+To validate an eMail address, you first get a parser instance:
+
+	final String address = "user <localpart@domain>";
+	final Path p = Path.of(address);
+
+If address was null or too long (we’re generous here), this
+will return null. Otherwise, you have a parser and call it:
+
+	import lombok.val;
+
+	val mailbox = p.forSender(false); // Path.Address
+	val address = p.forSender(true);  // Path.Address
+	val mbxList = p.asMailboxList();  // Path.AddressList
+	val adrList = p.asAddressList();  // Path.AddressList
+
+(Using “val” means the protected type can be stored.)
+
+The return value if null if the address cannot be parsed. The
+first thing to do now is, with To: for example, to weed out
+parsable but invalid input (e.g. bad domain or IP or too long):
+
+	if (!adrList.isValid()) {
+		LOG.error("invalid recipients: {}", adrList.invalidsToString());
+		return null;
+	}
+
+Afterwards, decide what you wish to do with the result. Mostly,
+you’ll intend to send out eMails, which needs just addresses:
+
+	return adrList.flattenAddrSpecs();  // List<String>
+
+This API is what you get in the 0.1 release. (There are several
+other methods, especially toString() is useful.)
