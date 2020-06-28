@@ -34,6 +34,8 @@ import java.util.List;
  * Represents an IP address (including Legacy IP) for use in eMail on
  * public Internet (no scoped addresses / IPv6 Zone ID)
  *
+ * The main entry points are the {@link #v6(String)} and {@link #v4(String)} methods.
+ *
  * @author mirabilos (t.glaser@tarent.de)
  */
 public class IPAddress extends Parser {
