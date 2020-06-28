@@ -124,6 +124,8 @@ asIPv4Address()
  * The {@link InetAddress#getHostName()} method will return the original
  * string in all cases anyway.
  *
+ * @param address to parse as IPv6 address (IPv4 addresses return null)
+ *
  * @return {@link InetAddress} representing the address, or null on failure
  */
 public static InetAddress
@@ -137,6 +139,8 @@ v6(final String address)
  * Parses the passed address as Legacy IP address (IPv4).
  *
  * The {@link InetAddress#getHostName()} method will return the original string.
+ *
+ * @param address to parse as IPv4 address
  *
  * @return {@link InetAddress} representing the address, or null on failure
  */
