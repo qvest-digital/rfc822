@@ -132,7 +132,7 @@ static {
 protected static boolean
 is(final int c, final byte what)
 {
-	if (c < 0 || c > ASCII.length)
+	if (c < 0 || c >= ASCII.length)
 		return false;
 	return (ASCII[c] & what) != 0;
 }

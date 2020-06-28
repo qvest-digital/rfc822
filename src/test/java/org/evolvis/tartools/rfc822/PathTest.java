@@ -168,6 +168,56 @@ t(final Tspec mailbox, final Tspec address, final Tspec mailboxList,
 	tal(addressList, addr, tp, listTest);
 }
 
+@AllArgsConstructor
+private static class Range {
+
+	final int from;
+	final int to;
+
+	Range(final int c)
+	{
+		this(c, c);
+	}
+
+}
+
+private void testCtype(final byte what, final Range... ranges)
+{
+	boolean[] a = new boolean[260];
+	Arrays.fill(a, false);
+	for (final Range r : ranges)
+		for (int i = r.from; i <= r.to; ++i)
+			a[i] = true;
+	assertFalse(Path.is(-1, what), "-1 is not false");
+	for (int i = 0; i < a.length; ++i) {
+		final int c = i; // lambda vs. effectively final
+		assertEquals(a[c], Path.is(c, what),
+		    () -> String.format("%d is not %s for %02X", c, a[c], what));
+	}
+}
+
+@Test
+public void testCtypes()
+{
+	testCtype(Path.IS_ATEXT, new Range('A', 'Z'), new Range('a', 'z'),
+	    new Range('0', '9'), new Range('!'), new Range('#'), new Range('$'),
+	    new Range('%'), new Range('&'), new Range('\''), new Range('*'),
+	    new Range('+'), new Range('-'), new Range('/'), new Range('='),
+	    new Range('?'), new Range('^'), new Range('_'), new Range('`'),
+	    new Range('{'), new Range('|'), new Range('}'), new Range('~'));
+	testCtype(Path.IS_QTEXT, new Range(33, 33),
+	    new Range(35, 91), new Range(93, 126));
+	testCtype(Path.IS_CTEXT, new Range(33, 39),
+	    new Range(42, 91), new Range(93, 126));
+	testCtype(Path.IS_DTEXT, new Range(33, 90), new Range(94, 126));
+	testCtype(Path.IS_ALNUM, new Range(0x41, 0x5A), new Range(0x61, 0x7A),
+	    new Range(0x30, 0x39));
+	testCtype(Path.IS_ALNUS, new Range(0x41, 0x5A), new Range(0x61, 0x7A),
+	    new Range(0x30, 0x39), new Range('-'));
+	testCtype(Path.IS_XDIGIT, new Range('0', '9'),
+	    new Range('a', 'f'), new Range('A', 'F'));
+}
+
 @Test
 public void testPos()
 {
