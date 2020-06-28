@@ -14,7 +14,6 @@
 	<description>eMail validation utilities</description>
 	<url>https://evolvis.org/plugins/scmgit/cgi-bin/gitweb.cgi?p=useful-scripts/rfc822.git</url>
 	<licenses>
-		<!-- no copyright or licence claim on ./NOTES which are RFC excerpts -->
 		<license>
 			<!-- short name: MirBSD -->
 			<name>The MirOS Licence</name>
