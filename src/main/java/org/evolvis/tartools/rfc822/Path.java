@@ -355,7 +355,7 @@ public final class Address {
 	 */
 	final boolean valid;
 
-	private Address(final Substring label, @NonNull final AddrSpec mailbox)
+	private Address(final Substring label, final AddrSpec mailbox)
 	{
 		this.group = false;
 		this.label = label;
@@ -364,7 +364,7 @@ public final class Address {
 		this.valid = mailbox.isValid();
 	}
 
-	private Address(@NonNull final Substring label, @NonNull final List<Address> mailboxen)
+	private Address(final Substring label, final List<Address> mailboxen)
 	{
 		this.group = true;
 		this.label = label;
@@ -426,10 +426,10 @@ public final class AddressList {
 	@SuppressWarnings("squid:S1700")
 	final boolean addressList;
 
-	private AddressList(@NonNull final List<Address> addresses)
+	private AddressList(final List<Address> addresses)
 	{
 		this.addresses = addresses;
-		valid = !addresses.isEmpty() &&
+		valid = /*!addresses.isEmpty() &&*/
 		    addresses.stream().allMatch(Address::isValid);
 		addressList = addresses.stream().anyMatch(Address::isGroup);
 	}
