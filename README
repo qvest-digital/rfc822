@@ -12,12 +12,7 @@ Preliminary release note
 The first version of this library has a tight deadline. As such,
 it only parses address/mailbox lists and their dependents and can
 validate, using eMail rules, localparts and domains (IP address or
-FQDN, also usable separately). While comments are parsed, they are
-not retained in the parser return structures nor is the whitespace
-used. A later version should be able to parse “human-friendly” as
-well (that is, if normal parsing fails it should accept semicolons
-as list separators, obs-display-name, perhaps even accept arbitrary
-string + angle-addr, MIME-encoding for display-name).
+FQDN, also usable separately).
 
 Installation
 ────────────
@@ -104,7 +99,7 @@ Pass more of the structure up (comments, for example).
 Add a DWIM mode that parses semicolons as list separators as
 well and MIME-encodes problematic headers, so we can handle:
 
-	Es „ß“ Zett <sz@example.com>; mäh <sheep@example.com>
+	Es „ß“ Zett <sz@example.com>; Shaun D. Mäh <sheep@example.com>
 
 Sorry, no time…
 
