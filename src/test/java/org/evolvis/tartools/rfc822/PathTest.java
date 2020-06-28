@@ -361,8 +361,10 @@ public void testPos()
 		val s = Collections.singletonList(s14);
 		assertIterableEquals(s, l.flattenAddrSpecs());
 	});
-	val i15 =
-	    "A Group(Some people)\n        :Chris Jones <c@(Chris's host.)public.example>,\r            joe@example.org,\r\n     John <jdoe@one.test> (my dear friend); (the end of the group)";
+	val i15 = "A Group(Some people)\n        :" +
+	    "Chris Jones <c@(Chris's host.)public.example>," +
+	    "\r            joe@example.org,\r\n     " +
+	    "John <jdoe@one.test> (my dear friend); (the end of the group)";
 	val a15 = "A Group:Chris Jones <c@public.example>,joe@example.org,John <jdoe@one.test>;";
 	val S15 = S(VO, a15);
 	t(SN, S15, SN, S15, i15, (l) -> {
