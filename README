@@ -68,3 +68,34 @@ you’ll intend to send out eMails, which needs just addresses:
 
 This API is what you get in the 0.1 release. (There are several
 other methods, especially toString() is useful.)
+
+Limitations
+───────────
+
+This API checks for both RFC5322 and RFC5321 compliance, with
+several others (DNS) influencing. It’s intended to be used by
+eMail senders towards public internet which limits, among the
+allowed lengths and characters, features:
+
+• IPv6 Zone identifiers (ff02::1%vr0) aren’t valid as they
+  are strictly host-specific
+
+• General-address-literal isn’t permitted, as (other than
+  IPv6 addresses) there currently isn’t any usable tag
+
+• display-name must be valid ASCII dot-atom, or quoted-string
+  (but no tabs), syntax
+
+Future directions
+─────────────────
+
+Pass more of the structure up (comments, for example).
+
+Add a DWIM mode that parses semicolons as list separators as
+well and MIME-encodes problematic headers, so we can handle:
+
+	Es „ß“ Zett <sz@example.com>; mäh <sheep@example.com>
+
+Sorry, no time…
+
+More patches, improvements, tests, etc. are of course welcome!
