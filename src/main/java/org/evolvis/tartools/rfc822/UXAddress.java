@@ -26,7 +26,9 @@ package org.evolvis.tartools.rfc822;
  * especially input by humans, and MIME-encodes nōn-ASCII characters.
  *
  * @author mirabilos (t.glaser@tarent.de)
+ * @deprecated not yet implemented
  */
+@Deprecated
 public class UXAddress extends Path {
 
 /**
