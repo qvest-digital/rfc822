@@ -69,7 +69,7 @@ keyword()
 				if (s().startsWith(keyword, pos())) {
 					final int nextch = bra(keyword.length());
 					if (nextch < 'a' || nextch > 'z') {
-						final Substring s = ofs.substring();
+						final Substring s = ofs.substring(keyword);
 						// COMMIT in reverse BEGIN order
 						ofs.commit();
 						// last COMMIT implied here
