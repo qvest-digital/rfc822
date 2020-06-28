@@ -71,6 +71,17 @@ You can also validate hostnames…
 	final String ip = "2001:db8::1";
 	final InetAddress ip = IPAddress.v6(ip);
 
+… checking both kinds of IPAddress:
+
+	final IPAddress p = IPAddress.of(ip);
+	if (p == null)
+		throw …
+	InetAddress ip = p.asIPv6Address();
+	if (ip == null)
+		ip = p.asIPv4Address();
+
+In both cases, ip isn’t null for valid addresses.
+
 This API is what you get in the 0.1 release. (There are several
 other methods, especially toString() is useful.)
 
