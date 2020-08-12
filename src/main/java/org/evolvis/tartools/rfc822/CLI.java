@@ -39,6 +39,7 @@ private static final String CLR = "\u001B[0m";
 private static final String BAD = "\u001B[31m✘" + CLR;
 private static final String PARSES = "\u001B[1;33m✘" + CLR;
 private static final String VALID = "\u001B[32m✔" + CLR;
+private static final String BOLD = "\u001B[1m";
 
 private static String
 chk(Path.ParserResult arg)
@@ -56,29 +57,39 @@ main(String[] argv)
 		val asMbox = asPath.forSender(false);
 		val asAddr = asPath.forSender(true);
 		val asML = asPath.asMailboxList();
-		val alAL = asPath.asAddressList();
+		val asAL = asPath.asAddressList();
 		val isDom = FQDN.isDomain(arg);
 		val i6 = IPAddress.v6(arg);
 		val i4 = IPAddress.v4(arg);
 		final String desc;
 		final String dmbx;
 		final String dadr;
-		if (asML == null && alAL == null) {
+		final Path.ParserResult rmail;
+		if (asML == null && asAL == null) {
 			desc = NOLIST;
 			dmbx = chk(asMbox);
 			dadr = chk(asAddr);
+			rmail = asAddr == null ? asMbox : asAddr;
 		} else {
 			desc = ISLIST;
 			dmbx = chk(asML);
-			dadr = chk(alAL);
+			dadr = chk(asAL);
+			rmail = asAL == null ? asML : asAL;
 		}
 		System.out.print(String.format("‣ %s" + CLR + "%n\t", arg));
 		System.out.println(String.format(desc,
 		    chk(asAS), dmbx, dadr, isDom ? VALID : BAD,
 		    i6 == null ? BAD : VALID, i4 == null ? BAD : VALID));
-		System.out.println(i6 == null && i4 == null ? "" :
-		    String.format("\tIP: %s%n",
-			(i6 == null ? i4 : i6).getHostAddress()));
+		if (rmail != null && rmail.isValid())
+			System.out.println(String.format("\teMail: " + BOLD + "%s" + CLR,
+			    rmail.toString()));
+		if (i6 != null || i4 != null)
+			System.out.println(String.format("\tIP: " + BOLD + "%s" + CLR,
+			    (i6 == null ? i4 : i6).getHostAddress()));
+		if (isDom)
+			System.out.println(String.format("\tFQDN: " + BOLD + "%s" + CLR,
+			    arg));
+		System.out.println();
 	}
 }
 
