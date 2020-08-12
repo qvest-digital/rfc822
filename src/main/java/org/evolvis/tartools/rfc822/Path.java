@@ -275,6 +275,31 @@ private static final class Word {
 }
 
 /**
+ * Methods all {@link Path} parser results implement.
+ *
+ * @author mirabilos (m@mirbsd.org)
+ */
+public interface ParserResult {
+
+	/**
+	 * Whether this parser result is actually valid or merely parses
+	 * but fails further validations (length limits, semantics, etc.)
+	 *
+	 * @return true if valid, false otherwise
+	 */
+	boolean isValid();
+
+	/**
+	 * Returns this parser result in some useful format
+	 *
+	 * @return String
+	 */
+	@Override
+	String toString();
+
+}
+
+/**
  * Representation for an addr-spec (eMail address)
  * comprised of localPart and domain
  *
@@ -282,7 +307,7 @@ private static final class Word {
  */
 @AllArgsConstructor(access = AccessLevel.PROTECTED)
 @Getter
-public final class AddrSpec {
+public final class AddrSpec implements ParserResult {
 
 	/**
 	 * The local-part of the addr-spec, as it occurs in the addr-spec,
@@ -328,7 +353,7 @@ public final class AddrSpec {
  * @author mirabilos (t.glaser@tarent.de)
  */
 @Getter
-public final class Address {
+public final class Address implements ParserResult {
 
 	/**
 	 * Whether this address is a group (true) or a mailbox (false)
@@ -406,7 +431,7 @@ public final class Address {
  * @author mirabilos (t.glaser@tarent.de)
  */
 @Getter
-public final class AddressList {
+public final class AddressList implements ParserResult {
 
 	/**
 	 * The actual address-list or mailbox-list behind the scenes
