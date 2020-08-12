@@ -77,7 +77,8 @@ main(String[] argv)
 		    chk(asAS), dmbx, dadr, isDom ? VALID : BAD,
 		    i6 == null ? BAD : VALID, i4 == null ? BAD : VALID));
 		System.out.println(i6 == null && i4 == null ? "" :
-		    String.format("\tIP: %s%n", i6 == null ? i4 : i6));
+		    String.format("\tIP: %s%n",
+			(i6 == null ? i4 : i6).getHostAddress()));
 	}
 }
 
