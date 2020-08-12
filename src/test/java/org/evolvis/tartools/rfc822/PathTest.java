@@ -1,6 +1,7 @@
 package org.evolvis.tartools.rfc822;
 
 /*-
+ * Copyright © 2020 mirabilos (m@mirbsd.org)
  * Copyright © 2020 mirabilos (t.glaser@tarent.de)
  * Licensor: tarent solutions GmbH, Bonn
  *
@@ -43,6 +44,10 @@ private static final byte PI = 1;        // parses, not valid, result = original
 private static final byte PO = 2;        // parses, not valid, result = cmp
 private static final byte VI = 3;        // parses, valid, result = original
 private static final byte VO = 4;        // parses, valid, result = cmp
+private static final byte BI = 5;        // addr-spec, not valid, result = original
+private static final byte BO = 6;        // addr-spec, not valid, result = cmp
+private static final byte WI = 7;        // addr-spec, valid, result = original
+private static final byte WO = 8;        // addr-spec, valid, result = cmp
 
 private static Tspec S(final byte spec)
 {
@@ -70,18 +75,34 @@ tm(final Tspec s, final String addr, final Path tp)
 	final String what = "mailbox";
 
 	val res = tp.forSender(false);
+	val rs = tp.asAddrSpec();
+	val cmp = s.t == PI || s.t == VI || s.t == BI || s.t == WI ? addr : s.cmp;
 	if (s.t == RN) {
 		assertNull(res,
 		    () -> "unexpectedly parses as " + what + ": " + addr);
+		assertNull(rs,
+		    () -> "unexpectedly parses as addr-spec: " + addr);
 	} else {
 		assertNotNull(res,
 		    () -> "does not parse as " + what + ": " + addr);
-		assertEquals(s.t == VI || s.t == VO, res.isValid(),
+		assertEquals(s.t == VI || s.t == VO || s.t == WI || s.t == WO,
+		    res.isValid(),
 		    () -> "validity mismatch for " + what + ": " + addr);
-		val cmp = s.t == PI || s.t == VI ? addr : s.cmp;
 		assertEquals(cmp, res.toString(),
 		    () -> "string mismatch for " + what + ": " + addr);
 		assertFalse(res.isGroup(), "unexpectedly a group");
+		if (s.t == WI || s.t == WO || s.t == BI || s.t == BO) {
+			assertNotNull(rs,
+			    () -> "does not parse as addr-spec: " + addr);
+			assertEquals(s.t == WI || s.t == WO,
+			    rs.isValid(),
+			    () -> "validity mismatch for addr-spec: " + addr);
+			assertEquals(cmp, rs.toString(),
+			    () -> "string mismatch for addr-spec: " + addr);
+		} else {
+			assertNull(rs,
+			    () -> "unexpectedly parses as addr-spec: " + addr);
+		}
 	}
 }
 
@@ -99,9 +120,10 @@ ta(final Tspec s, final String addr, final Path tp)
 	} else {
 		assertNotNull(res,
 		    () -> "does not parse as " + what + ": " + addr);
-		assertEquals(s.t == VI || s.t == VO, res.isValid(),
+		assertEquals(s.t == VI || s.t == VO || s.t == WI || s.t == WO,
+		    res.isValid(),
 		    () -> "validity mismatch for " + what + ": " + addr);
-		val cmp = s.t == PI || s.t == VI ? addr : s.cmp;
+		val cmp = s.t == PI || s.t == VI || s.t == WI ? addr : s.cmp;
 		assertEquals(cmp, res.toString(),
 		    () -> "string mismatch for " + what + ": " + addr);
 	}
@@ -121,9 +143,10 @@ tml(final Tspec s, final String addr, final Path tp, final Consumer<Path.Address
 	} else {
 		assertNotNull(res,
 		    () -> "does not parse as " + what + ": " + addr);
-		assertEquals(s.t == VI || s.t == VO, res.isValid(),
+		assertEquals(s.t == VI || s.t == VO || s.t == WI || s.t == WO,
+		    res.isValid(),
 		    () -> "validity mismatch for " + what + ": " + addr);
-		val cmp = s.t == PI || s.t == VI ? addr : s.cmp;
+		val cmp = s.t == PI || s.t == VI || s.t == WI ? addr : s.cmp;
 		assertEquals(cmp, res.toString(),
 		    () -> "string mismatch for " + what + ": " + addr);
 		assertFalse(res.isAddressList(), "unexpectedly an address-list");
@@ -146,9 +169,10 @@ tal(final Tspec s, final String addr, final Path tp, final Consumer<Path.Address
 	} else {
 		assertNotNull(res,
 		    () -> "does not parse as " + what + ": " + addr);
-		assertEquals(s.t == VI || s.t == VO, res.isValid(),
+		assertEquals(s.t == VI || s.t == VO || s.t == WI || s.t == WO,
+		    res.isValid(),
 		    () -> "validity mismatch for " + what + ": " + addr);
-		val cmp = s.t == PI || s.t == VI ? addr : s.cmp;
+		val cmp = s.t == PI || s.t == VI || s.t == WI ? addr : s.cmp;
 		assertEquals(cmp, res.toString(),
 		    () -> "string mismatch for " + what + ": " + addr);
 		if (lt != null)
@@ -226,8 +250,9 @@ public void testPos()
 	val SN = S(RN);
 	val SI = S(PI);
 	val SV = S(VI);
+	val SW = S(WI);
 	t(SN, SN, SN, SN, "", null);
-	t(SV, SV, SV, SV, "user@host.domain.tld", null);
+	t(SW, SV, SV, SV, "user@host.domain.tld", null);
 	t(SN, SN, SV, SV, "a@example.com, b@example.com", (l) -> {
 		assertNull(l.invalidsToString(), "invalids present");
 		val e = Arrays.asList("a@example.com", "b@example.com");
@@ -236,7 +261,7 @@ public void testPos()
 	});
 	t(SN, SN, SN, SN, "@", null);
 	val s1 = S(VO, "a@example.com");
-	t(s1, s1, s1, s1, " a @ example.com \t ", (l) -> {
+	t(S(WO, "a@example.com"), s1, s1, s1, " a @ example.com \t ", (l) -> {
 		assertNull(l.invalidsToString(), "invalids present");
 		val e = Collections.singletonList("a@example.com");
 		assertIterableEquals(e, l.flattenAddresses());
@@ -434,14 +459,14 @@ public void testPos()
 	t(SN, null, null, null, "user <user@domain", null);
 	t(SN, null, null, null, "user <>", null);
 	t(SN, null, null, null, "\"Joe Q. Public <john.q.public@example.com>", null);
-	t(S(VO, "user@domain"), null, null, null,
+	t(S(WO, "user@domain"), null, null, null,
 	    "user@domain (comment(nested(ad(absurdum \\(-:))(et\\c)).pp)", null);
 	t(SN, null, null, null, "user@domain (comment", null);
 	t(SN, null, null, null, "user@", null);
 	t(SN, null, null, null, "user@domain.", null);
-	t(S(PO, "user@[do main]"), null, null, null, "user@[do\r\n main]", null);
+	t(S(BO, "user@[do main]"), null, null, null, "user@[do\r\n main]", null);
 	t(SN, null, null, null, "user@[IPv6:fec0::1", null);
-	t(SV, null, null, SV, "user@[IPv6:fec0::1]", (l) -> {
+	t(SW, null, null, SV, "user@[IPv6:fec0::1]", (l) -> {
 		val al = l.getAddresses();
 		assertNotNull(al);
 		assertEquals(1, al.size());
@@ -464,7 +489,7 @@ public void testPos()
 		val ip = assertDoesNotThrow(() -> InetAddress.getByName("fec0::1"));
 		assertEquals(ip, dom.getData());
 	});
-	t(SV, null, null, SV, "user@[192.168.0.1]", (l) -> {
+	t(SW, null, null, SV, "user@[192.168.0.1]", (l) -> {
 		val al = l.getAddresses();
 		assertNotNull(al);
 		assertEquals(1, al.size());
@@ -487,13 +512,13 @@ public void testPos()
 		val ip = assertDoesNotThrow(() -> InetAddress.getByName("192.168.0.1"));
 		assertEquals(ip, dom.getData());
 	});
-	t(SI, null, null, null, "user@_xmpp.domain", null);
+	t(S(BI), null, null, null, "user@_xmpp.domain", null);
 	val lh33 = lp32 + ".";
 	val lhmax = lp64 + "@" + lh33 + lh33 + lh33 + lh33 + lh33 + lp16 + ".1234567";
-	t(SV, null, null, null, lhmax, null);
-	t(SI, null, null, null, lhmax + "8", null);
+	t(SW, null, null, null, lhmax, null);
+	t(S(BI), null, null, null, lhmax + "8", null);
 	t(SN, SV, SN, SV, "dis\"play\"name:;", null);
-	t(SI, null, null, null, "\"\\\t\"@domain", null);
+	t(S(BI), null, null, null, "\"\\\t\"@domain", null);
 	val ut = Path.of("\\\n\\\u007F");
 	assertNotNull(ut, "failure in unit test for quoted-pair");
 	assertEquals(-1, ut.pQuotedPair());

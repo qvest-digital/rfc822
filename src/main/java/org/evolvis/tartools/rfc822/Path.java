@@ -1,6 +1,7 @@
 package org.evolvis.tartools.rfc822;
 
 /*-
+ * Copyright © 2020 mirabilos (m@mirbsd.org)
  * Copyright © 2020 mirabilos (t.glaser@tarent.de)
  * Licensor: tarent solutions GmbH, Bonn
  *
@@ -46,7 +47,8 @@ import java.util.stream.Collectors;
  * passing it the address list string to analyse. Then call one of the
  * parse methods on the instance: {@link #asAddressList()} to validate
  * recipients, {@link #asMailboxList()} or {@link #forSender(boolean)}
- * for message senders (but read their JavaDoc).
+ * for message senders (but read their JavaDoc). Validating unlabelled
+ * addr-specs is possible with {@link #asAddrSpec()}.
  *
  * @author mirabilos (t.glaser@tarent.de)
  */
@@ -551,6 +553,24 @@ forSender(final boolean allowRFC6854forLimitedUse)
 {
 	jmp(0);
 	final Address rv = allowRFC6854forLimitedUse ? pAddress() : pMailbox();
+	return cur() == -1 ? rv : null;
+}
+
+/**
+ * Parses the address as addr-spec (unlabelled address)
+ *
+ * This method is mostly used in input validation. In most cases,
+ * use {@link #forSender(boolean)}(false) instead which allows
+ * “user &lt;lcl@example.com&gt;” then extract the addr-spec
+ * “lcl@example.com” from the return value.
+ *
+ * @return parser result; remember to call isValid() on it first!
+ */
+public AddrSpec
+asAddrSpec()
+{
+	jmp(0);
+	final AddrSpec rv = pAddrSpec();
 	return cur() == -1 ? rv : null;
 }
 

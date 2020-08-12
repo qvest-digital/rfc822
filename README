@@ -44,6 +44,7 @@ will return null. Otherwise, you have a parser and call it:
 	val address = p.forSender(true);  // Path.Address
 	val mbxList = p.asMailboxList();  // Path.AddressList
 	val adrList = p.asAddressList();  // Path.AddressList
+	val adrspec = p.asAddrSpec();     // Path.AddrSpec
 
 (Using “val” means the protected type can be stored.)
 
@@ -82,7 +83,7 @@ You can also validate hostnames…
 
 In both cases, ip isn’t null for valid addresses.
 
-This API is what you get in the 0.1 release. (There are several
+This API is what you get in the 0.2 release. (There are several
 other methods, especially toString() is useful.)
 
 Limitations
