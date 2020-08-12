@@ -26,6 +26,7 @@ import lombok.val;
  *
  * @author mirabilos (m@mirbsd.org)
  */
+@SuppressWarnings("squid:S106")
 public final class CLI {
 
 private static final String EAS = "addr-spec %s";
@@ -71,12 +72,12 @@ main(String[] argv)
 			dmbx = chk(asML);
 			dadr = chk(alAL);
 		}
-		System.out.print(String.format("‣ %s" + CLR + "\n\t", arg));
+		System.out.print(String.format("‣ %s" + CLR + "%n\t", arg));
 		System.out.println(String.format(desc,
 		    chk(asAS), dmbx, dadr, isDom ? VALID : BAD,
 		    i6 == null ? BAD : VALID, i4 == null ? BAD : VALID));
 		System.out.println(i6 == null && i4 == null ? "" :
-		    String.format("\tIP: %s\n", i6 == null ? i4 : i6));
+		    String.format("\tIP: %s%n", i6 == null ? i4 : i6));
 	}
 }
 
