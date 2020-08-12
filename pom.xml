@@ -4,7 +4,7 @@
 	<parent>
 		<groupId>org.evolvis.tartools</groupId>
 		<artifactId>maven-parent</artifactId>
-		<version>1.27</version>
+		<version>1.28</version>
 	</parent>
 	<groupId>org.evolvis.tartools</groupId>
 	<artifactId>rfc822</artifactId>
