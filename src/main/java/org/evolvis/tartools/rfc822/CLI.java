@@ -47,9 +47,67 @@ chk(Path.ParserResult arg)
 	return arg == null ? BAD : arg.isValid() ? VALID : PARSES;
 }
 
+private static void
+one(Path.ParserResult arg)
+{
+	if (arg == null)
+		System.exit(41);
+	if (!arg.isValid())
+		System.exit(42);
+	System.out.println(arg.toString());
+	System.exit(0);
+}
+
+private static void
+usage()
+{
+	System.err.println("Usage: java -jar rfc822.jar -TYPE input  # check mode (on success, exit 0)");
+	System.err.println("       java -jar rfc822.jar [input ...]  # interactive colourful mode, exit 40");
+	System.err.println("TYPE: addrspec, mailbox, address, mailboxlist, addresslist, domain, ipv4, ipv6");
+	System.err.println("exit code 43 = unspecified bad input, 42 = invalid, 41 = cannot even be parsed");
+	System.exit(1);
+}
+
 public static void
 main(String[] argv)
 {
+	if (argv.length == 2 && argv[0].startsWith("-")) {
+		val asPath = Path.of(argv[1]);
+		val isDom = FQDN.isDomain(argv[1]);
+		val i6 = IPAddress.v6(argv[1]);
+		val i4 = IPAddress.v4(argv[1]);
+
+		if ("-addrspec".equals(argv[0]))
+			one(asPath.asAddrSpec());
+		else if ("-mailbox".equals(argv[0]))
+			one(asPath.forSender(false));
+		else if ("-address".equals(argv[0]))
+			one(asPath.forSender(true));
+		else if ("-mailboxlist".equals(argv[0]))
+			one(asPath.asMailboxList());
+		else if ("-addresslist".equals(argv[0]))
+			one(asPath.asAddressList());
+		else if ("-domain".equals(argv[0])) {
+			if (!isDom)
+				System.exit(43);
+			System.out.println(argv[0]);
+			System.exit(0);
+		} else if ("-ipv4".equals(argv[0])) {
+			if (i4 == null)
+				System.exit(43);
+			System.out.println(i4.getHostAddress());
+			System.exit(0);
+		} else if ("-ipv6".equals(argv[0])) {
+			if (i6 == null)
+				System.exit(43);
+			System.out.println(i6.getHostAddress());
+			System.exit(0);
+		}
+		usage();
+	}
+	if (argv.length > 0 && argv[0].startsWith("-"))
+		usage();
+
 	System.out.println(CLR);
 	for (String arg : argv) {
 		val asPath = Path.of(arg);
@@ -91,6 +149,7 @@ main(String[] argv)
 			    arg));
 		System.out.println();
 	}
+	System.exit(40);
 }
 
 }
