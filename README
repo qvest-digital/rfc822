@@ -123,7 +123,8 @@ Possible TYPEs are:
 
 If input was valid, exits with errorlevel 0; no other codepath
 exits 0 so this is a reliable validator. Additionally, on suc‐
-cess a canonical form of the input is printed on stdout.
+cess a canonical form of the input is printed on stdout. (Note
+the JRE renders an IPv4-mapped IPv6 address as IPv4 address.)
 
 If input was invalid this exits with errorlevel 43 for domain,
 ipv4, ipv6; with errorlevel 41 (cannot be parsed) or 42 (fails
