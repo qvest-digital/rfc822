@@ -73,32 +73,34 @@ usage()
 private static void
 batch(final String flag, final String input)
 {
-	val asPath = Path.of(input);
-	val isDom = FQDN.isDomain(input);
-	val i6 = IPAddress.v6(input);
-	val i4 = IPAddress.v4(input);
-
-	if ("-addrspec".equals(flag))
+	if ("-addrspec".equals(flag)) {
+		val asPath = Path.of(input);
 		one(asPath.asAddrSpec());
-	else if ("-mailbox".equals(flag))
+	} else if ("-mailbox".equals(flag)) {
+		val asPath = Path.of(input);
 		one(asPath.forSender(false));
-	else if ("-address".equals(flag))
+	} else if ("-address".equals(flag)) {
+		val asPath = Path.of(input);
 		one(asPath.forSender(true));
-	else if ("-mailboxlist".equals(flag))
+	} else if ("-mailboxlist".equals(flag)) {
+		val asPath = Path.of(input);
 		one(asPath.asMailboxList());
-	else if ("-addresslist".equals(flag))
+	} else if ("-addresslist".equals(flag)) {
+		val asPath = Path.of(input);
 		one(asPath.asAddressList());
-	else if ("-domain".equals(flag)) {
-		if (!isDom)
+	} else if ("-domain".equals(flag)) {
+		if (!FQDN.isDomain(input))
 			System.exit(43);
 		System.out.println(flag);
 		System.exit(0);
 	} else if ("-ipv4".equals(flag)) {
+		val i4 = IPAddress.v4(input);
 		if (i4 == null)
 			System.exit(43);
 		System.out.println(i4.getHostAddress());
 		System.exit(0);
 	} else if ("-ipv6".equals(flag)) {
+		val i6 = IPAddress.v6(input);
 		if (i6 == null)
 			System.exit(43);
 		System.out.println(i6.getHostAddress());
