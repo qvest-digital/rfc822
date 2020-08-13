@@ -96,19 +96,21 @@ CLI (command-line interface) utility
 This project ships an executable JAR, offering access to most
 validation functionality from the command line. Usage:
 
-$ java -jar rfc822-0.2.jar input …
+$ java -jar rfc822-0.3.jar [--] input …
 
 This will show (in a colourful format intended for human con‐
 sumption only!) for each argument which productions match it.
-This command exits with errorlevel 40.
+This command exits with errorlevel 40. A double-dash argument
+separator before the first input argument is mandatory if the
+first input begins with a hyphen-minus.
 
-$ java -jar rfc822-0.2.jar -h
+$ java -jar rfc822-0.3.jar -h
 
 Show short usage info on stderr and exit nonzero.
 
-$ java -jar rfc822-0.2.jar -TYPE input
+$ java -jar rfc822-0.3.jar -TYPE [--] input
 
-Validates “input” (only one argument) against the given TYPE.
+Validates the one given “input” for the specified TYPE.
 Possible TYPEs are:
 -addrspec	(e.g. foo@example.com)
 -mailbox	(e.g. Foo Bar <foo@example.com>)

@@ -113,14 +113,25 @@ batch(final String flag, final String input)
 public static void
 main(String[] argv)
 {
+	boolean skipfirst = false;
+
 	if (argv.length > 0 && argv[0].startsWith("-")) {
-		if (argv.length == 2)
+		if ("--".equals(argv[0]))
+			skipfirst = true;
+		else if (argv.length == 2)
 			batch(argv[0], argv[1]);
-		usage();
+		else if (argv.length == 3 && "--".equals(argv[1]))
+			batch(argv[0], argv[2]);
+		else
+			usage();
 	}
 
 	System.out.println(CLR);
 	for (String arg : argv) {
+		if (skipfirst) {
+			skipfirst = false;
+			continue;
+		}
 		val asPath = Path.of(arg);
 		val asAS = asPath.asAddrSpec();
 		val asMbox = asPath.forSender(false);
