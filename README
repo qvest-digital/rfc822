@@ -22,7 +22,7 @@ Add a suitable dependency to your project, for example with Maven:
 <dependency>
 	<groupId>org.evolvis.tartools</groupId>
 	<artifactId>rfc822</artifactId>
-	<version>0.1</version>
+	<version>0.2</version>
 </dependency>
 
 Make sure your project can handle Java 8 bytecode.
@@ -85,6 +85,44 @@ In both cases, ip isn’t null for valid addresses.
 
 This API is what you get in the 0.2 release. (There are several
 other methods, especially toString() is useful.)
+
+CLI (command-line interface) utility
+────────────────────────────────────
+
+This project ships an executable JAR, offering access to most
+validation functionality from the command line. Usage:
+
+$ java -jar rfc822-0.2.jar input …
+
+This will show (in a colourful format intended for human con‐
+sumption only!) for each argument which productions match it.
+This command exits with errorlevel 40.
+
+$ java -jar rfc822-0.2.jar -h
+
+Show short usage info on stderr and exit nonzero.
+
+$ java -jar rfc822-0.2.jar -TYPE input
+
+Validates “input” (only one argument) against the given TYPE.
+Possible TYPEs are:
+-addrspec	(e.g. foo@example.com)
+-mailbox	(e.g. Foo Bar <foo@example.com>)
+-address	(mailbox or group, e.g. Label:foo@example.com,bar@example.com;)
+-mailboxlist	mailbox ["," mailbox]*
+-addresslist	address ["," address]*
+-domain		FQDN (hostname or domain name)
+-ipv4		Legacy IP address, dotted-quad, e.g. 192.0.2.1
+-ipv6		IP address (without scope), e.g. 2001:db8::1
+
+If input was valid, exits with errorlevel 0; no other codepath
+exits 0 so this is a reliable validator. Additionally, on suc‐
+cess a canonical form of the input is printed on stdout.
+
+If input was invalid this exits with errorlevel 43 for domain,
+ipv4, ipv6; with errorlevel 41 (cannot be parsed) or 42 (fails
+post-parsing validation) for the others (eMail-related types);
+nothing is printed on standard output in this case.
 
 Limitations
 ───────────
