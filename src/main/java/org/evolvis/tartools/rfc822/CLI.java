@@ -68,6 +68,7 @@ usage()
 	System.exit(1);
 }
 
+@SuppressWarnings("squid:S3776")
 public static void
 main(String[] argv)
 {
