@@ -25,6 +25,10 @@ Add a suitable dependency to your project, for example with Maven:
 	<version>0.2</version>
 </dependency>
 
+Or download releases manually from Maven Central:
+	https://repo1.maven.org/maven2/org/evolvis/tartools/rfc822/
+Building the library yourself is also possible, of course.
+
 Make sure your project can handle Java 8 bytecode.
 
 Usage
