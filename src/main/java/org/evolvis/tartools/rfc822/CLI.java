@@ -70,45 +70,52 @@ usage()
 }
 
 @SuppressWarnings("squid:S3776")
+private static void
+batch(final String flag, final String input)
+{
+	val asPath = Path.of(input);
+	val isDom = FQDN.isDomain(input);
+	val i6 = IPAddress.v6(input);
+	val i4 = IPAddress.v4(input);
+
+	if ("-addrspec".equals(flag))
+		one(asPath.asAddrSpec());
+	else if ("-mailbox".equals(flag))
+		one(asPath.forSender(false));
+	else if ("-address".equals(flag))
+		one(asPath.forSender(true));
+	else if ("-mailboxlist".equals(flag))
+		one(asPath.asMailboxList());
+	else if ("-addresslist".equals(flag))
+		one(asPath.asAddressList());
+	else if ("-domain".equals(flag)) {
+		if (!isDom)
+			System.exit(43);
+		System.out.println(flag);
+		System.exit(0);
+	} else if ("-ipv4".equals(flag)) {
+		if (i4 == null)
+			System.exit(43);
+		System.out.println(i4.getHostAddress());
+		System.exit(0);
+	} else if ("-ipv6".equals(flag)) {
+		if (i6 == null)
+			System.exit(43);
+		System.out.println(i6.getHostAddress());
+		System.exit(0);
+	}
+	usage();
+}
+
+@SuppressWarnings("squid:S3776")
 public static void
 main(String[] argv)
 {
-	if (argv.length == 2 && argv[0].startsWith("-")) {
-		val asPath = Path.of(argv[1]);
-		val isDom = FQDN.isDomain(argv[1]);
-		val i6 = IPAddress.v6(argv[1]);
-		val i4 = IPAddress.v4(argv[1]);
-
-		if ("-addrspec".equals(argv[0]))
-			one(asPath.asAddrSpec());
-		else if ("-mailbox".equals(argv[0]))
-			one(asPath.forSender(false));
-		else if ("-address".equals(argv[0]))
-			one(asPath.forSender(true));
-		else if ("-mailboxlist".equals(argv[0]))
-			one(asPath.asMailboxList());
-		else if ("-addresslist".equals(argv[0]))
-			one(asPath.asAddressList());
-		else if ("-domain".equals(argv[0])) {
-			if (!isDom)
-				System.exit(43);
-			System.out.println(argv[0]);
-			System.exit(0);
-		} else if ("-ipv4".equals(argv[0])) {
-			if (i4 == null)
-				System.exit(43);
-			System.out.println(i4.getHostAddress());
-			System.exit(0);
-		} else if ("-ipv6".equals(argv[0])) {
-			if (i6 == null)
-				System.exit(43);
-			System.out.println(i6.getHostAddress());
-			System.exit(0);
-		}
+	if (argv.length > 0 && argv[0].startsWith("-")) {
+		if (argv.length == 2)
+			batch(argv[0], argv[1]);
 		usage();
 	}
-	if (argv.length > 0 && argv[0].startsWith("-"))
-		usage();
 
 	System.out.println(CLR);
 	for (String arg : argv) {
