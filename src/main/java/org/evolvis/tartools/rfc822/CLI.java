@@ -91,7 +91,7 @@ batch(final String flag, final String input)
 	} else if ("-domain".equals(flag)) {
 		if (!FQDN.isDomain(input))
 			System.exit(43);
-		System.out.println(flag);
+		System.out.println(input);
 		System.exit(0);
 	} else if ("-ipv4".equals(flag)) {
 		val i4 = IPAddress.v4(input);
