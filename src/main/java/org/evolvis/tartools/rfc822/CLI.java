@@ -156,19 +156,19 @@ main(String[] argv)
 			dadr = chk(asAL);
 			rmail = asAL == null ? asML : asAL;
 		}
-		System.out.print(String.format("‣ %s" + CLR + "%n\t", arg));
-		System.out.println(String.format(desc,
+		System.out.printf("‣ %s" + CLR + "%n\t", arg);
+		System.out.printf((desc) + "%n",
 		    chk(asAS), dmbx, dadr, isDom ? VALID : BAD,
-		    i6 == null ? BAD : VALID, i4 == null ? BAD : VALID));
+		    i6 == null ? BAD : VALID, i4 == null ? BAD : VALID);
 		if (rmail != null && rmail.isValid())
-			System.out.println(String.format("\teMail: " + BOLD + "%s" + CLR,
-			    rmail.toString()));
+			System.out.printf("\teMail: " + BOLD + "%s" + CLR + "%n",
+			    rmail.toString());
 		if (i6 != null || i4 != null)
-			System.out.println(String.format("\tIP: " + BOLD + "%s" + CLR,
-			    (i6 == null ? i4 : i6).getHostAddress()));
+			System.out.printf("\tIP: " + BOLD + "%s" + CLR + "%n",
+			    (i6 == null ? i4 : i6).getHostAddress());
 		if (isDom)
-			System.out.println(String.format("\tFQDN: " + BOLD + "%s" + CLR,
-			    arg));
+			System.out.printf("\tFQDN: " + BOLD + "%s" + CLR + "%n",
+			    arg);
 		System.out.println();
 	}
 	System.exit(40);
