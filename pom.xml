@@ -4,7 +4,7 @@
 	<parent>
 		<groupId>org.evolvis.tartools</groupId>
 		<artifactId>maven-parent</artifactId>
-		<version>1.29-SNAPSHOT</version>
+		<version>1.29</version>
 	</parent>
 	<groupId>org.evolvis.tartools</groupId>
 	<artifactId>rfc822</artifactId>
@@ -34,13 +34,12 @@
 	</organization>
 	<properties>
 		<archiver.copyright.firstyear>2020</archiver.copyright.firstyear>
-		<archiver.copyright.lastyear>2020</archiver.copyright.lastyear>
-		<archiver.copyright>Copyright © ${archiver.copyright.firstyear}; Licensor: $version_vendor</archiver.copyright>
+		<archiver.copyright.lastyear>2021</archiver.copyright.lastyear>
 		<!-- dependency management -->
-		<junit.version>5.6.2</junit.version>
-		<lombok.version>1.18.12</lombok.version>
+		<junit.version>5.7.0</junit.version>
+		<lombok.version>1.18.16</lombok.version>
 		<!-- maven plugins -->
-		<maven.owasp.dependency-check.version>5.3.2</maven.owasp.dependency-check.version>
+		<maven.owasp.dependency-check.version>6.0.5</maven.owasp.dependency-check.version>
 	</properties>
 	<scm>
 		<connection>scm:git:https://evolvis.org/anonscm/git/useful-scripts/rfc822.git</connection>
