@@ -231,9 +231,7 @@ unfold(final String s)
 	boolean eq = true;
 	int dst = 0;
 	for (char b : buf) {
-		if (b == 0x0D)
-			eq = false;
-		else if (b == 0x0A)
+		if (b == 0x0D || b == 0x0A)
 			eq = false;
 		else
 			buf[dst++] = b;
