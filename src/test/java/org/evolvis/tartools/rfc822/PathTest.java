@@ -194,7 +194,7 @@ t(final Tspec mailbox, final Tspec address, final Tspec mailboxList,
 }
 
 @AllArgsConstructor
-private static class Range {
+private static final class Range {
 
 	final int from;
 	final int to;

@@ -168,7 +168,7 @@ isQtext(final int c)
  *
  * @author mirabilos (t.glaser@tarent.de)
  */
-protected class UnfoldedSubstring extends Substring {
+protected final class UnfoldedSubstring extends Substring {
 
 	private final String string;
 
@@ -199,7 +199,7 @@ protected class UnfoldedSubstring extends Substring {
  * @author mirabilos (t.glaser@tarent.de)
  */
 @Getter
-protected class AddrSpecSIDE extends Substring {
+protected final class AddrSpecSIDE extends Substring {
 
 	private final boolean valid;
 
@@ -309,7 +309,7 @@ public interface ParserResult {
 @AllArgsConstructor(access = AccessLevel.PROTECTED)
 // ↑ coverage: one branch for each @NonNull below (so two)
 @Getter
-public final class AddrSpec implements ParserResult {
+public static final class AddrSpec implements ParserResult {
 
 	/**
 	 * The local-part of the addr-spec, as it occurs in the addr-spec,
@@ -355,7 +355,7 @@ public final class AddrSpec implements ParserResult {
  * @author mirabilos (t.glaser@tarent.de)
  */
 @Getter
-public final class Address implements ParserResult {
+public static final class Address implements ParserResult {
 
 	/**
 	 * Whether this address is a group (true) or a mailbox (false)
@@ -436,7 +436,7 @@ public final class Address implements ParserResult {
  * @author mirabilos (t.glaser@tarent.de)
  */
 @Getter
-public final class AddressList implements ParserResult {
+public static final class AddressList implements ParserResult {
 
 	/**
 	 * The actual address-list or mailbox-list behind the scenes
