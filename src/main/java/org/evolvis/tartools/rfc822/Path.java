@@ -215,6 +215,12 @@ protected final class UnfoldedSubstring extends Substring {
 @Getter
 protected final class AddrSpecSIDE extends Substring {
 
+	/**
+	 * Whether this addr-spec side is actually valid or merely parses
+	 * but fails further validations (length limits, semantics, etc.)
+	 *
+	 * @return true if valid, false otherwise
+	 */
 	private final boolean valid;
 
 	private AddrSpecSIDE(final Substring src, final String us, final boolean v)
@@ -336,6 +342,8 @@ public static final class AddrSpec implements ParserResult {
 	 * The local-part of the addr-spec, as it occurs in the addr-spec,
 	 * i.e. dot-atom or quoted-string in their wire representation;
 	 * the parsed string content is available as String getData()
+	 *
+	 * @return local-part of the addr-spec as {@link Substring}
 	 */
 	@NonNull
 	final Substring localPart;
@@ -345,6 +353,8 @@ public static final class AddrSpec implements ParserResult {
 	 * or one of two forms of domain-literal: [192.0.2.1] for Legacy IP,
 	 * [IPv6:2001:DB8:CAFE:1::1] for IP addresses; getData() contains
 	 * either the domain as String or the IP address as {@link InetAddress}
+	 *
+	 * @return domain of the addr-spec as {@link Substring}
 	 */
 	@NonNull
 	final Substring domain;
@@ -353,6 +363,8 @@ public static final class AddrSpec implements ParserResult {
 	 * Whether this addr-spec is actually valid according to DNS, SMTP,
 	 * etc. (true) or merely parses as RFC822 addr-spec (false) and fails
 	 * further validation (length limits, FQDN label syntax, etc.)
+	 *
+	 * @return true if valid, false otherwise
 	 */
 	final boolean valid;
 
@@ -380,6 +392,8 @@ public static final class Address implements ParserResult {
 
 	/**
 	 * Whether this address is a group (true) or a mailbox (false)
+	 *
+	 * @return true if a group, false if a mailbox
 	 */
 	final boolean group;
 
@@ -390,21 +404,29 @@ public static final class Address implements ParserResult {
 	 * (in [@link UXAddress] cases, {@link Substring#toString()} (the
 	 * “wire form”) may be empty whereas {@link Substring#getData()}
 	 * can return the value the user provided)
+	 *
+	 * @return display-name as {@link Substring}
 	 */
 	final Substring label;
 
 	/**
 	 * The addr-spec behind this mailbox [isGroup()==false]
+	 *
+	 * @return addr-spec as {@link AddrSpec}
 	 */
 	final AddrSpec mailbox;
 
 	/**
 	 * The group-list behind this group [isGroup()==true], may be empty
+	 *
+	 * @return group-list as {@link List} of {@link Address}
 	 */
 	final List<Address> mailboxen;
 
 	/**
 	 * Whether all constituents are valid
+	 *
+	 * @return true if valid, false otherwise
 	 */
 	final boolean valid;
 
@@ -463,11 +485,15 @@ public static final class AddressList implements ParserResult {
 	 * The actual address-list or mailbox-list behind the scenes
 	 * (which one it is depends on by which parser function this
 	 * object was returned)
+	 *
+	 * @return address-list / mailbox-list as {@link List} of {@link Address}
 	 */
 	final List<Address> addresses;
 
 	/**
 	 * Whether all constituents are valid
+	 *
+	 * @return true if valid, false otherwise
 	 */
 	final boolean valid;
 
@@ -475,6 +501,8 @@ public static final class AddressList implements ParserResult {
 	 * Whether this is definitely an address-list (group addresses are
 	 * present); note that if this is false, it may be either a mailbox-list
 	 * or an address-list whose address members are all mailbox)
+	 *
+	 * @return true if group {@link Address}es are present
 	 */
 	@SuppressWarnings("squid:S1700")
 	final boolean addressList;
