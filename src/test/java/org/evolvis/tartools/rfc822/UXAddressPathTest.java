@@ -194,7 +194,7 @@ t(final Tspec mailbox, final Tspec address, final Tspec mailboxList,
 }
 
 @AllArgsConstructor
-private static class Range {
+private static final class Range {
 
 	final int from;
 	final int to;
@@ -206,7 +206,8 @@ private static class Range {
 
 }
 
-private void testCtype(final byte what, final Range... ranges)
+private void
+testCtype(final byte what, final Range... ranges)
 {
 	boolean[] a = new boolean[260];
 	Arrays.fill(a, false);
@@ -222,7 +223,8 @@ private void testCtype(final byte what, final Range... ranges)
 }
 
 @Test
-public void testCtypes()
+public void
+testCtypes()
 {
 	testCtype(UXAddress.IS_ATEXT, new Range('A', 'Z'), new Range('a', 'z'),
 	    new Range('0', '9'), new Range('!'), new Range('#'), new Range('$'),
@@ -244,7 +246,8 @@ public void testCtypes()
 }
 
 @Test
-public void testPos()
+public void
+testPos()
 {
 	assertNull(UXAddress.of(null));
 	val SN = S(RN);
@@ -465,6 +468,8 @@ public void testPos()
 	t(SU, null, null, null, "un\r fold <user@domain>", null); // not RFC
 	t(SN, null, null, null, "un\nfold <user@domain>", null);
 	t(SU, null, null, null, "un\n fold <user@domain>", null); // not RFC
+	t(S(VO, "\"un fold\" <user@domain>"), null, null, null,
+	    "\"un\r\n fold\" <user@domain>", null);
 	t(null, null, SN, SN, "user@domain,", null);
 	t(null, SN, null, null, "displayname", null);
 	t(null, SN, null, null, "displayname:", null);
@@ -537,6 +542,20 @@ public void testPos()
 	assertEquals(-1, ut.pQuotedPair());
 	ut.jmp(2);
 	assertEquals(-1, ut.pQuotedPair());
+}
+
+@Test
+public void
+testLombokNonNull()
+{
+	val r = UXAddress.of("foo <bar@example.com>").forSender(false);
+	assertNotNull(r);
+	val l = r.getLabel();
+	assertNotNull(l);
+	assertEquals("foo", l.toString());
+	// test extra branches caused by Lombok @NonNull
+	assertThrows(NullPointerException.class, () -> new UXAddress.AddrSpec(null, l, false));
+	assertThrows(NullPointerException.class, () -> new UXAddress.AddrSpec(l, null, false));
 }
 
 }
