@@ -307,6 +307,7 @@ public interface ParserResult {
  * @author mirabilos (t.glaser@tarent.de)
  */
 @AllArgsConstructor(access = AccessLevel.PROTECTED)
+// ↑ coverage: one branch for each @NonNull below (so two)
 @Getter
 public final class AddrSpec implements ParserResult {
 
