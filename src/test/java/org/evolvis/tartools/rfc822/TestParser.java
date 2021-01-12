@@ -112,7 +112,7 @@ pWords()
 	assert skip(Character::isWhitespace) == -1;
 	System.out.print("asWords:");
 	for (final String word : res)
-		System.out.print(String.format("(%s)", word));
+		System.out.printf("(%s)", word);
 	System.out.println("->ok");
 	return res;
 }
