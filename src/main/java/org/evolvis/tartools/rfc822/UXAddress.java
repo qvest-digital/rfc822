@@ -27,7 +27,9 @@ package org.evolvis.tartools.rfc822;
  * nōn-ASCII characters. (For now they cause dropping the label part.)
  *
  * @author mirabilos (t.glaser@tarent.de)
+ * @deprecated not yet implemented
  */
+@Deprecated
 public class UXAddress extends Path {
 
 /**

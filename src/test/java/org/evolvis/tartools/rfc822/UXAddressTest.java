@@ -29,6 +29,7 @@ import static org.junit.jupiter.api.Assertions.*;
  *
  * @author mirabilos (t.glaser@tarent.de)
  */
+@SuppressWarnings("deprecation")
 class UXAddressTest {
 
 @Test
