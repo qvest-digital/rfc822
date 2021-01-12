@@ -544,10 +544,18 @@ testPos()
 	assertEquals(-1, ut.pQuotedPair());
 }
 
+@Test
 public void
 testLombokNonNull()
 {
-	//assertThrows(NullPointerException.class, () -> new Path.AddrSpec(null, "", false));
+	val r = Path.of("foo <bar@example.com>").forSender(false);
+	assertNotNull(r);
+	val l = r.getLabel();
+	assertNotNull(l);
+	assertEquals("foo", l.toString());
+	// test extra branches caused by Lombok @NonNull
+	assertThrows(NullPointerException.class, () -> new Path.AddrSpec(null, l, false));
+	assertThrows(NullPointerException.class, () -> new Path.AddrSpec(l, null, false));
 }
 
 }
