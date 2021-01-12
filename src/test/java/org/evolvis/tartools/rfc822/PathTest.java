@@ -465,6 +465,8 @@ public void testPos()
 	t(SU, null, null, null, "un\r fold <user@domain>", null); // not RFC
 	t(SN, null, null, null, "un\nfold <user@domain>", null);
 	t(SU, null, null, null, "un\n fold <user@domain>", null); // not RFC
+	t(S(VO, "\"un fold\" <user@domain>"), null, null, null,
+	    "\"un\r\n fold\" <user@domain>", null);
 	t(null, null, SN, SN, "user@domain,", null);
 	t(null, SN, null, null, "displayname", null);
 	t(null, SN, null, null, "displayname:", null);
