@@ -37,7 +37,7 @@ import static org.junit.jupiter.api.Assertions.*;
  *
  * @author mirabilos (t.glaser@tarent.de)
  */
-class UXAddressPathTest {
+@SuppressWarnings("deprecation") class UXAddressPathTest {
 
 private static final byte RN = 0;        // does not parse
 private static final byte PI = 1;        // parses, not valid, result = original
