@@ -23,12 +23,11 @@ package org.evolvis.tartools.rfc822;
 /**
  * Represents an RFC822 (and successors) eMail address header content,
  * like {@link Path}, except the parser accepts more varying input,
- * especially input by humans, and MIME-encodes nōn-ASCII characters.
+ * especially input by humans, and eventually will MIME-encode any
+ * nōn-ASCII characters. (For now they cause dropping the label part.)
  *
  * @author mirabilos (t.glaser@tarent.de)
- * @deprecated not yet implemented
  */
-@Deprecated
 public class UXAddress extends Path {
 
 /**
