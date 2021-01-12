@@ -350,6 +350,19 @@ public void testPos()
 		assertIterableEquals(a, l.flattenAddresses());
 		val s = Arrays.asList("boss@nil.test", "sysservices@example.net");
 		assertIterableEquals(s, l.flattenAddrSpecs());
+		assertTrue(l.isValid());
+		val al = l.getAddresses();
+		assertNotNull(al);
+		assertEquals(2, al.size());
+		val m2 = al.get(1);
+		assertTrue(m2.isValid());
+		assertFalse(m2.isGroup());
+		val m2l = m2.getLabel();
+		assertNotNull(m2l);
+		assertEquals("\"Giant; \\\"Big\\\" Box\"", m2l.toString());
+		val m2ld = m2l.getData();
+		assertTrue(m2ld instanceof String, "Substring data is a String");
+		assertEquals("Giant; \"Big\" Box", m2ld);
 	});
 	val s10 = "Pete <pete@silly.example>";
 	t(SV, SV, SV, SV, s10, (l) -> {

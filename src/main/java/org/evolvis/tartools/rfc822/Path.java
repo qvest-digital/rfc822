@@ -364,6 +364,9 @@ public final class Address implements ParserResult {
 	 * The display-name of this mailbox.name-addr (optional) or
 	 * group (mandatory) with the human-readable / parsed form
 	 * with comments available via String {@link Substring#getData()}
+	 * (in {@link UXAddress} cases, {@link Substring#toString()} (the
+	 * “wire form”) may be empty whereas {@link Substring#getData()}
+	 * can return the value the user provided)
 	 */
 	final Substring label;
 
