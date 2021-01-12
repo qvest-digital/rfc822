@@ -33,10 +33,11 @@ public final class CLI {
 
 private static final String EAS = "addr-spec %s  ";
 private static final String EML = "mailbox-list %s  address-list %s";
-private static final String EMA = "(no list) mailbox %s  address %s";
+private static final String EMA = " list) mailbox %s  address %s";
 private static final String DIP = "  FQDN %s  IPv6 %s  IPv4 %s";
 private static final String ISLIST = EAS + EML + DIP;
-private static final String NOLIST = EAS + EMA + DIP;
+private static final String NOLIST = EAS + "(no" + EMA + DIP;
+private static final String ORLIST = EAS + "(or" + EMA + DIP;
 private static final String CLR = "\u001B[0m";
 private static final String BAD = "\u001B[31m✘" + CLR;
 private static final String PARSES = "\u001B[1;33m✘" + CLR;
@@ -148,7 +149,7 @@ main(String[] argv)
 		final Path.ParserResult rmail;
 		if (/* known not-list */ asMbox != null || asAddr != null ||
 		    /* known not a list */ (asML == null && asAL == null)) {
-			desc = NOLIST;
+			desc = asML == null && asAL == null ? NOLIST : ORLIST;
 			dmbx = chk(asMbox);
 			dadr = chk(asAddr);
 			rmail = asAddr == null ? asMbox : asAddr;
