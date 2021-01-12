@@ -6,6 +6,9 @@ The purpose of this library is primarily to enable users to verify
 eMail addresses, which cannot be done with a regular expression.
 More eMail-related parsers, validators, emitters, etc. later.
 
+Validation of IP addresses (IPv6, Legacy IPv4) and FQDNs (hostnames,
+domains) is provided as well.
+
 Preliminary release note
 ────────────────────────
 
@@ -50,7 +53,7 @@ will return null. Otherwise, you have a parser and call it:
 	val adrList = p.asAddressList();  // Path.AddressList
 	val adrspec = p.asAddrSpec();     // Path.AddrSpec
 
-(Using “val” means the protected type can be stored.)
+(Using “val” means the protected type of the result can be stored.)
 
 The return value if null if the address cannot be parsed. The
 first thing to do now is, with To: for example, to weed out
@@ -87,8 +90,8 @@ You can also validate hostnames…
 
 In both cases, ip isn’t null for valid addresses.
 
-This API is what you get in the 0.2 release. (There are several
-other methods, especially toString() is useful.)
+There are other useful methods on the resulting object; toString()
+especially and introspection of the various parts of a mail path.
 
 CLI (command-line interface) utility
 ────────────────────────────────────

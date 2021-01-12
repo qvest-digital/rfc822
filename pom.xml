@@ -1,4 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
+<!--
+	To retrieve full source code including the README for the latest version:
+
+	$ mvn -U -Dartifact=org.evolvis.tartools:rfc822:RELEASE:tgz:source -DoutputDirectory=. dependency:copy #
+
+	Replace RELEASE with the <version> number below to get the corresponding artefact.
+-->
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
 	<modelVersion>4.0.0</modelVersion>
 	<parent>
@@ -11,7 +18,7 @@
 	<version>0.4-SNAPSHOT</version>
 	<packaging>jar</packaging>
 	<name>${project.groupId}:${project.artifactId}</name>
-	<description>eMail address validation utilities</description>
+	<description>eMail address, IP address (v4/v6), FQDN (domain, hostname) validation utilities</description>
 	<url>https://evolvis.org/plugins/scmgit/cgi-bin/gitweb.cgi?p=useful-scripts/rfc822.git</url>
 	<licenses>
 		<license>
@@ -35,11 +42,11 @@
 	<properties>
 		<archiver.copyright.firstyear>2020</archiver.copyright.firstyear>
 		<archiver.copyright.lastyear>2021</archiver.copyright.lastyear>
-		<!-- dependency management -->
+		<!-- ‣ maven plugins -->
+		<maven.owasp.dependency-check.version>6.0.5</maven.owasp.dependency-check.version>
+		<!-- ‣ dependency management -->
 		<junit.version>5.7.0</junit.version>
 		<lombok.version>1.18.16</lombok.version>
-		<!-- maven plugins -->
-		<maven.owasp.dependency-check.version>6.0.5</maven.owasp.dependency-check.version>
 	</properties>
 	<scm>
 		<connection>scm:git:https://evolvis.org/anonscm/git/useful-scripts/rfc822.git</connection>
