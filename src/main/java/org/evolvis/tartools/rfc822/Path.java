@@ -234,6 +234,7 @@ unfold(final String s)
 		switch (buf[src]) {
 		// ↑ coverage: 0x0D appears never hit but it is (1 branch)
 		case 0x0D:
+			break; //XXX
 		case 0x0A:
 			break;
 		default:
