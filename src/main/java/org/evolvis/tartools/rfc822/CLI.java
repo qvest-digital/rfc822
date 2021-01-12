@@ -24,7 +24,7 @@ import lombok.val;
 
 /**
  * Utility to parse and validate strings from the command line.
- * See {@link #usage()} for usage information.
+ * <p>See {@link #usage()} for usage information.</p>
  *
  * @author mirabilos (m@mirbsd.org)
  */

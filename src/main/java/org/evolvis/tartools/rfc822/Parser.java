@@ -1,7 +1,7 @@
 package org.evolvis.tartools.rfc822;
 
 /*-
- * Copyright © 2020 mirabilos (t.glaser@tarent.de)
+ * Copyright © 2020, 2021 mirabilos (t.glaser@tarent.de)
  * Licensor: tarent solutions GmbH, Bonn
  *
  * Provided that these terms and disclaimer and all copyright notices
@@ -65,9 +65,9 @@ private final int srcsz;
  * Constructs a parser. Intended to be used by subclasses from static
  * factory methods *only*; see {@link Path#of(String)} for an example.
  *
- * Note that subclass constructors must also be of protected visibility
+ * <p>Note that subclass constructors must also be of protected visibility
  * to allow for inheritance, but they should both be documented and
- * treated as private, never called other than from a subclass constructor.
+ * treated as private, never called other than from a subclass constructor.</p>
  *
  * @param input  user-provided {@link String} to parse
  * @param maxlen subclass-provided maximum input string length, in characters
@@ -243,7 +243,10 @@ skip(final Function<Integer, Boolean> matcher)
 
 /**
  * Representation for consecutive substrings of the input string,
- * for result passing.
+ * for result passing. {@link #toString()} usually returns the
+ * on-wire representation of the input, normally verbatim as
+ * real substring; {@link #getData()} will provide additional
+ * information if set.
  *
  * @author mirabilos (t.glaser@tarent.de)
  */
@@ -307,6 +310,12 @@ protected class Substring {
 		this.data = data;
 	}
 
+	/**
+	 * Returns the string representation of this {@link Substring},
+	 * that is, usually, a substring of an on-wire representation.
+	 *
+	 * @return String representation
+	 */
 	@Override
 	public String toString()
 	{
@@ -329,7 +338,7 @@ final class Txn implements AutoCloseable {
 	/**
 	 * Creates a new parser position transaction instance
 	 *
-	 * The current position, upon creation, is committed immediately.
+	 * <p>The current position, upon creation, is committed immediately.</p>
 	 */
 	protected Txn()
 	{

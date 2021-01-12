@@ -1,7 +1,7 @@
 package org.evolvis.tartools.rfc822;
 
 /*-
- * Copyright © 2020 mirabilos (t.glaser@tarent.de)
+ * Copyright © 2020, 2021 mirabilos (t.glaser@tarent.de)
  * Licensor: tarent solutions GmbH, Bonn
  *
  * Provided that these terms and disclaimer and all copyright notices
@@ -23,7 +23,7 @@ package org.evolvis.tartools.rfc822;
 /**
  * Represents an FQDN (“domain” production) for use in eMail
  *
- * The main entry point is the {@link #isDomain(String)} method.
+ * <p>The main entry point is the {@link #isDomain(String)} method.</p>
  *
  * @author mirabilos (t.glaser@tarent.de)
  */
@@ -55,12 +55,12 @@ protected FQDN(final String input)
 /**
  * Checks if a supposed hostname is a valid Fully-Qualified Domain Name.
  *
- * Valid FQDNs are up to 254 octets in length, comprised only of labels
+ * <p>Valid FQDNs are up to 254 octets in length, comprised only of labels
  * (letters, digits and hyphen-minus, but not beginning or ending with
- * a hyphen-minus) up to 63 octets long, separated by dots (‘.’).
+ * a hyphen-minus) up to 63 octets long, separated by dots (‘.’).</p>
  *
- * Strictly speaking, FQDNs could be 255 octet in length, but these may
- * cause problems with DNS and will not work in SMTP anyway.
+ * <p>Strictly speaking an FQDN could be 255 octets in length, but these may
+ * cause problems with DNS and will not work in SMTP anyway.</p>
  *
  * @return true if the hostname passed during construction is valid, else false
  */
@@ -93,12 +93,12 @@ isDomain()
 /**
  * Checks if a supposed hostname is a valid Fully-Qualified Domain Name.
  *
- * Valid FQDNs are up to 254 octets in length, comprised only of labels
+ * <p>Valid FQDNs are up to 254 octets in length, comprised only of labels
  * (letters, digits and hyphen-minus, but not beginning or ending with
- * a hyphen-minus) up to 63 octets long, separated by dots (‘.’).
+ * a hyphen-minus) up to 63 octets long, separated by dots (‘.’).</p>
  *
- * Strictly speaking, FQDNs could be 255 octet in length, but these may
- * cause problems with DNS and will not work in SMTP anyway.
+ * <p>Strictly speaking an FQDN could be 255 octets in length, but these may
+ * cause problems with DNS and will not work in SMTP anyway.</p>
  *
  * @param hostname to check
  *

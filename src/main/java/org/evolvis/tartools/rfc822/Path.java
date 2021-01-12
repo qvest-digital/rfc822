@@ -2,7 +2,7 @@ package org.evolvis.tartools.rfc822;
 
 /*-
  * Copyright © 2020 mirabilos (m@mirbsd.org)
- * Copyright © 2020 mirabilos (t.glaser@tarent.de)
+ * Copyright © 2020, 2021 mirabilos (t.glaser@tarent.de)
  * Licensor: tarent solutions GmbH, Bonn
  *
  * Provided that these terms and disclaimer and all copyright notices
@@ -41,14 +41,14 @@ import java.util.stream.Collectors;
  * the General-address-literal syntax is not recognised (as downstream
  * MTAs cannot support it as no use is specified yet), and a IPv6 Zone
  * Identifier isn’t supported as it’s special local use only. Handling
- * of line endings is lenient: CRLF := ([CR] LF) / CR
+ * of line endings is lenient: CRLF := ([CR] LF) / CR<p>
  *
  * Create a new instance via the {@link #of(String)} factory method by
  * passing it the address list string to analyse. Then call one of the
  * parse methods on the instance: {@link #asAddressList()} to validate
  * recipients, {@link #asMailboxList()} or {@link #forSender(boolean)}
  * for message senders (but read their JavaDoc). Validating unlabelled
- * addr-specs is possible with {@link #asAddrSpec()}.
+ * addr-specs is possible with {@link #asAddrSpec()}.</p>
  *
  * @author mirabilos (t.glaser@tarent.de)
  */
@@ -166,6 +166,11 @@ isQtext(final int c)
 /**
  * Representation for a substring of the input string, FWS unfolded
  *
+ * <p>{@link #toString()} will return the (unfolded) wire representation,
+ * {@link #getData()} the unfolded user representation. Neither are true
+ * substrings of the input any more if unfolding, as in {@link #unfold(String)},
+ * was necessary.</p>
+ *
  * @author mirabilos (t.glaser@tarent.de)
  */
 protected final class UnfoldedSubstring extends Substring {
@@ -185,6 +190,13 @@ protected final class UnfoldedSubstring extends Substring {
 		string = us;
 	}
 
+	/**
+	 * Returns the string representation of this {@link Parser.Substring},
+	 * in our case, an unfolded (see {@link #unfold(String)}) copy of the
+	 * on-wire representation.
+	 *
+	 * @return String representation
+	 */
 	@Override
 	public String toString()
 	{
@@ -195,6 +207,8 @@ protected final class UnfoldedSubstring extends Substring {
 
 /**
  * Representation for a local-part (FWS unfolded) or a domain (dot-atom only)
+ *
+ * <p>Test {@link #isValid()} first.</p>
  *
  * @author mirabilos (t.glaser@tarent.de)
  */
@@ -209,6 +223,12 @@ protected final class AddrSpecSIDE extends Substring {
 		valid = v;
 	}
 
+	/**
+	 * Returns the string representation of this local-part (FWS unfolded)
+	 * or domain (dot-atom)
+	 *
+	 * @return String representation (identical to the user data)
+	 */
 	@Override
 	public String toString()
 	{
@@ -257,7 +277,15 @@ unfold(final Substring ss)
 
 /**
  * Represents the return value of something that can be a word production
- * (atom or quoted-string); the optional trailing CFWS is <em>not</em> unfolded
+ * (atom or quoted-string)
+ *
+ * <p>The {@code body} member can be:</p><ul>
+ * <li>a raw substring of an atom, surrounding CFWS stripped ({@link #pAtom()})</li>
+ * <li>an {@link UnfoldedSubstring} of a quoted-string including surrounding double
+ * quotes, whose user data is dequoted and backslash-removed ({@link #pQuotedString()})</li>
+ * </ul>
+ *
+ * <p>The {@code cfws} member (optional trailing CFWS) is <em>not</em> unfolded.</p>
  *
  * @author mirabilos (t.glaser@tarent.de)
  */

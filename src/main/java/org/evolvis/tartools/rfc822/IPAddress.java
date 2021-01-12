@@ -34,7 +34,8 @@ import java.util.List;
  * Represents an IP address (including Legacy IP) for use in eMail on
  * public Internet (no scoped addresses / IPv6 Zone ID)
  *
- * The main entry points are the {@link #v6(String)} and {@link #v4(String)} methods.
+ * <p>The main entry points are the {@link #v6(String)} and
+ * {@link #v4(String)} methods.</p>
  *
  * @author mirabilos (t.glaser@tarent.de)
  */
@@ -77,17 +78,19 @@ toAddress(final byte[] addr)
 }
 
 /**
- * Parses the passed address as IP address (IPv6).
+ * Parses the passed address as IP address (IPv6), excluding Zone ID (scope).
  *
+ * <p>
  * Note that the returned InetAddress object can be an {@link Inet4Address}
  * object, for example if the passed address represents a v4-mapped address;
  * in most cases it will be an {@link Inet6Address} object though. In either
  * case, if the address is no valid IPv6 address (e.g. because it is an IPv4
  * address), null will be returned instead, so the return value can be used
  * to distinguish the address families, even if a v4-mapped address occurs.
+ * </p>
  *
- * The {@link InetAddress#getHostName()} method will return the original
- * string in all cases anyway.
+ * <p>The {@link InetAddress#getHostName()} method will return the original
+ * string in all cases anyway.</p>
  *
  * @return {@link InetAddress} representing the address, or null on failure
  */
@@ -113,17 +116,19 @@ asIPv4Address()
 }
 
 /**
- * Parses the passed address as IP address (IPv6), excluding Zone ID.
+ * Parses the passed address as IP address (IPv6), excluding Zone ID (scope).
  *
+ * <p>
  * Note that the returned InetAddress object can be an {@link Inet4Address}
  * object, for example if the passed address represents a v4-mapped address;
  * in most cases it will be an {@link Inet6Address} object though. In either
  * case, if the address is no valid IPv6 address (e.g. because it is an IPv4
  * address), null will be returned instead, so the return value can be used
  * to distinguish the address families, even if a v4-mapped address occurs.
+ * </p>
  *
- * The {@link InetAddress#getHostName()} method will return the original
- * string in all cases anyway.
+ * <p>The {@link InetAddress#getHostName()} method will return the original
+ * string in all cases anyway.</p>
  *
  * @param address to parse as IPv6 address (IPv4 addresses return null)
  *
@@ -215,13 +220,13 @@ pIPv4Address()
 /**
  * Checks for h16 or possibly an IPv4 address (ls32 production). This method
  * solely exists because Sonar otherwise thinks {@link #pIPv6Address()} too
- * complex for the feeble minds of Java™ programmers…
+ * complex for the feeble minds of Java™ programmers…<p>
  *
  * It checks whether the current char can be an h32 or IPv4 address (xdigit);
  * if not, or if ls32 indicates we should check for IPv4 addresses and there
  * indeed is one, i.e. when further parsing should be stopped, it returns
  * true; otherwise, the parsed h16 is added to dst, and false returned to
- * indicate that parsing should continue.
+ * indicate that parsing should continue.</p>
  *
  * @param dst  collecting h16s
  * @param ls32 whether an IPv4 address is allowed here
