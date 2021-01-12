@@ -248,7 +248,7 @@ skip(final Function<Integer, Boolean> matcher)
  * @author mirabilos (t.glaser@tarent.de)
  */
 protected class Substring {
-	// ↑ coverage:https://github.com/jacoco/jacoco/issues/1063
+	// ↑ coverage: https://github.com/jacoco/jacoco/issues/1063
 
 	protected final int beg;
 	protected final int end;
