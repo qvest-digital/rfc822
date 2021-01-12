@@ -232,6 +232,7 @@ unfold(final String s)
 	int dst = 0;
 	while (src < buf.length) {
 		switch (buf[src]) {
+		// ↑ coverage: 0x0D appears never hit but it is (1 branch)
 		case 0x0D:
 		case 0x0A:
 			break;
