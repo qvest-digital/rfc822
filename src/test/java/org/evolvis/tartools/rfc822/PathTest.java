@@ -206,7 +206,8 @@ private static class Range {
 
 }
 
-private void testCtype(final byte what, final Range... ranges)
+private void
+testCtype(final byte what, final Range... ranges)
 {
 	boolean[] a = new boolean[260];
 	Arrays.fill(a, false);
@@ -222,7 +223,8 @@ private void testCtype(final byte what, final Range... ranges)
 }
 
 @Test
-public void testCtypes()
+public void
+testCtypes()
 {
 	testCtype(Path.IS_ATEXT, new Range('A', 'Z'), new Range('a', 'z'),
 	    new Range('0', '9'), new Range('!'), new Range('#'), new Range('$'),
@@ -244,7 +246,8 @@ public void testCtypes()
 }
 
 @Test
-public void testPos()
+public void
+testPos()
 {
 	assertNull(Path.of(null));
 	val SN = S(RN);
@@ -539,6 +542,12 @@ public void testPos()
 	assertEquals(-1, ut.pQuotedPair());
 	ut.jmp(2);
 	assertEquals(-1, ut.pQuotedPair());
+}
+
+public void
+testLombokNonNull()
+{
+	//assertThrows(NullPointerException.class, () -> new Path.AddrSpec(null, "", false));
 }
 
 }
