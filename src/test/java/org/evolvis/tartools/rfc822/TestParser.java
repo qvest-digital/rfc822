@@ -62,7 +62,7 @@ String
 keyword()
 {
 	try (val beg = new Parser.Txn()) {
-		if (skip(TestParser::isWsp) == -1)
+		if (skipPeek(TestParser::isWsp) == -1)
 			return null;
 		try (val ofs = new Parser.Txn()) {
 			for (final String keyword : keywords) {
@@ -90,7 +90,7 @@ String
 word()
 {
 	final int ofs = pos();
-	if (skip(TestParser::isWsp) == -1) {
+	if (skipPeek(TestParser::isWsp) == -1) {
 		jmp(ofs);
 		return null;
 	}

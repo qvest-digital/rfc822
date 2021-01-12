@@ -211,14 +211,14 @@ accept()
 
 /**
  * Advances the current position as long as the matcher returns true
- * and end of input is not yet reached
+ * and end of input is not yet reached; cf. {@link #skip(Function)}
  *
  * @param matcher gets called with {@link #cur()} and {@link #peek()} as arguments
  *
  * @return codepoint of the first character where the matcher returned false, or -1
  */
 protected final int
-skip(final BiFunction<Integer, Integer, Boolean> matcher)
+skipPeek(final BiFunction<Integer, Integer, Boolean> matcher)
 {
 	while (cur != -1 && matcher.apply(cur, next))
 		jmp(succ);
@@ -227,7 +227,7 @@ skip(final BiFunction<Integer, Integer, Boolean> matcher)
 
 /**
  * Advances the current position as long as the matcher returns true
- * and end of input is not yet reached; cf. {@link #skip(BiFunction)}
+ * and end of input is not yet reached; cf. {@link #skipPeek(BiFunction)}
  *
  * @param matcher gets called with just {@link #cur()} as argument
  *
