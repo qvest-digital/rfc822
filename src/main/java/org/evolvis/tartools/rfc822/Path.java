@@ -228,22 +228,17 @@ public static String
 unfold(final String s)
 {
 	final char[] buf = s.toCharArray();
-	int src = 0;
+	boolean eq = true;
 	int dst = 0;
-	while (src < buf.length) {
-		switch (buf[src]) {
-		// ↑ coverage: 0x0D appears never hit but it is (1 branch)
-		case 0x0D:
-			break; //XXX
-		case 0x0A:
-			break;
-		default:
-			buf[dst++] = buf[src];
-			break;
-		}
-		++src;
+	for (char b : buf) {
+		if (b == 0x0D)
+			eq = false;
+		else if (b == 0x0A)
+			eq = false;
+		else
+			buf[dst++] = b;
 	}
-	return dst == src ? null : new String(buf, 0, dst);
+	return eq ? null : new String(buf, 0, dst);
 }
 
 /**
