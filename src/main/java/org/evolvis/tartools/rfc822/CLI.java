@@ -2,6 +2,7 @@ package org.evolvis.tartools.rfc822;
 
 /*-
  * Copyright © 2020 mirabilos (m@mirbsd.org)
+ * Copyright © 2021 mirabilos (t.glaser@tarent.de)
  *
  * Provided that these terms and disclaimer and all copyright notices
  * are retained or reproduced in an accompanying document, permission
@@ -145,7 +146,8 @@ main(String[] argv)
 		final String dmbx;
 		final String dadr;
 		final Path.ParserResult rmail;
-		if (asML == null && asAL == null) {
+		if (/* known not-list */ asMbox != null || asAddr != null ||
+		    /* known not a list */ (asML == null && asAL == null)) {
 			desc = NOLIST;
 			dmbx = chk(asMbox);
 			dadr = chk(asAddr);
