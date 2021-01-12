@@ -861,7 +861,7 @@ pQuotedString()
 			final int qc = pQcontent();
 			if (qc == -1)
 				break;
-			rv.append(qc);
+			rv.append((char)qc);
 		}
 		// [FWS] after *([FWS] qcontent) already parsed above
 		if (cur() != '"')
