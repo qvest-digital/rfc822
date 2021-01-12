@@ -66,6 +66,7 @@ protected IPAddress(final String input)
 }
 
 @SneakyThrows(UnknownHostException.class)
+// ↑ coverage: https://groups.google.com/g/project-lombok/c/EZGrE1m2x_M/m/-ECl6IUVAQAJ
 private InetAddress
 toAddress(final byte[] addr)
 {
