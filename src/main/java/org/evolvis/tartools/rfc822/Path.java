@@ -167,7 +167,7 @@ isQtext(final int c)
  * Representation for a substring of the input string, FWS unfolded
  *
  * <p>{@link #toString()} will return the (unfolded) wire representation,
- * {@link #getData()} the unfolded user representation. Neither are true
+ * getData() the unfolded user representation. Neither are true
  * substrings of the input any more if unfolding, as in {@link #unfold(String)},
  * was necessary.</p>
  *
@@ -208,7 +208,7 @@ protected final class UnfoldedSubstring extends Substring {
 /**
  * Representation for a local-part (FWS unfolded) or a domain (dot-atom only)
  *
- * <p>Test {@link #isValid()} first.</p>
+ * <p>Test isValid() first.</p>
  *
  * @author mirabilos (t.glaser@tarent.de)
  */
@@ -582,7 +582,7 @@ protected Path(final String input)
  * Parses the address as mailbox-list, e.g. for the From and Resent-From headers
  * (but see {@link #asAddressList()} for RFC6854’s RFC2026 §3.3(d) Limited Use)
  *
- * @return parser result; remember to call {@link Path.AddressList#isValid()} first!
+ * @return parser result; remember to call isValid() on it first!
  */
 public AddressList
 asMailboxList()
@@ -601,7 +601,7 @@ asMailboxList()
  *
  * @param allowRFC6854forLimitedUse use address instead of mailbox parsing
  *
- * @return parser result; remember to call {@link Path.Address#isValid()} first!
+ * @return parser result; remember to call isValid() on it first!
  */
 public Address
 forSender(final boolean allowRFC6854forLimitedUse)
@@ -636,7 +636,7 @@ asAddrSpec()
  * allows using this for the From and Resent-From headers, normally
  * covered by the {@link #asMailboxList()} method.
  *
- * @return parser result; remember to call {@link Path.AddressList#isValid()} first!
+ * @return parser result; remember to call isValid() on it first!
  */
 public AddressList
 asAddressList()

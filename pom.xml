@@ -44,8 +44,6 @@
 		<archiver.copyright.lastyear>2021</archiver.copyright.lastyear>
 		<!-- ‣ maven plugins -->
 		<maven.owasp.dependency-check.version>6.0.5</maven.owasp.dependency-check.version>
-		<maven.lombok.delombok-target>${project.build.directory}/javadoc-delombok</maven.lombok.delombok-target>
-		<maven.lombok.version>${lombok.version}.0</maven.lombok.version>
 		<!-- ‣ dependency management -->
 		<junit.version>5.7.0</junit.version>
 		<lombok.version>1.18.16</lombok.version>
@@ -193,32 +191,6 @@
 				</configuration>
 			</plugin>
 			<plugin>
-				<groupId>org.projectlombok</groupId>
-				<artifactId>lombok-maven-plugin</artifactId>
-				<version>${maven.lombok.version}</version>
-				<executions>
-					<execution>
-						<id>delombok-for-javadoc</id>
-						<phase>generate-sources</phase>
-						<goals>
-							<goal>delombok</goal>
-						</goals>
-						<configuration>
-							<sourceDirectory>${project.basedir}/src/main/java</sourceDirectory>
-							<outputDirectory>${maven.lombok.delombok-target}</outputDirectory>
-							<addOutputDirectory>false</addOutputDirectory>
-						</configuration>
-					</execution>
-				</executions>
-				<dependencies>
-					<dependency>
-						<groupId>org.projectlombok</groupId>
-						<artifactId>lombok</artifactId>
-						<version>${lombok.version}</version>
-					</dependency>
-				</dependencies>
-			</plugin>
-			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-assembly-plugin</artifactId>
 				<executions>
@@ -262,13 +234,6 @@
 							<mainClass>org.evolvis.tartools.rfc822.CLI</mainClass>
 						</manifest>
 					</archive>
-				</configuration>
-			</plugin>
-			<plugin>
-				<groupId>org.apache.maven.plugins</groupId>
-				<artifactId>maven-javadoc-plugin</artifactId>
-				<configuration>
-					<sourcepath>${maven.lombok.delombok-target}</sourcepath>
 				</configuration>
 			</plugin>
 		</plugins>
