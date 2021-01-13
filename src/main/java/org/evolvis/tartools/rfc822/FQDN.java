@@ -23,7 +23,8 @@ package org.evolvis.tartools.rfc822;
 /**
  * <p>Represents an FQDN (“domain” production) for use in eMail.</p>
  *
- * <p>The main entry point is the {@link #isDomain(String)} method.</p>
+ * <p>The main entry point is the {@link #isDomain(String)} method.
+ * The parser does not trim surrounding whitespace by itself.</p>
  *
  * @author mirabilos (t.glaser@tarent.de)
  */

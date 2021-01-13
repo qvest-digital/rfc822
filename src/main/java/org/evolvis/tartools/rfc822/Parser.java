@@ -27,7 +27,7 @@ import java.util.function.BiFunction;
 import java.util.function.Function;
 
 /**
- * Parser base class, abstracting initialisation and movement
+ * <p>Parser base class. Abstracts initialisation and movement.</p>
  *
  * @author mirabilos (t.glaser@tarent.de)
  */
@@ -37,33 +37,33 @@ static final String BOUNDS_JMP = "attempt to move (%d) beyond source string (%d)
 static final String ACCEPT_EOS = "cannot ACCEPT end of input";
 
 /**
- * the {@link String} to analyse
+ * The source {@link String} to analyse.
  */
 private final String source;
 /**
- * offset into {@link #source}
+ * Offset into {@link #source}.
  */
 private int ofs;
 /**
- * current wide character (wint_t at {@link #source}[{@link #ofs}] or -1 for EOD)
+ * Current wide character (wint_t at {@link #source}[{@link #ofs}] or {@code -1} for EOD).
  */
 private int cur;
 /**
- * offset of next wide character into {@link #source}
+ * Offset of next wide character into {@link #source}.
  */
 private int succ;
 /**
- * next wide character (for peeking), cf. {@link #cur}
+ * Next wide character (for peeking) or {@code -1}, cf. {@link #cur}.
  */
 private int next;
 /**
- * source length
+ * {@link #source} length.
  */
 private final int srcsz;
 
 /**
- * Constructs a parser. Intended to be used by subclasses from static
- * factory methods *only*; see {@link Path#of(String)} for an example.
+ * <p>Constructs a parser. Intended to be used by subclasses from static
+ * factory methods *only*; see {@link Path#of(String)} for an example.</p>
  *
  * <p>Note that subclass constructors must also be of protected visibility
  * to allow for inheritance, but they should both be documented and
@@ -84,14 +84,15 @@ protected Parser(final String input, final int maxlen)
 }
 
 /**
- * Constructs a parser. Intended to be used by subclasses from static
- * factory methods *only*; see {@link Path#of(String)} for an example.
+ * <p>Constructs a parser. Intended to be used by subclasses from static
+ * factory methods *only*; see {@link Path#of(String)} for an example.</p>
  *
  * @param cls   subclass of Parser to construct
  * @param input user-provided {@link String} to parse
  * @param <T>   subclass of Parser to construct
  *
- * @return null if input was null or too large, the new instance otherwise
+ * @return null if input was null or too large,
+ *     the new parser subclass instance otherwise
  */
 protected static <T extends Parser> T
 of(final Class<T> cls, final String input)
@@ -107,7 +108,7 @@ of(final Class<T> cls, final String input)
 }
 
 /**
- * Jumps to a specified input character position, absolute jump
+ * Jumps to a specified input character position, absolute jump.
  *
  * @param pos to jump to
  *
@@ -134,9 +135,9 @@ jmp(final int pos)
 }
 
 /**
- * Jumps to a specified input character position, relative jump
+ * Jumps to a specified input character position, relative jump.
  *
- * @param deltapos to add to the current positioin
+ * @param deltapos to add to the current position
  *
  * @return the codepoint at that position
  *
@@ -149,8 +150,8 @@ bra(final int deltapos)
 }
 
 /**
- * Returns the current input character position, for saving and restoring
- * (with {@link #jmp(int)}) and for error messages
+ * Returns the current input character position. Useful for saving and restoring
+ * (with {@link #jmp(int)}) and for error messages.
  *
  * @return position
  */
@@ -161,8 +162,8 @@ pos()
 }
 
 /**
- * Returns the input string, for use with substring comparisons
- * (this is safe because Java™ strings are immutable)
+ * Returns the input string, for use with substring comparisons.
+ * (This is safe because Java™ strings are immutable.)
  *
  * @return String input
  */
@@ -173,9 +174,9 @@ s()
 }
 
 /**
- * Returns the wide character at the current position
+ * Returns the wide character at the current position.
  *
- * @return UCS-4 codepoint, or -1 if end of input is reached
+ * @return UCS-4 codepoint, or {@code -1} if end of input is reached
  */
 protected final int
 cur()
@@ -184,9 +185,9 @@ cur()
 }
 
 /**
- * Returns the wide character after the one at the current position
+ * Returns the wide character after the one at the current position.
  *
- * @return UCS-4 codepoint, or -1 if end of input is reached
+ * @return UCS-4 codepoint, or {@code -1} if end of input is reached
  */
 protected final int
 peek()
@@ -195,9 +196,9 @@ peek()
 }
 
 /**
- * Advances the current position to the next character
+ * Advances the current position to the next character.
  *
- * @return codepoint of the next character, or -1 if end of input is reached
+ * @return codepoint of the next character, or {@code -1} if end of input is reached
  *
  * @throws IndexOutOfBoundsException if end of input was already reached
  */
@@ -210,12 +211,15 @@ accept()
 }
 
 /**
- * Advances the current position as long as the matcher returns true
- * and end of input is not yet reached; cf. {@link #skip(Function)}
+ * Advances the current position using a peeking matcher. Continues as long
+ * as the {@code matcher} returns true and end of input is not yet reached.
  *
  * @param matcher gets called with {@link #cur()} and {@link #peek()} as arguments
  *
- * @return codepoint of the first character where the matcher returned false, or -1
+ * @return codepoint of the first character where the matcher returned false,
+ *     or {@code -1} if end of input is reached
+ *
+ * @see #skip(Function)
  */
 protected final int
 skipPeek(final BiFunction<Integer, Integer, Boolean> matcher)
@@ -226,12 +230,15 @@ skipPeek(final BiFunction<Integer, Integer, Boolean> matcher)
 }
 
 /**
- * Advances the current position as long as the matcher returns true
- * and end of input is not yet reached; cf. {@link #skipPeek(BiFunction)}
+ * Advances the current position using a regular matcher. Continues as long
+ * as the {@code matcher} returns true and end of input is not yet reached.
  *
  * @param matcher gets called with just {@link #cur()} as argument
  *
- * @return codepoint of the first character where the matcher returned false, or -1
+ * @return codepoint of the first character where the matcher returned false,
+ *     or {@code -1} if end of input is reached
+ *
+ * @see #skipPeek(BiFunction)
  */
 protected final int
 skip(final Function<Integer, Boolean> matcher)
@@ -260,7 +267,7 @@ protected class Substring {
 	private final Object data;
 
 	/**
-	 * Creates a new input substring from parser positions
+	 * Creates a new input substring from parser positions.
 	 *
 	 * @param beg offset of the beginning of the substring
 	 * @param end offset of the codepoint after the end
@@ -271,7 +278,7 @@ protected class Substring {
 	}
 
 	/**
-	 * Copy constructor
+	 * Copy constructor.
 	 *
 	 * @param src Substring to copy positions and user data from
 	 */
@@ -281,7 +288,7 @@ protected class Substring {
 	}
 
 	/**
-	 * Copy constructor with data override
+	 * Copy constructor with data override.
 	 *
 	 * @param src  Substring to copy positions from
 	 * @param data user-specified data to associate with the new object
@@ -292,7 +299,7 @@ protected class Substring {
 	}
 
 	/**
-	 * Creates a new input substring from parser positions
+	 * Creates a new input substring from parser positions and user data.
 	 *
 	 * @param beg  offset of the beginning of the substring
 	 * @param end  offset of the codepoint after the end
@@ -311,7 +318,7 @@ protected class Substring {
 	}
 
 	/**
-	 * Returns the string representation of this {@link Substring},
+	 * Returns the string representation of this {@code Substring},
 	 * that is, usually, a substring of an on-wire representation.
 	 *
 	 * @return String representation
@@ -325,7 +332,7 @@ protected class Substring {
 }
 
 /**
- * Transactions for positioning: on creation and {@link #commit()} the position
+ * Transactions for positioning. On creation and {@link #commit()}, the position
  * is saved, on {@link #rollback()} and closing, it is restored to the point
  * from the last commit (or creation). Implements {@link AutoCloseable}.
  *
@@ -336,8 +343,7 @@ final class Txn implements AutoCloseable {
 	private int pos;
 
 	/**
-	 * Creates a new parser position transaction instance
-	 *
+	 * <p>Creates a new parser position transaction instance.</p>
 	 * <p>The current position, upon creation, is committed immediately.</p>
 	 */
 	protected Txn()
@@ -346,7 +352,7 @@ final class Txn implements AutoCloseable {
 	}
 
 	/**
-	 * Returns the last committed position
+	 * Returns the last committed position.
 	 *
 	 * @return position of last commit
 	 */
@@ -357,7 +363,7 @@ final class Txn implements AutoCloseable {
 	}
 
 	/**
-	 * Commits the current parser position (stores it in the transaction)
+	 * Commits the current parser position (stores it in the transaction).
 	 */
 	final void
 	commit()
@@ -366,7 +372,7 @@ final class Txn implements AutoCloseable {
 	}
 
 	/**
-	 * Rolls the parser position back to the last committed position
+	 * Rolls the parser position back to the last committed position.
 	 *
 	 * @return the codepoint at the new position, see {@link Parser#cur()}
 	 */
@@ -378,7 +384,7 @@ final class Txn implements AutoCloseable {
 
 	/**
 	 * Rolls back to the last committed position upon “closing” the
-	 * parser position transaction; see {@link #rollback()}
+	 * parser position transaction. Just calls {@link #rollback()}.
 	 */
 	@Override
 	public final void
@@ -404,10 +410,12 @@ final class Txn implements AutoCloseable {
 	}
 
 	/**
-	 * Returns a new {@link Substring} spanning from the last {@link #savepoint()}
-	 * to the current parser position
+	 * Returns a new {@code Substring} spanning from the last savepoint to
+	 * the current parser position.
 	 *
-	 * @return {@link Substring} object
+	 * @return new {@link Substring} object
+	 *
+	 * @see #savepoint()
 	 */
 	final Substring
 	substring()
@@ -416,12 +424,14 @@ final class Txn implements AutoCloseable {
 	}
 
 	/**
-	 * Returns a new {@link Substring} spanning from the last {@link #savepoint()}
-	 * to the current parser position
+	 * Returns a new {@code Substring} with user data, spanning from the
+	 * last savepoint to the current parser position.
 	 *
 	 * @param data user-specified data optionally associated with the Substring
 	 *
-	 * @return {@link Substring} object
+	 * @return new {@link Substring} object
+	 *
+	 * @see #savepoint()
 	 */
 	final Substring
 	substring(final Object data)

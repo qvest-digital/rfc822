@@ -36,19 +36,43 @@ import java.util.function.Predicate;
 import java.util.stream.Collectors;
 
 /**
- * Represents an RFC822 (and successors) eMail address header content,
- * either From or To, or subsets. In domain literals (square brackets)
- * the General-address-literal syntax is not recognised (as downstream
- * MTAs cannot support it as no use is specified yet), and a IPv6 Zone
- * Identifier isn’t supported as it’s special local use only. Handling
- * of line endings is lenient: CRLF := ([CR] LF) / CR<p>
+ * <p>Represents an eMail address header content (parser). That is,
+ * RFC822 (and successors) {@code From}, {@code To}, and subsets, for use on
+ * the public internet.
+ * Handling of line endings is lenient: {@code CRLF := ([CR] LF) / CR}</p>
  *
- * Create a new instance via the {@link #of(String)} factory method by
- * passing it the address list string to analyse. Then call one of the
- * parse methods on the instance: {@link #asAddressList()} to validate
- * recipients, {@link #asMailboxList()} or {@link #forSender(boolean)}
- * for message senders (but read their JavaDoc). Validating unlabelled
- * addr-specs is possible with {@link #asAddrSpec()}.</p>
+ * <p>In domain literals (square brackets), the {@code General-address-literal}
+ * syntax is not recognised because downstream MUAs cannot support it as no use
+ * is specified at the moment. Similarily, an IPv6 scope (Zone Identifier) is
+ * not supported because this parser targets use on the general internet. This
+ * class is concerned with on-wire formats; separate classes will implement
+ * MIME support and the likes later.</p>
+ *
+ * <p>To use, create a new instance via the {@link #of(String)} factory method
+ * passing the string to analyse for eMail address(es). Then call one of the
+ * parse methods on the instance, depending on what to expect:</p><ul>
+ * <li>{@link #asAddrSpec()} checks for unlabelled {@code addr-spec}, such as
+ * {@code foo@example.com}, which are useful for MSA invocations.</li>
+ * <li>{@link #forSender(boolean)} with {@code false} argument validates one
+ * {@code mailbox}, that is {@code Foo <foo@example.com>}, such as used for
+ * the {@code Sender} header. Labels must be ASCII and confirm to the RFC.</li>
+ * <li>{@link #forSender(boolean)} with {@code true} argument validates one
+ * {@code address}, that is <i>either</i> a {@code mailbox} as above <i>or</i>
+ * a {@code group} ({@code Test:a@example.com,b@example.com;}); RFC6854 adds them
+ * to {@code Sender} headers under the RFC2026 §3.3(d) Limited Use caveat.</li>
+ * <li>{@link #asMailboxList()} validates a, comma-separated, list of mailboxen
+ * as above, normally for the {@code From} header.</li>
+ * <li>{@link #asAddressList()} validates a comma-separated list that can
+ * include a mix of {@code mailbox} and {@code group} addresses and normally is
+ * used for recipient headers ({@code To}, …) but, under the same Limited Use
+ * caveat, can be used per RFC6854 for a {@code From} (and like) header.</li>
+ * </ul>
+ * <p>All of these return an instance of {@link ParserResult} or {@code null} if
+ * the parsing failed; {@link ParserResult#isValid()} will return true only if,
+ * in addition, extra syntax and semantic checks passed; only if so, the address
+ * list can be used on the public internet safely; {@link ParserResult#toString()}
+ * pretty-prints the on-wire representation. Some result objects may have extra
+ * methods that can be useful.</p>
  *
  * @author mirabilos (t.glaser@tarent.de)
  */
@@ -164,7 +188,7 @@ isQtext(final int c)
 }
 
 /**
- * Representation for a substring of the input string, FWS unfolded
+ * <p>Representation for a substring of the input string, FWS unfolded.</p>
  *
  * <p>{@link #toString()} will return the (unfolded) wire representation,
  * getData() the unfolded user representation. Neither are true
@@ -206,9 +230,8 @@ protected final class UnfoldedSubstring extends Substring {
 }
 
 /**
- * Representation for a local-part (FWS unfolded) or a domain (dot-atom only)
- *
- * <p>Test isValid() first.</p>
+ * <p>Representation for a local-part (FWS unfolded) or a domain (dot-atom only).</p>
+ * <p>Check isValid() first.</p>
  *
  * @author mirabilos (t.glaser@tarent.de)
  */
@@ -217,7 +240,7 @@ protected final class AddrSpecSIDE extends Substring {
 
 	/**
 	 * Whether this addr-spec side is actually valid or merely parses
-	 * but fails further validations (length limits, semantics, etc.)
+	 * but fails further validations (length limits, semantics, etc).
 	 */
 	private final boolean valid;
 
@@ -229,7 +252,7 @@ protected final class AddrSpecSIDE extends Substring {
 
 	/**
 	 * Returns the string representation of this local-part (FWS unfolded)
-	 * or domain (dot-atom)
+	 * or domain (dot-atom).
 	 *
 	 * @return String representation (identical to the user data)
 	 */
@@ -246,7 +269,7 @@ protected final class AddrSpecSIDE extends Substring {
  *
  * @param s input string
  *
- * @return null if there was nothing to remove, a new shorter String otherwise
+ * @return null if there was nothing to remove, a new shorter {@link String} otherwise
  */
 public static String
 unfold(final String s)
@@ -264,7 +287,7 @@ unfold(final String s)
 }
 
 /**
- * Unfolds FWS in the passed Substring if necessary
+ * Unfolds FWS in the passed Substring if necessary.
  *
  * @param ss {@link Substring} to unfold
  *
@@ -280,8 +303,8 @@ unfold(final Substring ss)
 }
 
 /**
- * Represents the return value of something that can be a word production
- * (atom or quoted-string)
+ * <p>Represents the return value of something that can be a word production
+ * (atom or quoted-string).</p>
  *
  * <p>The {@code body} member can be:</p><ul>
  * <li>a raw substring of an atom, surrounding CFWS stripped ({@link #pAtom()})</li>
@@ -289,7 +312,7 @@ unfold(final Substring ss)
  * quotes, whose user data is dequoted and backslash-removed ({@link #pQuotedString()})</li>
  * </ul>
  *
- * <p>The {@code cfws} member (optional trailing CFWS) is <em>not</em> unfolded.</p>
+ * <p>The {@code cfws} member (optional trailing CFWS) is <i>not</i> unfolded.</p>
  *
  * @author mirabilos (t.glaser@tarent.de)
  */
@@ -305,21 +328,23 @@ private static final class Word {
  * Methods all {@link Path} parser results implement.
  *
  * @author mirabilos (m@mirbsd.org)
+ * @see #isValid()
+ * @see #toString()
  */
 public interface ParserResult {
 
 	/**
 	 * Whether this parser result is actually valid or merely parses
-	 * but fails further validations (length limits, semantics, etc.)
+	 * but fails further validations (length limits, semantics, etc).
 	 *
 	 * @return true if valid, false otherwise
 	 */
 	boolean isValid();
 
 	/**
-	 * Returns this parser result in some useful format
+	 * Returns this parser result in some useful format.
 	 *
-	 * @return String
+	 * @return String representation
 	 */
 	@Override
 	String toString();
@@ -327,8 +352,8 @@ public interface ParserResult {
 }
 
 /**
- * Representation for an addr-spec (eMail address)
- * comprised of localPart and domain
+ * <p>Representation for an {@code addr-spec} (eMail address). These are
+ * comprised of {@code localPart} and {@code domain}.</p>
  *
  * @author mirabilos (t.glaser@tarent.de)
  */
@@ -337,33 +362,35 @@ public interface ParserResult {
 public static final class AddrSpec implements ParserResult {
 
 	/**
-	 * The local-part of the addr-spec, as it occurs in the addr-spec,
-	 * i.e. dot-atom or quoted-string in their wire representation;
-	 * the parsed string content is available as String getData()
+	 * The {@code local-part} of the {@code addr-}spec, as it occurs in the
+	 * addr-spec, i.e. {@code dot-atom} or {@code quoted-string} in their wire
+	 * representation; the parsed (unquoted) string content is available as
+	 * {@link String} via {@link Substring#getData()}.
 	 */
 	@NonNull
 	final Substring localPart;
 
 	/**
-	 * The domain of the addr-spec, either dot-atom (host.example.com)
-	 * or one of two forms of domain-literal: [192.0.2.1] for Legacy IP,
-	 * [IPv6:2001:DB8:CAFE:1::1] for IP addresses; getData() contains
-	 * either the domain as String or the IP address as {@link InetAddress}
+	 * The {@code domain} of the {@code addr-spec}, either {@code dot-atom}
+	 * ({@code host.example.com}) or one of two forms of {@code domain-literal}:
+	 * {@code [192.0.2.1]} for Legacy IP, {@code [IPv6:2001:DB8:CAFE:1::1]}
+	 * for IP addresses; {@link Substring#getData()} contains either the
+	 * domain as {@link String} or the IP address as {@link InetAddress}.
 	 */
 	@NonNull
 	final Substring domain;
 
 	/**
-	 * Whether this addr-spec is actually valid according to DNS, SMTP,
-	 * etc. (true) or merely parses as RFC822 addr-spec (false) and fails
-	 * further validation (length limits, FQDN label syntax, etc.)
+	 * Whether this {@code addr-spec} is actually valid according to DNS,
+	 * SMTP, etc. (true) or merely parses as RFC822 {@code addr-spec} and
+	 * fails further validation (length limits, FQDN label syntax, etc).
 	 */
 	final boolean valid;
 
 	/**
-	 * Returns the addr-spec as eMail address (in wire format)
+	 * Returns the {@code addr-spec} as eMail address (in wire format).
 	 *
-	 * @return String localPart@domain
+	 * @return String {@code localPart@domain}
 	 */
 	@Override
 	public String
@@ -375,7 +402,7 @@ public static final class AddrSpec implements ParserResult {
 }
 
 /**
- * Representation for an address (either mailbox or group)
+ * Representation for an {@code address} (either {@code mailbox} or {@code group}).
  *
  * @author mirabilos (t.glaser@tarent.de)
  */
@@ -383,32 +410,32 @@ public static final class AddrSpec implements ParserResult {
 public static final class Address implements ParserResult {
 
 	/**
-	 * Whether this address is a group (true) or a mailbox (false)
+	 * Whether this address is a {@code group} (true) or a {@code mailbox} (false).
 	 */
 	final boolean group;
 
 	/**
-	 * The display-name of this mailbox.name-addr (optional) or
-	 * group (mandatory) with the human-readable / parsed form
-	 * with comments available via String {@link Substring#getData()}
-	 * (in [@link UXAddress] cases, {@link Substring#toString()} (the
-	 * “wire form”) may be empty whereas {@link Substring#getData()}
-	 * can return the value the user provided)
+	 * The {@code display-name} of this {@code mailbox}.{@code name-addr}
+	 * (optional) or {@code group} (mandatory) with the human-readable /
+	 * parsed form with comments available from {@link Substring#getData()}
+	 * as String (in [@link UXAddress] cases this can return the value the
+	 * user passed even if the wire form from {@link Substring#toString()}
+	 * may be empty or (maybe later) MIME-encoded).
 	 */
 	final Substring label;
 
 	/**
-	 * The addr-spec behind this mailbox [isGroup()==false]
+	 * The {@code addr-spec} behind this mailbox [isGroup()==false].
 	 */
 	final AddrSpec mailbox;
 
 	/**
-	 * The group-list behind this group [isGroup()==true], may be empty
+	 * The {@code group-list} behind this group [isGroup()==true], may be empty.
 	 */
 	final List<Address> mailboxen;
 
 	/**
-	 * Whether all constituents are valid
+	 * Whether all constituents are valid.
 	 */
 	final boolean valid;
 
@@ -432,10 +459,11 @@ public static final class Address implements ParserResult {
 	}
 
 	/**
-	 * Renders the mailbox or group as (non-wrapped) string, i.e.:<ul>
-	 * <li>localPart@domain (mailbox)</li>
-	 * <li>label &lt;localPart@domain&gt; (mailbox)</li>
-	 * <li>label:[group-list]; (group)</li>
+	 * <p>Renders the mailbox or group as (non-wrapped) string.
+	 * That is:</p><ul>
+	 * <li>{@code localPart@domain} (mailbox)</li>
+	 * <li>{@code label <localPart@domain>} (mailbox)</li>
+	 * <li>{@code label:[group-list];} (group)</li>
 	 * </ul>
 	 *
 	 * @return String rendered address
@@ -454,7 +482,7 @@ public static final class Address implements ParserResult {
 }
 
 /**
- * Representation for an address-list or a mailbox-list
+ * Representation for an {@code address-list} or a {@code mailbox-list}.
  *
  * @author mirabilos (t.glaser@tarent.de)
  */
@@ -462,21 +490,22 @@ public static final class Address implements ParserResult {
 public static final class AddressList implements ParserResult {
 
 	/**
-	 * The actual address-list or mailbox-list behind the scenes
-	 * (which one it is depends on by which parser function this
-	 * object was returned)
+	 * The actual {@code address-list} or {@code mailbox-list} behind the
+	 * scenes (which one it is depends on by which parser function this
+	 * object was returned).
 	 */
 	final List<Address> addresses;
 
 	/**
-	 * Whether all constituents are valid
+	 * Whether all constituents are valid.
 	 */
 	final boolean valid;
 
 	/**
-	 * Whether this is definitely an address-list (group addresses are
-	 * present); note that if this is false, it may be either a mailbox-list
-	 * or an address-list whose address members are all mailbox)
+	 * Whether this is definitely an {@code address-list} ({@code group}
+	 * addresses are present); note that if this is false, it may be either
+	 * a {@code mailbox-list} or an {@code address-list} whose {@code address}
+	 * members are all {@code mailbox}en.
 	 */
 	@SuppressWarnings("squid:S1700")
 	final boolean addressList;
@@ -490,9 +519,9 @@ public static final class AddressList implements ParserResult {
 	}
 
 	/**
-	 * Returns the address-list or mailbox-list as (non-wrapped) string
+	 * Returns the {@code address-list} or {@code mailbox-list} as (non-wrapped) string.
 	 *
-	 * @return String address/mailbox *( ", " address/mailbox )
+	 * @return String address/mailbox *( {@code ", "} address/mailbox )
 	 */
 	@Override
 	public String
@@ -503,8 +532,8 @@ public static final class AddressList implements ParserResult {
 	}
 
 	/**
-	 * Returns all invalid constituents as ", "-separated string,
-	 * for error message construction
+	 * Returns all invalid constituents as {@code ", "}-separated string,
+	 * for error message construction.
 	 *
 	 * @return null if all constituents are valid, a String otherwise
 	 */
@@ -520,10 +549,11 @@ public static final class AddressList implements ParserResult {
 	}
 
 	/**
-	 * Flattens the constituents into a list of their formatted
-	 * representations, see {@link Address#toString()}
+	 * Flattens the constituents into a list of their formatted representations.
 	 *
 	 * @return list of formatted strings, each an address (or mailbox)
+	 *
+	 * @see Address#toString()
 	 */
 	public List<String>
 	flattenAddresses()
@@ -533,10 +563,10 @@ public static final class AddressList implements ParserResult {
 	}
 
 	/**
-	 * Flattens the constituents into their individual addr-spec members,
-	 * for use by e.g. SMTP sending (Forward-Path construction)
+	 * Flattens the constituents into their individual {@code addr-spec}
+	 * members, for use by e.g. SMTP sending (Forward-Path construction).
 	 *
-	 * @return list of addr-spec strings
+	 * @return {@link List} of {@code addr-spec} {@link String}s
 	 */
 	public List<String>
 	flattenAddrSpecs()
@@ -558,7 +588,8 @@ public static final class AddressList implements ParserResult {
  *
  * @param addresses to parse
  *
- * @return null if addresses was null or very large, the new instance otherwise
+ * @return null if {@code addresses} was null or very large,
+ *     the new parser instance otherwise
  */
 public static Path
 of(final String addresses)
@@ -567,7 +598,7 @@ of(final String addresses)
 }
 
 /**
- * Private constructor, use the factory method {@link #of(String)} instead
+ * Private constructor. Use the factory method {@link #of(String)} instead.
  *
  * @param input string to analyse
  */
@@ -577,8 +608,9 @@ protected Path(final String input)
 }
 
 /**
- * Parses the address as mailbox-list, e.g. for the From and Resent-From headers
- * (but see {@link #asAddressList()} for RFC6854’s RFC2026 §3.3(d) Limited Use)
+ * Parses the address as {@code mailbox-list}, such as for the {@code From}
+ * and {@code Resent-From} headers. See {@link #asAddressList()} for RFC6854’s
+ * RFC2026 §3.3(d) Limited Use though.
  *
  * @return parser result; remember to call isValid() on it first!
  */
@@ -591,11 +623,11 @@ asMailboxList()
 }
 
 /**
- * <p>Parses the address for the Sender and Resent-Sender headers</p><p>
+ * <p>Parses the address for the {@code Sender} and {@code Resent-Sender} headers.</p>
  *
- * These headers normally use the mailbox production, but RFC6854 allows for
- * the address production, with the RFC2026 §3.3(d) Limited Use caveat that
- * permits it but only for specific circumstances.</p>
+ * <p>These headers normally use the {@code mailbox} production, but RFC6854
+ * allows for the {@code address} production under the RFC2026 §3.3(d) Limited
+ * Use caveat that permits it but only for specific circumstances.</p>
  *
  * @param allowRFC6854forLimitedUse use address instead of mailbox parsing
  *
@@ -610,12 +642,13 @@ forSender(final boolean allowRFC6854forLimitedUse)
 }
 
 /**
- * <p>Parses the address as addr-spec (unlabelled address)</p><p>
+ * <p>Parses the address as {@code addr-spec} (unlabelled address).</p>
  *
- * This method is mostly used in input validation. In most cases,
- * use {@link #forSender(boolean)}(false) instead which allows
- * “user &lt;lcl@example.com&gt;” then extract the addr-spec
- * “lcl@example.com” from the return value.</p>
+ * <p>This method is mostly used in input validation or for constructing
+ * arguments for invoking an MSA. It may be better in most cases to instead
+ * use {@link #forSender(boolean)}(false) which permits {@code mailbox}en
+ * like “{@code user <lcl@example.com>}” then extract the {@code addr-spec}
+ * “{@code lcl@example.com}” from the return value via {@code getMailbox()}.</p>
  *
  * @return parser result; remember to call isValid() on it first!
  */
@@ -628,11 +661,11 @@ asAddrSpec()
 }
 
 /**
- * Parses the address as address-list, e.g. for the Reply-To, To, Cc,
- * (optionally) Bcc, Resent-To, Resent-Cc and (optionally) Resent-Bcc
- * headers. RFC6854 (under RFC2026 §3.3(d) Limited Use circumstances)
- * allows using this for the From and Resent-From headers, normally
- * covered by the {@link #asMailboxList()} method.
+ * <p>Parses the address as {@code address-list}, such as for the {@code Reply-To},
+ * {@code To}, {@code Cc}, (optionally) {@code Bcc}, {@code Resent-To}, … headers.
+ * RFC6854 (under RFC2026 §3.3(d) Limited Use circumstances) permits using this
+ * for the {@code From} and {@code Resent-From} headers, normally covered by the
+ * {@link #asMailboxList()} method.</p>
  *
  * @return parser result; remember to call isValid() on it first!
  */
@@ -810,14 +843,15 @@ pWord()
 }
 
 /**
- * <p>Returns the parse result of the atom production:</p><p>
+ * <p>Returns the parse result of the {@code atom} production:</p>
  *
- * result.body is a raw Substring of the atom, with surrounding CFWS stripped
- * (no unfolding necessary), no extra data</p>
+ * <p>result.{@code body} is a raw {@link Substring} of the atom, with
+ * surrounding CFWS stripped (no unfolding necessary), no extra data</p>
  *
- * <p>result.cfws is null or the trailing CFWS as raw Substring, not unfolded</p>
+ * <p>result.{@code cfws} is null or the trailing CFWS as raw {@link Substring},
+ * not unfolded</p>
  *
- * @return result (see above)
+ * @return result (see above) as {@link Word}
  */
 protected Word
 pAtom()
@@ -859,14 +893,16 @@ pQcontent()
 }
 
 /**
- * <p>Returns the parse result of the quoted-string production:</p><p>
+ * <p>Returns the parse result of the {@code quoted-string} production:</p>
  *
- * result.body is an {@link UnfoldedSubstring} of the entire quoted string, with
- * surrounding double quotes; its String data is dequoted and backslash-removed</p>
+ * <p>result.{@code body} is an {@link UnfoldedSubstring} of the entire
+ * quoted string, with surrounding double quotes; its {@link String} data is
+ * dequoted and backslash-removed</p>
  *
- * <p>result.cfws is null or the trailing CFWS as raw Substring, not unfolded</p>
+ * <p>result.{@code cfws} is null or the trailing CFWS as raw {@link Substring},
+ * not unfolded</p>
  *
- * @return result (see above)
+ * @return result (see above) as {@link Word}
  */
 protected Word
 pQuotedString()
@@ -907,9 +943,9 @@ isWSP(final int cur)
 }
 
 /**
- * Parses FWS
+ * Parses FWS.
  *
- * @return raw Substring, not unfolded
+ * @return raw {@link Substring}, not unfolded
  */
 protected Substring
 pFWS()
@@ -953,9 +989,9 @@ pCcontent()
 }
 
 /**
- * Parses comment
+ * Parses comment.
  *
- * @return raw Substring, not unfolded
+ * @return raw {@link Substring}, not unfolded
  *     (unfolded is human-visible form for now; may wish to simplify quoted-pairs)
  */
 protected Substring
@@ -977,9 +1013,9 @@ pComment()
 }
 
 /**
- * Parses CFWS
+ * Parses CFWS.
  *
- * @return raw Substring, not unfolded
+ * @return raw {@link Substring}, not unfolded
  */
 protected Substring
 pCFWS()

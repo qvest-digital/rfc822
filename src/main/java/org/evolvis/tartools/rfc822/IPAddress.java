@@ -35,7 +35,8 @@ import java.util.List;
  * the public Internet (no scoped addresses / IPv6 Zone ID).</p>
  *
  * <p>The main entry points are either the {@link #from(String)} method or
- * both the {@link #v6(String)} and {@link #v4(String)} methods.</p>
+ * both the {@link #v6(String)} and {@link #v4(String)} methods.
+ * The parser does not trim surrounding whitespace by itself.</p>
  *
  * @author mirabilos (t.glaser@tarent.de)
  */
@@ -93,6 +94,9 @@ toAddress(final byte[] addr)
  *
  * @return {@link InetAddress} representing the address,
  *     or null on failure (including if an IPv4 address is passed)
+ *
+ * @see #v6(String)
+ * @see #from(String)
  */
 public InetAddress
 asIPv6Address()
@@ -109,6 +113,9 @@ asIPv6Address()
  *
  * @return {@link InetAddress} representing the address,
  *     or null on failure (including if an IPv6 address is passed)
+ *
+ * @see #v4(String)
+ * @see #from(String)
  */
 public InetAddress
 asIPv4Address()
@@ -134,6 +141,10 @@ asIPv4Address()
  *
  * @return {@link InetAddress} representing the {@code address} string,
  *     or null on failure (including if an IPv4 address is passed)
+ *
+ * @see #of(String)
+ * @see #asIPv6Address()
+ * @see #from(String)
  */
 public static InetAddress
 v6(final String address)
@@ -152,6 +163,10 @@ v6(final String address)
  *
  * @return {@link InetAddress} representing the {@code address} string,
  *     or null on failure (including if an IPv6 address is passed)
+ *
+ * @see #of(String)
+ * @see #asIPv4Address()
+ * @see #from(String)
  */
 public static InetAddress
 v4(final String address)
@@ -173,6 +188,9 @@ v4(final String address)
  * return the original {@code address} string in all cases anyway.</p>
  *
  * @return {@link InetAddress} representing {@code address}, or null on failure
+ *
+ * @see #v6(String)
+ * @see #v4(String)
  */
 public static InetAddress
 from(final String address)
@@ -250,10 +268,10 @@ pIPv4Address()
  * complex for the feeble minds of Java™ programmers…</p>
  *
  * <p>It checks whether the current char can be an h32 or IPv4 address (xdigit);
- * if not, or if ls32 indicates we should check for IPv4 addresses and there
- * indeed is one, i.e. when further parsing should be stopped, it returns
- * true; otherwise, the parsed h16 is added to dst, and false returned to
- * indicate that parsing should continue.</p>
+ * if not, or if {@code ls32} indicates we should check for IPv4 addresses and
+ * there indeed is one, i.e. when further parsing should be stopped, it returns
+ * true; otherwise, the parsed h16 is added to {@code dst} then false is returned
+ * to indicate parsing should continue.</p>
  *
  * @param dst  collecting h16s
  * @param ls32 whether an IPv4 address is allowed here
