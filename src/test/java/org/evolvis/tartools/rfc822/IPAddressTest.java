@@ -1,7 +1,7 @@
 package org.evolvis.tartools.rfc822;
 
 /*-
- * Copyright © 2020 mirabilos (t.glaser@tarent.de)
+ * Copyright © 2020, 2021 mirabilos (t.glaser@tarent.de)
  * Licensor: tarent solutions GmbH, Bonn
  *
  * Provided that these terms and disclaimer and all copyright notices
@@ -21,6 +21,7 @@ package org.evolvis.tartools.rfc822;
  */
 
 import lombok.SneakyThrows;
+import lombok.val;
 import org.junit.jupiter.api.Test;
 
 import java.net.InetAddress;
@@ -40,10 +41,12 @@ inv4(final String ip, final boolean canConstruct)
 	final IPAddress p = IPAddress.of(ip);
 	if (!canConstruct) {
 		assertNull(p, () -> "could construct illegal " + ip);
+		assertNull(IPAddress.from(ip));
 		return;
 	}
 	assertNotNull(p, () -> "couldn’t construct: " + ip);
 	assertNull(p.asIPv4Address(), () -> "not invalid: " + ip);
+	assertNull(IPAddress.from(ip));
 }
 
 private static void
@@ -52,6 +55,19 @@ inv6(final String ip)
 	final IPAddress p = IPAddress.of(ip);
 	assertNotNull(p, () -> "couldn’t construct: " + ip);
 	assertNull(p.asIPv6Address(), () -> "not invalid: " + ip);
+	assertNull(IPAddress.from(ip));
+}
+
+@SuppressWarnings("SameParameterValue")
+private static void
+inv6only(final String ip)
+{
+	final IPAddress p = IPAddress.of(ip);
+	assertNotNull(p, () -> "couldn’t construct: " + ip);
+	assertNull(p.asIPv6Address(), () -> "not invalid: " + ip);
+	val a = IPAddress.from(ip);
+	assertNotNull(a);
+	assertEquals(p.asIPv4Address(), a);
 }
 
 @SneakyThrows
@@ -64,6 +80,7 @@ val6(final String ip)
 	assertNotNull(a, () -> "not valid: " + ip);
 	final InetAddress b = InetAddress.getByName("[" + ip + "]");
 	assertEquals(b, a, () -> "repr failure: " + ip);
+	assertEquals(a, IPAddress.from(ip));
 }
 
 @Test
@@ -72,9 +89,11 @@ public void testPos()
 	inv4(null, false);
 	assertNull(IPAddress.v4(null));
 	assertNull(IPAddress.v6(null));
+	assertNull(IPAddress.from(null));
 	inv4("", true);
 	assertNull(IPAddress.v4(""));
 	assertNull(IPAddress.v6(""));
+	assertNull(IPAddress.from(""));
 	inv4(String.format("%65s", ""), false);
 	inv4("0.0.0.256", true);
 	inv4("256.0.0.0", true);
@@ -144,7 +163,7 @@ public void testPos()
 	inv6("1ffff::");
 	inv6("[f::]::");
 	inv6("111.222.333.444");
-	inv6("2.3.4.5");
+	inv6only("2.3.4.5");
 	inv6("fd00::40e/64");
 	inv6("fd00::0xc");
 	inv6("fd00::0x0");
@@ -195,6 +214,7 @@ val4(final String ip)
 	final InetAddress a = p.asIPv4Address();
 	assertNotNull(a, () -> "parse failure for " + ip);
 	assertEquals(ip, a.getHostAddress(), "repr failure");
+	assertEquals(a, IPAddress.from(ip));
 }
 
 @Test
