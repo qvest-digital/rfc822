@@ -1,7 +1,7 @@
 package org.evolvis.tartools.rfc822;
 
 /*-
- * Copyright © 2020 mirabilos (t.glaser@tarent.de)
+ * Copyright © 2020, 2021 mirabilos (t.glaser@tarent.de)
  * Licensor: tarent solutions GmbH, Bonn
  *
  * Provided that these terms and disclaimer and all copyright notices
@@ -34,8 +34,8 @@ import java.util.List;
  * <p>Represents an IP address (including Legacy IP) for use in eMail on
  * the public Internet (no scoped addresses / IPv6 Zone ID).</p>
  *
- * <p>The main entry points are the {@link #v6(String)} and
- * {@link #v4(String)} methods.</p>
+ * <p>The main entry points are either the {@link #from(String)} method or
+ * both the {@link #v6(String)} and {@link #v4(String)} methods.</p>
  *
  * @author mirabilos (t.glaser@tarent.de)
  */
@@ -79,7 +79,7 @@ toAddress(final byte[] addr)
 }
 
 /**
- * <p>Parses the passed address as IP address (IPv6), excluding Zone ID (scope).</p>
+ * <p>Parses the given address as IP address (IPv6), excluding Zone ID (scope).</p>
  *
  * <p>Note that the returned InetAddress object can be an {@link Inet4Address}
  * object, for example if the passed address represents a v4-mapped address;
@@ -102,7 +102,7 @@ asIPv6Address()
 }
 
 /**
- * <p>Parses the passed address as Legacy IP address (IPv4).</p>
+ * <p>Parses the given address as Legacy IP address (IPv4).</p>
  *
  * <p>Calling the {@link InetAddress#getHostName()} method on the result will
  * return the original string.</p>
@@ -118,7 +118,7 @@ asIPv4Address()
 }
 
 /**
- * <p>Parses the passed address as IP address (IPv6), excluding Zone ID (scope).</p>
+ * <p>Parses the passed string as IP address (IPv6), excluding Zone ID (scope).</p>
  *
  * <p>Note that the returned InetAddress object can be an {@link Inet4Address}
  * object, for example if the passed address represents a v4-mapped address;
@@ -132,7 +132,7 @@ asIPv4Address()
  *
  * @param address string to parse as IPv6 address
  *
- * @return {@link InetAddress} representing the address,
+ * @return {@link InetAddress} representing the {@code address} string,
  *     or null on failure (including if an IPv4 address is passed)
  */
 public static InetAddress
@@ -143,14 +143,14 @@ v6(final String address)
 }
 
 /**
- * <p>Parses the passed address as Legacy IP address (IPv4).</p>
+ * <p>Parses the passed string as Legacy IP address (IPv4).</p>
  *
  * <p>Calling the {@link InetAddress#getHostName()} method on the result will
  * return the original {@code address} string.</p>
  *
  * @param address to parse as IPv4 address
  *
- * @return {@link InetAddress} representing the address,
+ * @return {@link InetAddress} representing the {@code address} string,
  *     or null on failure (including if an IPv6 address is passed)
  */
 public static InetAddress
@@ -158,6 +158,30 @@ v4(final String address)
 {
 	val p = of(address);
 	return p == null ? null : p.asIPv4Address();
+}
+
+/**
+ * <p>Parses the passed string as IP address (IPv6 or Legacy IPv4),
+ * IPv6 “scope” (Zone ID) excluded. A valid address is intended to be used
+ * on the public Internet, such as for eMail.</p>
+ *
+ * <p>Note that the result can be an {@link Inet4Address} for both IPv4 and
+ * (some) IPv6 addresses such as v4-mapped but will be {@link Inet6Address}
+ * for a “regular” IPv6 address — this means this method cannot be used to
+ * determine the kind of address passed.
+ * Calling the {@link InetAddress#getHostName()} method on the result will
+ * return the original {@code address} string in all cases anyway.</p>
+ *
+ * @return {@link InetAddress} representing {@code address}, or null on failure
+ */
+public static InetAddress
+from(final String address)
+{
+	val p = of(address);
+	if (p == null)
+		return null;
+	val a6 = p.asIPv6Address();
+	return a6 == null ? p.asIPv4Address() : a6;
 }
 
 private static boolean

@@ -77,18 +77,13 @@ You can also validate hostnames…
 … and IP addresses, both IP and Legacy IP (a.k.a. IPv4):
 
 	final String ip = "2001:db8::1";
-	final InetAddress ip = IPAddress.v6(ip);
+	final InetAddress ia = IPAddress.v6(ip); // or .v4(ip)
 
 … checking both kinds of IPAddress:
 
-	final IPAddress p = IPAddress.of(ip);
-	if (p == null)
-		throw …
-	InetAddress ip = p.asIPv6Address();
-	if (ip == null)
-		ip = p.asIPv4Address();
+	final InetAddress ia = IPAddress.from(ip);
 
-In both cases, ip isn’t null for valid addresses.
+In all cases ia will not be null for valid addresses.
 
 There are other useful methods on the resulting object; toString()
 especially and introspection of the various parts of a mail path.
