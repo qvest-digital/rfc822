@@ -610,12 +610,12 @@ forSender(final boolean allowRFC6854forLimitedUse)
 }
 
 /**
- * Parses the address as addr-spec (unlabelled address)
+ * <p>Parses the address as addr-spec (unlabelled address)</p><p>
  *
  * This method is mostly used in input validation. In most cases,
  * use {@link #forSender(boolean)}(false) instead which allows
  * “user &lt;lcl@example.com&gt;” then extract the addr-spec
- * “lcl@example.com” from the return value.
+ * “lcl@example.com” from the return value.</p>
  *
  * @return parser result; remember to call isValid() on it first!
  */
@@ -810,12 +810,12 @@ pWord()
 }
 
 /**
- * Returns the parse result of the atom production:
+ * <p>Returns the parse result of the atom production:</p><p>
  *
  * result.body is a raw Substring of the atom, with surrounding CFWS stripped
- * (no unfolding necessary), no extra data
+ * (no unfolding necessary), no extra data</p>
  *
- * result.cfws is null or the trailing CFWS as raw Substring, not unfolded
+ * <p>result.cfws is null or the trailing CFWS as raw Substring, not unfolded</p>
  *
  * @return result (see above)
  */
@@ -859,12 +859,12 @@ pQcontent()
 }
 
 /**
- * Returns the parse result of the quoted-string production:
+ * <p>Returns the parse result of the quoted-string production:</p><p>
  *
  * result.body is an {@link UnfoldedSubstring} of the entire quoted string, with
- * surrounding double quotes; its String data is dequoted and backslash-removed
+ * surrounding double quotes; its String data is dequoted and backslash-removed</p>
  *
- * result.cfws is null or the trailing CFWS as raw Substring, not unfolded
+ * <p>result.cfws is null or the trailing CFWS as raw Substring, not unfolded</p>
  *
  * @return result (see above)
  */
