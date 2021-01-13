@@ -886,6 +886,8 @@ pQuotedString()
 			final int qc = pQcontent();
 			if (qc == -1)
 				break;
+			// note: this only works because we know qc is ASCII
+			// otherwise we’d have to do .append(Character.toChars(qc))
 			rv.append((char)qc);
 		}
 		// [FWS] after *([FWS] qcontent) already parsed above
