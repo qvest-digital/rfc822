@@ -187,6 +187,8 @@ v4(final String address)
  * Calling the {@link InetAddress#getHostName()} method on the result will
  * return the original {@code address} string in all cases anyway.</p>
  *
+ * @param address String to parse as IP or Legacy IP address
+ *
  * @return {@link InetAddress} representing {@code address}, or null on failure
  *
  * @see #v6(String)
