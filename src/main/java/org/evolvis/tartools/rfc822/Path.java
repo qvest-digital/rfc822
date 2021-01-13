@@ -591,7 +591,7 @@ asMailboxList()
 }
 
 /**
- * Parses the address for the Sender and Resent-Sender headers<p>
+ * <p>Parses the address for the Sender and Resent-Sender headers</p><p>
  *
  * These headers normally use the address production, but RFC6854 allows for
  * the mailbox production, with the RFC2026 §3.3(d) Limited Use caveat that
