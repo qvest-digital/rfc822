@@ -432,12 +432,10 @@ public static final class Address implements ParserResult {
 	}
 
 	/**
-	 * Renders the mailbox or group as (non-wrapped) string, i.e.:
-	 *
-	 * <ul>
-	 *         <li>localPart@domain (mailbox)</li>
-	 *         <li>label &lt;localPart@domain&gt; (mailbox)</li>
-	 *         <li>label:[group-list]; (group)</li>
+	 * Renders the mailbox or group as (non-wrapped) string, i.e.:<ul>
+	 * <li>localPart@domain (mailbox)</li>
+	 * <li>label &lt;localPart@domain&gt; (mailbox)</li>
+	 * <li>label:[group-list]; (group)</li>
 	 * </ul>
 	 *
 	 * @return String rendered address
