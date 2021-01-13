@@ -21,7 +21,7 @@ package org.evolvis.tartools.rfc822;
  */
 
 /**
- * Represents an FQDN (“domain” production) for use in eMail
+ * <p>Represents an FQDN (“domain” production) for use in eMail.</p>
  *
  * <p>The main entry point is the {@link #isDomain(String)} method.</p>
  *
@@ -34,7 +34,8 @@ public class FQDN extends Parser {
  *
  * @param hostname to parse
  *
- * @return null if hostname was null or longer than 254 characters, the new instance otherwise
+ * @return null if {@code hostname} was null or longer than 254 characters,
+ *     the new parser instance otherwise
  */
 public static FQDN
 of(final String hostname)
@@ -43,7 +44,7 @@ of(final String hostname)
 }
 
 /**
- * Private constructor, use the factory method {@link #of(String)} instead
+ * Private constructor. Use the factory method {@link #of(String)} instead.
  *
  * @param input string to analyse
  */
@@ -53,7 +54,7 @@ protected FQDN(final String input)
 }
 
 /**
- * Checks if a supposed hostname is a valid Fully-Qualified Domain Name.
+ * <p>Checks if a supposed hostname is a valid Fully-Qualified Domain Name.</p>
  *
  * <p>Valid FQDNs are up to 254 octets in length, comprised only of labels
  * (letters, digits and hyphen-minus, but not beginning or ending with
@@ -91,7 +92,7 @@ isDomain()
 }
 
 /**
- * Checks if a supposed hostname is a valid Fully-Qualified Domain Name.
+ * <p>Checks if a supposed hostname is a valid Fully-Qualified Domain Name.</p>
  *
  * <p>Valid FQDNs are up to 254 octets in length, comprised only of labels
  * (letters, digits and hyphen-minus, but not beginning or ending with
@@ -102,7 +103,7 @@ isDomain()
  *
  * @param hostname to check
  *
- * @return true if hostname is valid, false otherwise
+ * @return true if {@code hostname} is valid, false otherwise
  */
 public static boolean
 isDomain(final String hostname)

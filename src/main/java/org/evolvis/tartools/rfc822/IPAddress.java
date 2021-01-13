@@ -31,8 +31,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * Represents an IP address (including Legacy IP) for use in eMail on
- * public Internet (no scoped addresses / IPv6 Zone ID)
+ * <p>Represents an IP address (including Legacy IP) for use in eMail on
+ * the public Internet (no scoped addresses / IPv6 Zone ID).</p>
  *
  * <p>The main entry points are the {@link #v6(String)} and
  * {@link #v4(String)} methods.</p>
@@ -42,13 +42,14 @@ import java.util.List;
 public class IPAddress extends Parser {
 
 /**
- * Creates and initialises a new parser for IPv6 and IPv4 addresses
- * (excluding IPv6 Zone ID) to use by {@link #asIPv6Address()} and
- * {@link #asIPv4Address()}.
+ * <p>Creates and initialises a new IP address parser.</p><p>Use with
+ * {@link #asIPv6Address()} and {@link #asIPv4Address()} to validate
+ * IPv6 and IPv4 addresses, excluding IPv6 Zone IDs (“scope”).</p>
  *
  * @param address to parse (protocol depends on parser method called)
  *
- * @return null if address was null or much too large, the new instance otherwise
+ * @return null if {@code address} was null or much too large,
+ *     the new parser instance otherwise
  */
 public static IPAddress
 of(final String address)
@@ -57,7 +58,7 @@ of(final String address)
 }
 
 /**
- * Private constructor, use the factory method {@link #of(String)} instead
+ * Private constructor. Use the factory method {@link #of(String)} instead.
  *
  * @param input string to analyse
  */
@@ -78,21 +79,20 @@ toAddress(final byte[] addr)
 }
 
 /**
- * Parses the passed address as IP address (IPv6), excluding Zone ID (scope).
+ * <p>Parses the passed address as IP address (IPv6), excluding Zone ID (scope).</p>
  *
- * <p>
- * Note that the returned InetAddress object can be an {@link Inet4Address}
+ * <p>Note that the returned InetAddress object can be an {@link Inet4Address}
  * object, for example if the passed address represents a v4-mapped address;
  * in most cases it will be an {@link Inet6Address} object though. In either
  * case, if the address is no valid IPv6 address (e.g. because it is an IPv4
  * address), null will be returned instead, so the return value can be used
- * to distinguish the address families, even if a v4-mapped address occurs.
- * </p>
+ * to distinguish the address families, even if a v4-mapped address occurs.</p>
  *
- * <p>The {@link InetAddress#getHostName()} method will return the original
- * string in all cases anyway.</p>
+ * <p>Calling the {@link InetAddress#getHostName()} method on the result will
+ * return the original string in all cases anyway.</p>
  *
- * @return {@link InetAddress} representing the address, or null on failure
+ * @return {@link InetAddress} representing the address,
+ *     or null on failure (including if an IPv4 address is passed)
  */
 public InetAddress
 asIPv6Address()
@@ -102,11 +102,13 @@ asIPv6Address()
 }
 
 /**
- * Parses the passed address as Legacy IP address (IPv4).
+ * <p>Parses the passed address as Legacy IP address (IPv4).</p>
  *
- * The {@link InetAddress#getHostName()} method will return the original string.
+ * <p>Calling the {@link InetAddress#getHostName()} method on the result will
+ * return the original string.</p>
  *
- * @return {@link InetAddress} representing the address, or null on failure
+ * @return {@link InetAddress} representing the address,
+ *     or null on failure (including if an IPv6 address is passed)
  */
 public InetAddress
 asIPv4Address()
@@ -116,23 +118,22 @@ asIPv4Address()
 }
 
 /**
- * Parses the passed address as IP address (IPv6), excluding Zone ID (scope).
+ * <p>Parses the passed address as IP address (IPv6), excluding Zone ID (scope).</p>
  *
- * <p>
- * Note that the returned InetAddress object can be an {@link Inet4Address}
+ * <p>Note that the returned InetAddress object can be an {@link Inet4Address}
  * object, for example if the passed address represents a v4-mapped address;
  * in most cases it will be an {@link Inet6Address} object though. In either
  * case, if the address is no valid IPv6 address (e.g. because it is an IPv4
  * address), null will be returned instead, so the return value can be used
- * to distinguish the address families, even if a v4-mapped address occurs.
- * </p>
+ * to distinguish the address families, even if a v4-mapped address occurs.</p>
  *
- * <p>The {@link InetAddress#getHostName()} method will return the original
- * string in all cases anyway.</p>
+ * <p>Calling the {@link InetAddress#getHostName()} method on the result will
+ * return the original {@code address} string in all cases anyway.</p>
  *
- * @param address to parse as IPv6 address (IPv4 addresses return null)
+ * @param address string to parse as IPv6 address
  *
- * @return {@link InetAddress} representing the address, or null on failure
+ * @return {@link InetAddress} representing the address,
+ *     or null on failure (including if an IPv4 address is passed)
  */
 public static InetAddress
 v6(final String address)
@@ -142,13 +143,15 @@ v6(final String address)
 }
 
 /**
- * Parses the passed address as Legacy IP address (IPv4).
+ * <p>Parses the passed address as Legacy IP address (IPv4).</p>
  *
- * The {@link InetAddress#getHostName()} method will return the original string.
+ * <p>Calling the {@link InetAddress#getHostName()} method on the result will
+ * return the original {@code address} string.</p>
  *
  * @param address to parse as IPv4 address
  *
- * @return {@link InetAddress} representing the address, or null on failure
+ * @return {@link InetAddress} representing the address,
+ *     or null on failure (including if an IPv6 address is passed)
  */
 public static InetAddress
 v4(final String address)
@@ -218,11 +221,11 @@ pIPv4Address()
 }
 
 /**
- * Checks for h16 or possibly an IPv4 address (ls32 production). This method
+ * <p>Checks for h16 or possibly an IPv4 address (ls32 production). This method
  * solely exists because Sonar otherwise thinks {@link #pIPv6Address()} too
- * complex for the feeble minds of Java™ programmers…<p>
+ * complex for the feeble minds of Java™ programmers…</p>
  *
- * It checks whether the current char can be an h32 or IPv4 address (xdigit);
+ * <p>It checks whether the current char can be an h32 or IPv4 address (xdigit);
  * if not, or if ls32 indicates we should check for IPv4 addresses and there
  * indeed is one, i.e. when further parsing should be stopped, it returns
  * true; otherwise, the parsed h16 is added to dst, and false returned to

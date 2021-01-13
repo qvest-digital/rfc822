@@ -554,7 +554,7 @@ public static final class AddressList implements ParserResult {
 }
 
 /**
- * Creates and initialises a new parser for eMail addresses.
+ * Creates and initialises a new (strict) parser for eMail addresses.
  *
  * @param addresses to parse
  *

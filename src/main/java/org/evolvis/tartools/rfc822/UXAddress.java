@@ -22,22 +22,27 @@ package org.evolvis.tartools.rfc822;
 
 /**
  * Represents an RFC822 (and successors) eMail address header content,
- * like {@link Path}, except the parser accepts more varying input,
+ * like {@code Path}, except the parser accepts more varying input,
  * especially input by humans, and eventually will MIME-encode any
- * nōn-ASCII characters. (For now they cause dropping the label part.)
+ * nōn-ASCII characters. (For now they cause dropping the label part
+ * from the on-wire form.)
  *
  * @author mirabilos (t.glaser@tarent.de)
+ * @see Path
  * @deprecated not yet implemented
  */
 @Deprecated
 public class UXAddress extends Path {
 
 /**
- * Creates and initialises a new parser for eMail addresses.
+ * Creates and initialises a new (forgiving) parser for eMail addresses.
  *
  * @param addresses to parse
  *
- * @return null if addresses was null or very large, the new instance otherwise
+ * @return null if {@code addresses} was null or very large,
+ *     the new parser instance otherwise
+ *
+ * @see Path#of(String)
  */
 public static UXAddress
 of(final String addresses)
@@ -46,7 +51,7 @@ of(final String addresses)
 }
 
 /**
- * Private constructor, use the factory method {@link #of(String)} instead
+ * Private constructor. Use the factory method {@link #of(String)} instead.
  *
  * @param input string to analyse
  */

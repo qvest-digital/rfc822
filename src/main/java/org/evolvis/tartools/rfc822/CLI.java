@@ -23,7 +23,7 @@ package org.evolvis.tartools.rfc822;
 import lombok.val;
 
 /**
- * Utility to parse and validate strings from the command line.
+ * <p>Utility to parse and validate strings from the command line.</p>
  * <p>See {@link #usage()} for usage information.</p>
  *
  * @author mirabilos (m@mirbsd.org)
