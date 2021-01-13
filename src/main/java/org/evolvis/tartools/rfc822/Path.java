@@ -606,7 +606,7 @@ protected Path(final String input)
  * Parses the address as mailbox-list, e.g. for the From and Resent-From headers
  * (but see {@link #asAddressList()} for RFC6854’s RFC2026 §3.3(d) Limited Use)
  *
- * @return parser result; remember to call isValid() on it first!
+ * @return parser result; remember to call {@link Path.AddressList#isValid()} first!
  */
 public AddressList
 asMailboxList()
@@ -625,7 +625,7 @@ asMailboxList()
  *
  * @param allowRFC6854forLimitedUse use address instead of mailbox parsing
  *
- * @return parser result; remember to call isValid() on it first!
+ * @return parser result; remember to call {@link Path.Address#isValid()} first!
  */
 public Address
 forSender(final boolean allowRFC6854forLimitedUse)
@@ -660,7 +660,7 @@ asAddrSpec()
  * allows using this for the From and Resent-From headers, normally
  * covered by the {@link #asMailboxList()} method.
  *
- * @return parser result; remember to call isValid() on it first!
+ * @return parser result; remember to call {@link Path.AddressList#isValid()} first!
  */
 public AddressList
 asAddressList()
