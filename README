@@ -9,10 +9,10 @@ More eMail-related parsers, validators, emitters, etc. later.
 Validation of IP addresses (IPv6, Legacy IPv4) and FQDNs (hostnames,
 domains) is provided as well.
 
-Preliminary release note
-────────────────────────
+Release note
+────────────
 
-The first version of this library has a tight deadline. As such,
+This early release of this library had a tight deadline. As such,
 it only parses address/mailbox lists and their dependents and can
 validate, using eMail rules, localparts and domains (IP address or
 FQDN, also usable separately).
@@ -25,7 +25,7 @@ Add a suitable dependency to your project, for example with Maven:
 <dependency>
 	<groupId>org.evolvis.tartools</groupId>
 	<artifactId>rfc822</artifactId>
-	<version>0.3</version>
+	<version>0.4</version>
 </dependency>
 
 Or download releases manually from Maven Central:
@@ -37,13 +37,13 @@ Make sure your project can handle Java 8 bytecode.
 Usage
 ─────
 
-To validate an eMail address, you first get a parser instance:
+To validate eMail addresses first get a parser instance:
 
 	final String address = "user <localpart@domain>";
 	final Path p = Path.of(address);
 
 If address was null or too long (we’re generous here), this
-will return null. Otherwise, you have a parser and call it:
+will return null. Otherwise, call the parser object:
 
 	import lombok.val;
 
@@ -53,9 +53,11 @@ will return null. Otherwise, you have a parser and call it:
 	val adrList = p.asAddressList();  // Path.AddressList
 	val adrspec = p.asAddrSpec();     // Path.AddrSpec
 
-(Using “val” means the protected type of the result can be stored.)
+(Using “val” means the protected type of the result can be stored.
+This is not necessary and the return values are of the (public)
+Path.ParserResult interface, which works.)
 
-The return value if null if the address cannot be parsed. The
+The return value is null if the address cannot be parsed. The
 first thing to do now is, with To: for example, to weed out
 parsable but invalid input (e.g. bad domain or IP or too long):
 
@@ -69,7 +71,7 @@ you’ll intend to send out eMails, which needs just addresses:
 
 	return adrList.flattenAddrSpecs();  // List<String>
 
-You can also validate hostnames…
+It is also possible to validate hostnames or domains…
 
 	final String hostname = "foo.example.com";
 	final boolean ok = FQDN.isDomain(hostname);
@@ -79,7 +81,7 @@ You can also validate hostnames…
 	final String ip = "2001:db8::1";
 	final InetAddress ia = IPAddress.v6(ip); // or .v4(ip)
 
-… checking both kinds of IPAddress:
+… checking both kinds of IPAddress in one go:
 
 	final InetAddress ia = IPAddress.from(ip);
 
@@ -94,7 +96,7 @@ CLI (command-line interface) utility
 This project ships an executable JAR, offering access to most
 validation functionality from the command line. Usage:
 
-$ java -jar rfc822-0.3.jar [--] input …
+$ java -jar rfc822-0.4.jar [--] input …
 
 This will show (in a colourful format intended for human con‐
 sumption only!) for each argument which productions match it.
@@ -102,11 +104,11 @@ This command exits with errorlevel 40. A double-dash argument
 separator before the first input argument is mandatory if the
 first input begins with a hyphen-minus.
 
-$ java -jar rfc822-0.3.jar -h
+$ java -jar rfc822-0.4.jar -h
 
 Show short usage info on stderr and exit nonzero.
 
-$ java -jar rfc822-0.3.jar -TYPE [--] input
+$ java -jar rfc822-0.4.jar -TYPE [--] input
 
 Validates the one given “input” for the specified TYPE.
 Possible TYPEs are:
@@ -156,6 +158,15 @@ well and MIME-encodes problematic headers, so we can handle:
 
 	Es „ß“ Zett <sz@example.com>; Shaun D. Mäh <sheep@example.com>
 
+This will be part of the 1.0 release *except* for the MIME
+encoding that would be necessary to reflect the input. But…
+
+	James T. Kirk, III. <jim@example.com>
+
+… will work, semicolons will work, and the nōn-ASCII ones
+will just lack in wire representation but have the addr-spec.
+
+For more though…
 Sorry, no time…
 
 More patches, improvements, tests, etc. are of course welcome!
