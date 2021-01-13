@@ -64,7 +64,7 @@ import java.util.stream.Collectors;
  * as above, normally for the {@code From} header.</li>
  * <li>{@link #asAddressList()} validates a comma-separated list that can
  * include a mix of {@code mailbox} and {@code group} addresses and normally is
- * used for recipient headers ({@code To}, …) but, under the same Limited Use
+ * used for recipient headers ({@code To}, …) but, under the same Limited Use
  * caveat, can be used per RFC6854 for a {@code From} (and like) header.</li>
  * </ul>
  * <p>All of these return an instance of {@link ParserResult} or {@code null} if
@@ -662,7 +662,7 @@ asAddrSpec()
 
 /**
  * <p>Parses the address as {@code address-list}, such as for the {@code Reply-To},
- * {@code To}, {@code Cc}, (optionally) {@code Bcc}, {@code Resent-To}, … headers.
+ * {@code To}, {@code Cc}, (optionally) {@code Bcc}, {@code Resent-To}, … headers.
  * RFC6854 (under RFC2026 §3.3(d) Limited Use circumstances) permits using this
  * for the {@code From} and {@code Resent-From} headers, normally covered by the
  * {@link #asMailboxList()} method.</p>
