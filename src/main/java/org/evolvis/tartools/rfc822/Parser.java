@@ -324,7 +324,8 @@ protected class Substring {
 	 * @return String representation
 	 */
 	@Override
-	public String toString()
+	public String
+	toString()
 	{
 		return Parser.this.s().substring(beg, end);
 	}

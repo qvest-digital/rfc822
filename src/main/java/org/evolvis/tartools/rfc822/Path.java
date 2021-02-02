@@ -222,7 +222,8 @@ protected final class UnfoldedSubstring extends Substring {
 	 * @return String representation
 	 */
 	@Override
-	public String toString()
+	public String
+	toString()
 	{
 		return string;
 	}
@@ -257,7 +258,8 @@ protected final class AddrSpecSIDE extends Substring {
 	 * @return String representation (identical to the user data)
 	 */
 	@Override
-	public String toString()
+	public String
+	toString()
 	{
 		return (String)getData();
 	}
