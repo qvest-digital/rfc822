@@ -746,7 +746,7 @@ pGroup()
 		final AddressList ml = pMailboxList();
 		if (ml == null)
 			pCFWS();
-		val gl = ml == null ? new ArrayList<Address>() : ml.addresses;
+		final List<Address> gl = ml == null ? new ArrayList<>() : ml.addresses;
 		// } [pGroupList]
 		if (cur() != ';')
 			return null;
