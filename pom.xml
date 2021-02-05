@@ -1,10 +1,10 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!--
-	To retrieve full source code including the README for the latest version:
+	To retrieve the latest source code, useful instructions and other aids:
 
 	$ mvn -U -Dartifact=org.evolvis.tartools:rfc822:RELEASE:tgz:source -DoutputDirectory=. dependency:copy #
 
-	Replace RELEASE with the <version> number below to get the corresponding artefact.
+	Replace RELEASE with the <version> number below to get the artefact corresponding to that release.
 -->
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
 	<modelVersion>4.0.0</modelVersion>
