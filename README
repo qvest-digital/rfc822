@@ -94,9 +94,13 @@ CLI (command-line interface) utility
 ────────────────────────────────────
 
 This project ships an executable JAR, offering access to most
-validation functionality from the command line. Usage:
+validation functionality from the command line. (The run.sh
+launcher can be extracted with jar or unzip then placed in the
+same directory as the JAR. It can be used from PATH.) Usage:
 
-$ java -jar rfc822-0.4.jar [--] input …
+$ java -jar rfc822-0.5.jar [--] input …
+or
+$ ./run.sh [--] input …
 
 This will show (in a colourful format intended for human con‐
 sumption only!) for each argument which productions match it.
@@ -104,11 +108,15 @@ This command exits with errorlevel 40. A double-dash argument
 separator before the first input argument is mandatory if the
 first input begins with a hyphen-minus.
 
-$ java -jar rfc822-0.4.jar -h
+$ java -jar rfc822-0.5.jar -h
+or
+$ ./run.sh -h
 
 Show short usage info on stderr and exit nonzero.
 
-$ java -jar rfc822-0.4.jar -TYPE [--] input
+$ java -jar rfc822-0.5.jar -TYPE [--] input
+or
+$ ./run.sh -TYPE [--] input
 
 Validates the one given “input” for the specified TYPE.
 Possible TYPEs are:
