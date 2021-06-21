@@ -215,10 +215,13 @@ accept()
  * as the {@code matcher} returns true and end of input is not yet reached.
  *
  * @param matcher gets called with {@link #cur()} and {@link #peek()} as arguments
+ *                and <i>must</i> return a lowercase {@code boolean}, that is,
+ *                either {@code true} or {@code false}
  *
  * @return codepoint of the first character where the matcher returned false,
  *     or {@code -1} if end of input is reached
  *
+ * @throws NullPointerException if {@code matcher} returned {@code null}
  * @see #skip(Function)
  */
 protected final int
@@ -234,10 +237,13 @@ skipPeek(final BiFunction<Integer, Integer, Boolean> matcher)
  * as the {@code matcher} returns true and end of input is not yet reached.
  *
  * @param matcher gets called with just {@link #cur()} as argument
+ *                and <i>must</i> return a lowercase {@code boolean}, that is,
+ *                either {@code true} or {@code false}
  *
  * @return codepoint of the first character where the matcher returned false,
  *     or {@code -1} if end of input is reached
  *
+ * @throws NullPointerException if {@code matcher} returned {@code null}
  * @see #skipPeek(BiFunction)
  */
 protected final int
