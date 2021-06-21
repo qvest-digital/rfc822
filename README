@@ -25,7 +25,7 @@ Add a suitable dependency to your project, for example with Maven:
 <dependency>
 	<groupId>org.evolvis.tartools</groupId>
 	<artifactId>rfc822</artifactId>
-	<version>0.4</version>
+	<version>0.5</version>
 </dependency>
 
 Or download releases manually from Maven Central:
