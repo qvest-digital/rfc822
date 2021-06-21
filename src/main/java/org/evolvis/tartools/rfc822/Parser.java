@@ -23,9 +23,6 @@ package org.evolvis.tartools.rfc822;
 import lombok.Getter;
 import lombok.val;
 
-import java.util.function.BiFunction;
-import java.util.function.Function;
-
 /**
  * <p>Parser base class. Abstracts initialisation and movement.</p>
  *
@@ -214,20 +211,18 @@ accept()
  * Advances the current position using a peeking matcher. Continues as long
  * as the {@code matcher} returns true and end of input is not yet reached.
  *
- * @param matcher gets called with {@link #cur()} and {@link #peek()} as arguments
- *                and <i>must</i> return a lowercase {@code boolean}, that is,
- *                either {@code true} or {@code false}
+ * @param matcher {@link LookaheadMatcher} called with {@link #cur()} and
+ *                {@link #peek()} as arguments to determine whether to skip ahead
  *
- * @return codepoint of the first character where the matcher returned false,
+ * @return codepoint of the first character for which the matcher returned false,
  *     or {@code -1} if end of input is reached
  *
- * @throws NullPointerException if {@code matcher} returned {@code null}
- * @see #skip(Function)
+ * @see #skip(ContextlessMatcher)
  */
 protected final int
-skipPeek(final BiFunction<Integer, Integer, Boolean> matcher)
+skipPeek(final LookaheadMatcher matcher)
 {
-	while (cur != -1 && matcher.apply(cur, next))
+	while (cur != -1 && matcher.toSkip(cur, next))
 		jmp(succ);
 	return cur;
 }
@@ -236,20 +231,18 @@ skipPeek(final BiFunction<Integer, Integer, Boolean> matcher)
  * Advances the current position using a regular matcher. Continues as long
  * as the {@code matcher} returns true and end of input is not yet reached.
  *
- * @param matcher gets called with just {@link #cur()} as argument
- *                and <i>must</i> return a lowercase {@code boolean}, that is,
- *                either {@code true} or {@code false}
+ * @param matcher {@link ContextlessMatcher} called with just {@link #cur()}
+ *                as argument to determine whether to skip ahead
  *
- * @return codepoint of the first character where the matcher returned false,
+ * @return codepoint of the first character for which the matcher returned false,
  *     or {@code -1} if end of input is reached
  *
- * @throws NullPointerException if {@code matcher} returned {@code null}
- * @see #skipPeek(BiFunction)
+ * @see #skipPeek(LookaheadMatcher)
  */
 protected final int
-skip(final Function<Integer, Boolean> matcher)
+skip(final ContextlessMatcher matcher)
 {
-	while (cur != -1 && matcher.apply(cur))
+	while (cur != -1 && matcher.toSkip(cur))
 		jmp(succ);
 	return cur;
 }
