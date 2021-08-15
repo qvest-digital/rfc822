@@ -22,6 +22,8 @@ package org.evolvis.tartools.rfc822;
 
 import lombok.val;
 
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
 import java.util.Locale;
 
 /**
@@ -45,6 +47,8 @@ private static final String BAD = "\u001B[31m✘" + CLR;
 private static final String PARSES = "\u001B[1;33m✘" + CLR;
 private static final String VALID = "\u001B[32m✔" + CLR;
 private static final String BOLD = "\u001B[1m";
+private static final String INVERSE = "\u001B[7m";
+private static final String PROMPT = CLR + INVERSE + ">" + CLR + " ";
 
 private static String
 chk(final Path.ParserResult arg)
@@ -178,9 +182,35 @@ extract(final String[] args, int skip)
 	System.exit(44);
 }
 
+private static String
+readln() throws IOException
+{
+	final ByteArrayOutputStream b = new ByteArrayOutputStream();
+
+	while (true) {
+		final int ch = System.in.read();
+
+		/* EOF? */
+		if (ch == -1)
+			return null;
+		/* CR or LF? */
+		if (ch == 13 || ch == 10) {
+			/* ignore if at beginning of line */
+			if (b.size() < 1)
+				continue;
+			/* otherwise, stop reading */
+			break;
+		}
+		/* buffer input byte and continue reading */
+		b.write(ch);
+	}
+	/* convert using default charset */
+	return b.toString();
+}
+
 @SuppressWarnings("squid:S3776")
 public static void
-main(final String[] argv)
+main(final String[] argv) throws IOException
 {
 	boolean skipfirst = false;
 
@@ -199,12 +229,24 @@ main(final String[] argv)
 	}
 
 	System.out.println(CLR);
-	for (String arg : argv) {
-		if (skipfirst)
-			skipfirst = false;
-		else
-			interactive(arg);
-	}
+	if (argv.length > 0)
+		for (String arg : argv) {
+			if (skipfirst)
+				skipfirst = false;
+			else
+				interactive(arg);
+		}
+	else
+		while (true) {
+			System.out.print(PROMPT);
+			System.out.flush();
+			final String input = readln();
+			System.out.print(CLR);
+			System.out.flush();
+			if (input == null)
+				break;
+			interactive(input);
+		}
 	System.exit(40);
 }
 
