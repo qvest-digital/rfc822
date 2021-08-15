@@ -75,6 +75,12 @@ usage()
 	System.exit(1);
 }
 
+private static String
+canonicaliseParsedFQDN(final String s)
+{
+	return s == null ? null : s.toLowerCase(Locale.ROOT);
+}
+
 @SuppressWarnings("squid:S3776")
 private static void
 batch(final String flag, final String input)
@@ -95,10 +101,10 @@ batch(final String flag, final String input)
 		val asPath = Path.of(input);
 		one(asPath.asAddressList());
 	} else if ("-domain".equals(flag)) {
-		val asDomain = FQDN.asDomain(input);
+		val asDomain = canonicaliseParsedFQDN(FQDN.asDomain(input));
 		if (asDomain == null)
 			System.exit(43);
-		System.out.println(asDomain.toLowerCase(Locale.ROOT));
+		System.out.println(asDomain);
 		System.exit(0);
 	} else if ("-ipv4".equals(flag)) {
 		val i4 = IPAddress.v4(input);
@@ -194,51 +200,56 @@ main(final String[] argv)
 
 	System.out.println(CLR);
 	for (String arg : argv) {
-		if (skipfirst) {
+		if (skipfirst)
 			skipfirst = false;
-			continue;
-		}
-		val asPath = Path.of(arg);
-		val asAS = asPath.asAddrSpec();
-		val asMbox = asPath.forSender(false);
-		val asAddr = asPath.forSender(true);
-		val asML = asPath.asMailboxList();
-		val asAL = asPath.asAddressList();
-		val isDom = FQDN.asDomain(arg);
-		val i6 = IPAddress.v6(arg);
-		val i4 = IPAddress.v4(arg);
-		final String desc;
-		final String dmbx;
-		final String dadr;
-		final Path.ParserResult rmail;
-		if (/* known not-list */ asMbox != null || asAddr != null ||
-		    /* known not a list */ (asML == null && asAL == null)) {
-			desc = asML == null && asAL == null ? NOLIST : ORLIST;
-			dmbx = chk(asMbox);
-			dadr = chk(asAddr);
-			rmail = asAddr == null ? asMbox : asAddr;
-		} else {
-			desc = ISLIST;
-			dmbx = chk(asML);
-			dadr = chk(asAL);
-			rmail = asAL == null ? asML : asAL;
-		}
-		System.out.printf("‣ %s" + CLR + "%n\t", arg);
-		System.out.printf((desc) + "%n",
-		    chk(asAS), dmbx, dadr, isDom != null ? VALID : BAD,
-		    i6 == null ? BAD : VALID, i4 == null ? BAD : VALID);
-		if (rmail != null && rmail.isValid())
-			System.out.printf("\teMail: " + BOLD + "%s" + CLR + "%n",
-			    rmail);
-		if (i6 != null || i4 != null)
-			System.out.printf("\tIP: " + BOLD + "%s" + CLR + "%n",
-			    (i6 == null ? i4 : i6).getHostAddress());
-		if (isDom != null)
-			System.out.printf("\tFQDN: " + BOLD + "%s" + CLR + "%n",
-			    isDom.toLowerCase(Locale.ROOT));
-		System.out.println();
+		else
+			interactive(arg);
 	}
 	System.exit(40);
+}
+
+private static void
+interactive(final String arg)
+{
+	val asPath = Path.of(arg);
+	val asAS = asPath.asAddrSpec();
+	val asMbox = asPath.forSender(false);
+	val asAddr = asPath.forSender(true);
+	val asML = asPath.asMailboxList();
+	val asAL = asPath.asAddressList();
+	val isDom = canonicaliseParsedFQDN(FQDN.asDomain(arg));
+	val i6 = IPAddress.v6(arg);
+	val i4 = IPAddress.v4(arg);
+	final String desc;
+	final String dmbx;
+	final String dadr;
+	final Path.ParserResult rmail;
+
+	if (/* known not-list */ asMbox != null || asAddr != null ||
+	    /* known not a list */ (asML == null && asAL == null)) {
+		desc = asML == null && asAL == null ? NOLIST : ORLIST;
+		dmbx = chk(asMbox);
+		dadr = chk(asAddr);
+		rmail = asAddr == null ? asMbox : asAddr;
+	} else {
+		desc = ISLIST;
+		dmbx = chk(asML);
+		dadr = chk(asAL);
+		rmail = asAL == null ? asML : asAL;
+	}
+
+	System.out.printf("‣ %s" + CLR + "%n\t", arg);
+	System.out.printf((desc) + "%n",
+	    chk(asAS), dmbx, dadr, isDom != null ? VALID : BAD,
+	    i6 == null ? BAD : VALID, i4 == null ? BAD : VALID);
+	if (rmail != null && rmail.isValid())
+		System.out.printf("\teMail: " + BOLD + "%s" + CLR + "%n", rmail);
+	if (i6 != null || i4 != null)
+		System.out.printf("\tIP: " + BOLD + "%s" + CLR + "%n",
+		    (i6 == null ? i4 : i6).getHostAddress());
+	if (isDom != null)
+		System.out.printf("\tFQDN: " + BOLD + "%s" + CLR + "%n", isDom);
+	System.out.println();
 }
 
 }
