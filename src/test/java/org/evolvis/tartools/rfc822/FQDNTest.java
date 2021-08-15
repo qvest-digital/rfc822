@@ -20,6 +20,7 @@ package org.evolvis.tartools.rfc822;
  * of said person’s immediate fault when using the work as intended.
  */
 
+import lombok.val;
 import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -35,6 +36,16 @@ private static void
 val(final String hostname)
 {
 	assertTrue(FQDN.isDomain(hostname), () -> "not valid: " + hostname);
+}
+
+@SuppressWarnings("SameParameterValue")
+private static void
+val(final String hostname, final String dotAtom)
+{
+	assertFalse(FQDN.isDomain(hostname), () -> "unexpectedly valid: " + hostname);
+	val dn = FQDN.asDomain(hostname);
+	assertNotNull(dn, () -> "not valid: " + hostname);
+	assertEquals(dotAtom, dn, () -> "not correctly resolved: " + hostname);
 }
 
 private static void
@@ -74,7 +85,7 @@ public void testPos()
 	inv(" ");
 	inv(" example.com");
 	inv("example.com ");
-	val("example.com.");
+	val("example.com.", "example.com");
 }
 
 }

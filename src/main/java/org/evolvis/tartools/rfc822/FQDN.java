@@ -33,7 +33,7 @@ public class FQDN extends Parser {
 /**
  * Creates and initialises a new parser for Fully-Qualified Domain Names.
  *
- * @param hostname to parse (trailing dots are removed prior to parsing)
+ * @param hostname to parse
  *
  * @return null if {@code hostname} was null or longer than 253 characters,
  *     the new parser instance otherwise
@@ -51,7 +51,7 @@ of(final String hostname)
  */
 protected FQDN(final String input)
 {
-	super(stripTrailingDots(input), /* see isDomain() javadoc */ 253);
+	super(input, /* see isDomain() javadoc */ 253);
 }
 
 private static String
@@ -119,7 +119,7 @@ isDomain()
  * of the first label and of the root (i.e. nil) domain; SMTP has a 254-octet
  * limit for the Forward-path (in RFC5321) as well.</p>
  *
- * @param hostname to check (trailing dots are removed prior to checking)
+ * @param hostname to check
  *
  * @return true if {@code hostname} is valid, false otherwise
  */
@@ -128,6 +128,35 @@ isDomain(final String hostname)
 {
 	final FQDN parser = of(hostname);
 	return parser != null && parser.isDomain();
+}
+
+/**
+ * <p>Checks if a supposed hostname is a valid Fully-Qualified Domain Name
+ * and retrieves its dot-atom form.</p>
+ *
+ * <p>Valid FQDNs are up to 253 octets in length, comprised only of labels
+ * (letters, digits and hyphen-minus, but not beginning or ending with
+ * a hyphen-minus) up to 63 octets long, separated by dots (‘.’).</p>
+ *
+ * <p>Strictly speaking an FQDN could be 255 octets in length, but these will
+ * not work with DNS (the separating dots are matched by the length octets of
+ * their succeeding label, but two extra octets are needed for the length octet
+ * of the first label and of the root (i.e. nil) domain; SMTP has a 254-octet
+ * limit for the Forward-path (in RFC5321) as well.</p>
+ *
+ * <p>This method returns the dot-atom form: trailing dots are removed, if any
+ * existed. To get the canonical form from there, normalise letter case.</p>
+ *
+ * @param hostname to check
+ *
+ * @return dot-atom form of {@code hostname} if valid, null otherwise
+ */
+public static String
+asDomain(final String hostname)
+{
+	final String dn = stripTrailingDots(hostname);
+	final FQDN parser = of(dn);
+	return parser != null && parser.isDomain() ? dn : null;
 }
 
 }

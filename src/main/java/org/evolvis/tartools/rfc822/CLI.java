@@ -140,7 +140,7 @@ main(String[] argv)
 		val asAddr = asPath.forSender(true);
 		val asML = asPath.asMailboxList();
 		val asAL = asPath.asAddressList();
-		val isDom = FQDN.isDomain(arg);
+		val isDom = FQDN.asDomain(arg);
 		val i6 = IPAddress.v6(arg);
 		val i4 = IPAddress.v4(arg);
 		final String desc;
@@ -161,7 +161,7 @@ main(String[] argv)
 		}
 		System.out.printf("‣ %s" + CLR + "%n\t", arg);
 		System.out.printf((desc) + "%n",
-		    chk(asAS), dmbx, dadr, isDom ? VALID : BAD,
+		    chk(asAS), dmbx, dadr, isDom != null ? VALID : BAD,
 		    i6 == null ? BAD : VALID, i4 == null ? BAD : VALID);
 		if (rmail != null && rmail.isValid())
 			System.out.printf("\teMail: " + BOLD + "%s" + CLR + "%n",
@@ -169,9 +169,9 @@ main(String[] argv)
 		if (i6 != null || i4 != null)
 			System.out.printf("\tIP: " + BOLD + "%s" + CLR + "%n",
 			    (i6 == null ? i4 : i6).getHostAddress());
-		if (isDom)
+		if (isDom != null)
 			System.out.printf("\tFQDN: " + BOLD + "%s" + CLR + "%n",
-			    arg);
+			    isDom);
 		System.out.println();
 	}
 	System.exit(40);
