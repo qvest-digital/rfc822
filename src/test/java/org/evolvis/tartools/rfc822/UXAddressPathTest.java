@@ -358,6 +358,15 @@ testPos()
 		val s = Arrays.asList("mary@x.test", "jdoe@example.org", "one@y.test");
 		assertIterableEquals(s, l.flattenAddrSpecs());
 	});
+	val S8 = s8.replace(',', ';');
+	t(null, null, /*UXAddress-list-test*/ S(VO, s8), S(RN), S8, (l) -> {
+		// note the callback is ignored in UXAddressPathTest but used for UX
+		assertNull(l.invalidsToString(), "invalids present");
+		val a = Arrays.asList("Mary Smith <mary@x.test>", "jdoe@example.org", "Who? <one@y.test>");
+		assertIterableEquals(a, l.flattenAddresses());
+		val s = Arrays.asList("mary@x.test", "jdoe@example.org", "one@y.test");
+		assertIterableEquals(s, l.flattenAddrSpecs());
+	});
 	val s9 = "<boss@nil.test>, \"Giant; \\\"Big\\\" Box\" <sysservices@example.net>";
 	val S9 = S(VO, "boss@nil.test, \"Giant; \\\"Big\\\" Box\" <sysservices@example.net>");
 	t(null, null, S9, S9, s9, (l) -> {

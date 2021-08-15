@@ -702,6 +702,13 @@ pAddressList()
 	}
 }
 
+// overridable for UX subclass
+protected boolean
+isMailboxListSeparator()
+{
+	return cur() == ',';
+}
+
 protected AddressList
 pMailboxList()
 {
@@ -712,7 +719,7 @@ pMailboxList()
 		ofs.commit();
 		val rv = new ArrayList<Address>();
 		rv.add(m);
-		while (cur() == ',') {
+		while (isMailboxListSeparator()) {
 			accept();
 			final Address m2 = pMailbox();
 			if (m2 == null)

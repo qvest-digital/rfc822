@@ -26,5 +26,6 @@ sed \
     -e 's/UXAddress\.AddrSpecSIDE/Path.AddrSpecSIDE/g' \
     -e '/UXAddress-trailing-dot-test/s/RN/WO/' \
     -e '/UXAddress-trailing-dot-test/s/SN/s0/g' \
+    -e '/UXAddress-list-test/s/SN/S(VO, s8)/g' \
     <PathTest.java >UXAddressPathTest.java~
 mv UXAddressPathTest.java~ UXAddressPathTest.java

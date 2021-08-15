@@ -29,6 +29,7 @@ package org.evolvis.tartools.rfc822;
  *
  * <p>Currently implemented user-friendly parse changes are:</p><ul>
  * <li>Allow trailing dot in domains</li>
+ * <li>Accept semicolon as mailbox-list separator</li>
  * </ul>
  *
  * <p><strong>Warning:</strong> This class is not yet fully implemented!</p>
@@ -65,11 +66,19 @@ protected UXAddress(final String input)
 }
 
 @Override
-protected AddrSpecSIDE pDomainDotAtom(final Substring da)
+protected AddrSpecSIDE
+pDomainDotAtom(final Substring da)
 {
 	if (cur() == '.')
 		accept();
 	return super.pDomainDotAtom(da);
+}
+
+@Override
+protected boolean
+isMailboxListSeparator()
+{
+	return cur() == ',' || cur() == ';';
 }
 
 }

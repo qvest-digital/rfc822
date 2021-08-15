@@ -153,7 +153,10 @@ Validates each given “input” item as address-list using the UX
 parser. Invalid inputs generate diagnostic on stderr. The exit
 status will be 45 if no valid inputs were provided; if all in‐
 puts given were valid, 0; 44 otherwise (both invalid and valid
-inputs were present).
+inputs were present). (Note the UX parser mailbox-list will be
+attempted if address-list fails, as it permits additional list
+separators. This is an implementation detail; mailbox-list is,
+other than that extension, a subset of address-list.)
 
 Additionally, one corresponding line will be written to stdout
 for every input: an empty line if invalid; the addr-spec items
@@ -201,6 +204,7 @@ encoding that would be necessary to reflect the input. But…
 will just lack in wire representation but have the addr-spec.
 
 UXAddress currently already accepts <hal@ai.> (trailing dot).
+It accepts semicolon as mailbox-list separator.
 
 For more though…
 Sorry, no time…
