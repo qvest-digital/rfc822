@@ -19,7 +19,7 @@
 	<packaging>jar</packaging>
 	<name>${project.groupId}:${project.artifactId}</name>
 	<description>eMail address, IP address (v4/v6), FQDN (domain, hostname) validation utilities</description>
-	<url>https://evolvis.org/plugins/scmgit/cgi-bin/gitweb.cgi?p=useful-scripts/rfc822.git</url>
+	<url>https://github.com/tarent/rfc822</url>
 	<licenses>
 		<license>
 			<!-- short name: MirBSD -->
