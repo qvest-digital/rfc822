@@ -36,6 +36,7 @@ private static void
 val(final String hostname)
 {
 	assertTrue(FQDN.isDomain(hostname), () -> "not valid: " + hostname);
+	assertNotNull(FQDN.asDomain(hostname), () -> "inconsistently valid: " + hostname);
 }
 
 @SuppressWarnings("SameParameterValue")
@@ -52,6 +53,7 @@ private static void
 inv(final String hostname)
 {
 	assertFalse(FQDN.isDomain(hostname), () -> "not invalid: " + hostname);
+	assertNull(FQDN.asDomain(hostname), () -> "inconsistently invalid: " + hostname);
 }
 
 @Test
