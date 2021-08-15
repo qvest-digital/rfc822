@@ -134,7 +134,7 @@ isDomain(final String hostname)
  * of the first label and of the root (i.e. nil) domain; SMTP has a 254-octet
  * limit for the Forward-path (in RFC5321) as well.</p>
  *
- * <p>This method returns the dot-atom form: trailing dots are removed, if any
+ * <p>This method returns the dot-atom form: a trailing dot is removed, if any
  * existed. To get the canonical form from there, normalise letter case.</p>
  *
  * @param hostname to check
@@ -144,20 +144,18 @@ isDomain(final String hostname)
 public static String
 asDomain(final String hostname)
 {
-	final String dn = stripTrailingDots(hostname);
+	final String dn = stripTrailingDot(hostname);
 	final FQDN parser = of(dn);
 	return parser != null && parser.isDomain() ? dn : null;
 }
 
 private static String
-stripTrailingDots(final String s)
+stripTrailingDot(final String s)
 {
-	int len;
-	if (s == null || (len = s.length()) < 1)
+	final int len;
+	if (s == null || (len = s.length()) < 1 || s.charAt(len - 1) != '.')
 		return s;
-	while (len > 0 && s.charAt(len - 1) == '.')
-		--len;
-	return s.substring(0, len);
+	return s.substring(0, len - 1);
 }
 
 }

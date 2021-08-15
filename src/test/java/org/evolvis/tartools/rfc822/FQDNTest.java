@@ -88,6 +88,7 @@ public void testPos()
 	inv(" example.com");
 	inv("example.com ");
 	val("example.com.", "example.com");
+	inv("example.com..");
 }
 
 }
