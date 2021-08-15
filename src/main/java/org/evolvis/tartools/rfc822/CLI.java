@@ -1,7 +1,7 @@
 package org.evolvis.tartools.rfc822;
 
 /*-
- * Copyright © 2020 mirabilos (m@mirbsd.org)
+ * Copyright © 2020, 2021 mirabilos (m@mirbsd.org)
  * Copyright © 2021 mirabilos (t.glaser@tarent.de)
  *
  * Provided that these terms and disclaimer and all copyright notices
@@ -47,13 +47,13 @@ private static final String VALID = "\u001B[32m✔" + CLR;
 private static final String BOLD = "\u001B[1m";
 
 private static String
-chk(Path.ParserResult arg)
+chk(final Path.ParserResult arg)
 {
 	return arg == null ? BAD : arg.isValid() ? VALID : PARSES;
 }
 
 private static void
-one(Path.ParserResult arg)
+one(final Path.ParserResult arg)
 {
 	if (arg == null)
 		System.exit(41);
@@ -116,7 +116,7 @@ batch(final String flag, final String input)
 
 @SuppressWarnings("squid:S3776")
 public static void
-main(String[] argv)
+main(final String[] argv)
 {
 	boolean skipfirst = false;
 
