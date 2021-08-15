@@ -22,6 +22,8 @@ package org.evolvis.tartools.rfc822;
 
 import lombok.val;
 
+import java.util.Locale;
+
 /**
  * <p>Utility to parse and validate strings from the command line.</p>
  * <p>See {@link #usage()} for usage information.</p>
@@ -94,7 +96,7 @@ batch(final String flag, final String input)
 		val asDomain = FQDN.asDomain(input);
 		if (asDomain == null)
 			System.exit(43);
-		System.out.println(asDomain);
+		System.out.println(asDomain.toLowerCase(Locale.ENGLISH));
 		System.exit(0);
 	} else if ("-ipv4".equals(flag)) {
 		val i4 = IPAddress.v4(input);
