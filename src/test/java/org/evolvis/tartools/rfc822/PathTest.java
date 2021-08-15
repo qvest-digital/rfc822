@@ -554,7 +554,9 @@ testLombokNonNull()
 	assertNotNull(l);
 	assertEquals("foo", l.toString());
 	// test extra branches caused by Lombok @NonNull
+	//noinspection ConstantConditions
 	assertThrows(NullPointerException.class, () -> new Path.AddrSpec(null, l, false));
+	//noinspection ConstantConditions
 	assertThrows(NullPointerException.class, () -> new Path.AddrSpec(l, null, false));
 }
 
