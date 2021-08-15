@@ -25,7 +25,7 @@ Add a suitable dependency to your project, for example with Maven:
 <dependency>
 	<groupId>org.evolvis.tartools</groupId>
 	<artifactId>rfc822</artifactId>
-	<version>0.5</version>
+	<version>0.6</version>
 </dependency>
 
 Or download releases manually from Maven Central:
@@ -101,7 +101,7 @@ validation functionality from the command line. (The run.sh
 launcher can be extracted with jar or unzip then placed in the
 same directory as the JAR. It can be used from PATH.) Usage:
 
-$ java -jar rfc822-0.5.jar [--] input …
+$ java -jar rfc822-0.6.jar [--] input …
 or
 $ ./run.sh [--] input …
 
@@ -111,13 +111,13 @@ This command exits with errorlevel 40. A double-dash argument
 separator before the first input argument is mandatory if the
 first input begins with a hyphen-minus.
 
-$ java -jar rfc822-0.5.jar -h
+$ java -jar rfc822-0.6.jar -h
 or
 $ ./run.sh -h
 
 Show short usage info on stderr and exit nonzero.
 
-$ java -jar rfc822-0.5.jar -TYPE [--] input
+$ java -jar rfc822-0.6.jar -TYPE [--] input
 or
 $ ./run.sh -TYPE [--] input
 
