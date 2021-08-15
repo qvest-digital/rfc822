@@ -54,17 +54,6 @@ protected FQDN(final String input)
 	super(input, /* see isDomain() javadoc */ 253);
 }
 
-private static String
-stripTrailingDots(final String s)
-{
-	int len;
-	if (s == null || (len = s.length()) < 1)
-		return s;
-	while (len > 0 && s.charAt(len - 1) == '.')
-		--len;
-	return s.substring(0, len);
-}
-
 /**
  * <p>Checks if a supposed hostname is a valid Fully-Qualified Domain Name.</p>
  *
@@ -157,6 +146,17 @@ asDomain(final String hostname)
 	final String dn = stripTrailingDots(hostname);
 	final FQDN parser = of(dn);
 	return parser != null && parser.isDomain() ? dn : null;
+}
+
+private static String
+stripTrailingDots(final String s)
+{
+	int len;
+	if (s == null || (len = s.length()) < 1)
+		return s;
+	while (len > 0 && s.charAt(len - 1) == '.')
+		--len;
+	return s.substring(0, len);
 }
 
 }
