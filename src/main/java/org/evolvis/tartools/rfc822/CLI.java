@@ -91,9 +91,10 @@ batch(final String flag, final String input)
 		val asPath = Path.of(input);
 		one(asPath.asAddressList());
 	} else if ("-domain".equals(flag)) {
-		if (!FQDN.isDomain(input))
+		val asDomain = FQDN.asDomain(input);
+		if (asDomain == null)
 			System.exit(43);
-		System.out.println(input);
+		System.out.println(asDomain);
 		System.exit(0);
 	} else if ("-ipv4".equals(flag)) {
 		val i4 = IPAddress.v4(input);
