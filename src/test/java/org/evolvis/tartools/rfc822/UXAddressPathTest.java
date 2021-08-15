@@ -1,7 +1,7 @@
 package org.evolvis.tartools.rfc822;
 
 /*-
- * Copyright © 2020 mirabilos (m@mirbsd.org)
+ * Copyright © 2020, 2021 mirabilos (m@mirbsd.org)
  * Copyright © 2020 mirabilos (t.glaser@tarent.de)
  * Licensor: tarent solutions GmbH, Bonn
  *
@@ -256,6 +256,14 @@ testPos()
 	val SW = S(WI);
 	t(SN, SN, SN, SN, "", null);
 	t(SW, SV, SV, SV, "user@host.domain.tld", null);
+	// longest valid FQDN from FQDNTest is one too long for SMTP
+	t(S(BI), SI, SI, SI,
+	    "a@123456789012345678901234567890123456789012345678901234567890123.123456789012345678901234567890123456789012345678901234567890123.123456789012345678901234567890123456789012345678901234567890123.1234567890123456789012345678901234567890123456789012345678901",
+	    null);
+	// but one shorter is valid
+	t(SW, SV, SV, SV,
+	    "a@123456789012345678901234567890123456789012345678901234567890123.123456789012345678901234567890123456789012345678901234567890123.123456789012345678901234567890123456789012345678901234567890123.123456789012345678901234567890123456789012345678901234567890",
+	    null);
 	t(SN, SN, SV, SV, "a@example.com, b@example.com", (l) -> {
 		assertNull(l.invalidsToString(), "invalids present");
 		val e = Arrays.asList("a@example.com", "b@example.com");
@@ -263,6 +271,11 @@ testPos()
 		assertIterableEquals(e, l.flattenAddrSpecs());
 	});
 	t(SN, SN, SN, SN, "@", null);
+	val s0 = S(VO, "hal@ai");
+	t(S(WO, "hal@ai"), s0, s0, s0, "hal@ai", null);
+	// RFC821/822 do not accept a trailing dot after the Domain/dot-atom
+	// so this is required to fail; UXAddress can make it succeed though
+	t(SN, SN, SN, SN, "hal@ai.", null);//UXAddress-trailing-dot-test
 	val s1 = S(VO, "a@example.com");
 	t(S(WO, "a@example.com"), s1, s1, s1, " a @ example.com \t ", (l) -> {
 		assertNull(l.invalidsToString(), "invalids present");
