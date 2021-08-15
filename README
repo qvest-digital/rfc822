@@ -133,14 +133,34 @@ Possible TYPEs are:
 -ipv6		IP address (without scope), e.g. 2001:db8::1
 
 If input was valid, exits with errorlevel 0; no other codepath
-exits 0 so this is a reliable validator. Additionally, on suc‐
-cess a canonical form of the input is printed on stdout. (Note
-the JRE renders an IPv4-mapped IPv6 address as IPv4 address.)
+(other than -extract if all inputs were valid) exits 0 so this
+is a reliable validator. Additionally, a (somewhat, subject to
+JRE details; for example, a v4-mapped IPv6 address is rendered
+as IPv4 address instead) canonical representation of the input
+followed by a newline will be written to stdout on success.
 
 If input was invalid this exits with errorlevel 43 for domain,
 ipv4, ipv6; with errorlevel 41 (cannot be parsed) or 42 (fails
 post-parsing validation) for the others (eMail-related types);
 nothing is printed on standard output in this case.
+
+$ java -jar rfc822-0.6.jar -extract [--] input …
+
+Validates each given “input” item as address-list using the UX
+parser. Invalid inputs generate diagnostic on stderr. The exit
+status will be 45 if no valid inputs were provided; if all in‐
+puts given were valid, 0; 44 otherwise (both invalid and valid
+inputs were present).
+
+Additionally, one corresponding line will be written to stdout
+for every input: an empty line if invalid; the addr-spec items
+present in the input, separated by comma and space, otherwise.
+This facilitates matching between input and output and sending
+eMails to recipients based on header values. This allows users
+to check either stdout, stderr or the errorlevel independently
+from each other, handling the result in various automated ways
+or by manual stderr inspection (characters not printable ASCII
+are backslash-escaped).
 
 Limitations
 ───────────

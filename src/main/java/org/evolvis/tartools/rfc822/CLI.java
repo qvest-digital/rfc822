@@ -66,10 +66,12 @@ one(final Path.ParserResult arg)
 private static void
 usage()
 {
-	System.err.println("Usage: java -jar rfc822.jar -TYPE input  # check mode (on success, exit 0)");
-	System.err.println("       java -jar rfc822.jar [input ...]  # interactive colourful mode, exit 40");
+	System.err.println("Usage: java -jar rfc822.jar [input ...]  # interactive colourful mode, exit 40");
+	System.err.println("       java -jar rfc822.jar -TYPE input  # check mode (on success, exit 0)");
 	System.err.println("TYPE: addrspec, mailbox, address, mailboxlist, addresslist, domain, ipv4, ipv6");
 	System.err.println("exit code 43 = unspecified bad input, 42 = invalid, 41 = cannot even be parsed");
+	System.err.println("       java -jar rfc822.jar -extract input ...  # list addr-spec of each input");
+	System.err.println("exit code 45 = no valid input, 0 = all inputs valid, 44 = some invalid present");
 	System.exit(1);
 }
 
@@ -114,6 +116,62 @@ batch(final String flag, final String input)
 	usage();
 }
 
+private static String
+escapeNonPrintASCII(final String s)
+{
+	final int len = s.length();
+	final StringBuilder sb = new StringBuilder(len);
+	int ofs = 0;
+
+	while (ofs < len) {
+		final int ch = s.codePointAt(ofs);
+
+		if (ch >= 0x20 && ch <= 0x7E) {
+			sb.append((char)ch);
+			++ofs;
+		} else if (ch <= 0xFFFF) {
+			sb.append(String.format("\\u%04X", ch));
+			++ofs;
+		} else {
+			sb.append(String.format("\\U%08X", ch));
+			ofs += 2;
+		}
+	}
+	return sb.toString();
+}
+
+private static void
+extract(final String[] args, int skip)
+{
+	boolean anyValid = false;
+	boolean anyInvalid = false;
+
+	for (String arg : args) {
+		if (skip > 0) {
+			--skip;
+			continue;
+		}
+		val p = UXAddress.of(arg);
+		val l = p == null ? null : p.asAddressList();
+		if (l != null && l.isValid()) {
+			System.out.println(String.join(", ", l.flattenAddrSpecs()));
+			anyValid = true;
+		} else {
+			System.err.println("N: not valid: " + escapeNonPrintASCII(arg));
+			System.out.println();
+			anyInvalid = true;
+		}
+	}
+	if (!anyValid) {
+		System.err.println("E: no valid inputs provided");
+		System.exit(45);
+	}
+	if (!anyInvalid)
+		System.exit(0);
+	System.err.println("E: there were some invalid inputs");
+	System.exit(44);
+}
+
 @SuppressWarnings("squid:S3776")
 public static void
 main(final String[] argv)
@@ -123,6 +181,9 @@ main(final String[] argv)
 	if (argv.length > 0 && argv[0].startsWith("-")) {
 		if ("--".equals(argv[0]))
 			skipfirst = true;
+		else if (argv.length > 1 && "-extract".equals(argv[0]) &&
+		    (!"--".equals(argv[1]) || argv.length > 2))
+			extract(argv, "--".equals(argv[1]) ? 2 : 1);
 		else if (argv.length == 2)
 			batch(argv[0], argv[1]);
 		else if (argv.length == 3 && "--".equals(argv[1]))
