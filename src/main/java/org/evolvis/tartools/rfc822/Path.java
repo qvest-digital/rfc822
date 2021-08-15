@@ -1101,10 +1101,7 @@ pDomain()
 {
 	final Substring da = pDotAtom();
 	if (da != null) {
-		// dot-atom form of domain, does not need unfolding
-		final String us = da.toString();
-		boolean v = FQDN.isDomain(us);
-		return new AddrSpecSIDE(da, us, v);
+		return pDomainDotAtom(da);
 	}
 	final Substring dl = pDomainLiteral();
 	if (dl == null)
@@ -1122,6 +1119,15 @@ pDomain()
 		v = IPAddress.v4(addr);
 	}
 	return new UnfoldedSubstring(dl, us, v);
+}
+
+protected AddrSpecSIDE
+pDomainDotAtom(final Substring da)
+{
+	// dot-atom form of domain, does not need unfolding
+	final String us = da.toString();
+	boolean v = FQDN.isDomain(us);
+	return new AddrSpecSIDE(da, us, v);
 }
 
 protected AddrSpec
