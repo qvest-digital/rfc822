@@ -22,8 +22,9 @@ package org.evolvis.tartools.rfc822;
 
 import lombok.val;
 
-import java.io.ByteArrayOutputStream;
+import java.io.BufferedReader;
 import java.io.IOException;
+import java.io.InputStreamReader;
 import java.util.Locale;
 
 /**
@@ -182,37 +183,6 @@ extract(final String[] args, int skip)
 	System.exit(44);
 }
 
-private static int readlnLast = -2;
-
-private static String
-readln() throws IOException
-{
-	final ByteArrayOutputStream b = new ByteArrayOutputStream();
-
-	while (true) {
-		final int ch = readlnLast == -2 ? System.in.read() : readlnLast;
-		readlnLast = -2;
-
-		/* EOF? */
-		if (ch == -1)
-			return null;
-		/* CRLF? */
-		if (ch == 13 && System.in.available() > 0) {
-			readlnLast = System.in.read();
-			/* eat LF (if any) */
-			if (readlnLast == 10)
-				readlnLast = -2;
-		}
-		/* CR or LF? */
-		if (ch == 13 || ch == 10)
-			break;
-		/* buffer input byte and continue reading */
-		b.write(ch);
-	}
-	/* convert using default charset */
-	return b.toString();
-}
-
 @SuppressWarnings("squid:S3776")
 public static void
 main(final String[] argv) throws IOException
@@ -242,18 +212,43 @@ main(final String[] argv) throws IOException
 				interactive(arg);
 		}
 	else
+		repl();
+	System.exit(40);
+}
+
+private static void
+repl() throws IOException
+{
+	val console = System.console();
+
+	if (console != null)
 		while (true) {
-			System.out.print(PROMPT);
-			System.out.flush();
-			final String input = readln();
+			final String input = console.readLine("%s", PROMPT);
 			System.out.print(CLR + "\r");
 			System.out.flush();
 			if (input == null)
-				break;
+				return;
 			if (!"".equals(input))
 				interactive(input);
 		}
-	System.exit(40);
+
+	/*
+	 * Unfortunately, we end up here if stdin *or* stdout/stderr are no tty(4).
+	 * cf. https://stackoverflow.com/a/1403868/2171120 ☹
+	 *
+	 * There’s not much we can do. Don’t redirect the output if you want the
+	 * “interactive” mode :þ
+	 */
+
+	try (final BufferedReader r = new BufferedReader(new InputStreamReader(System.in))) {
+		while (true) {
+			final String input = r.readLine();
+			if (input == null)
+				return;
+			if (!"".equals(input))
+				interactive(input);
+		}
+	}
 }
 
 private static void

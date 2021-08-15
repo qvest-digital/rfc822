@@ -109,7 +109,10 @@ This will show (in a colourful format intended for human con‐
 sumption only!) for each argument which productions match it.
 This command exits with errorlevel 40. A double-dash argument
 separator before the first input argument is mandatory if the
-first input begins with a hyphen-minus.
+first input begins with a hyphen-minus. If no “input” is pre‐
+sent an interactive REPL is started, prompting if stdin isn’t
+redirected (d̲o̲n̲’̲t̲ redirect stdout/stderr!), exiting on end of
+input (^D on Unix, ^Z on DOS).
 
 $ java -jar rfc822-0.6.jar -h
 or
