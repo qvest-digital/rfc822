@@ -24,6 +24,7 @@ sed \
     -e 's/Test ..link UXAddress. class/& ({@link Path} part)/' \
     -e 's/UXAddress\.AddressList/Path.AddressList/g' \
     -e 's/UXAddress\.AddrSpecSIDE/Path.AddrSpecSIDE/g' \
-    -e 's/^class /@SuppressWarnings("deprecation") &/' \
+    -e '/UXAddress-trailing-dot-test/s/RN/WO/' \
+    -e '/UXAddress-trailing-dot-test/s/SN/s0/g' \
     <PathTest.java >UXAddressPathTest.java~
 mv UXAddressPathTest.java~ UXAddressPathTest.java

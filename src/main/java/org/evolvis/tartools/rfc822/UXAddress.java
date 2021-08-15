@@ -1,7 +1,7 @@
 package org.evolvis.tartools.rfc822;
 
 /*-
- * Copyright © 2020 mirabilos (t.glaser@tarent.de)
+ * Copyright © 2020, 2021 mirabilos (t.glaser@tarent.de)
  * Licensor: tarent solutions GmbH, Bonn
  *
  * Provided that these terms and disclaimer and all copyright notices
@@ -21,17 +21,21 @@ package org.evolvis.tartools.rfc822;
  */
 
 /**
- * Represents an RFC822 (and successors) eMail address header content,
+ * <p>Represents an RFC822 (and successors) eMail address header content,
  * like {@code Path}, except the parser accepts more varying input,
  * especially input by humans, and eventually will MIME-encode any
  * nōn-ASCII characters. (For now they cause dropping the label part
- * from the on-wire form.)
+ * from the on-wire form.)</p>
+ *
+ * <p>Currently implemented user-friendly parse changes are:</p><ul>
+ * <li>Allow trailing dot in domains</li>
+ * </ul>
+ *
+ * <p><strong>Warning:</strong> This class is not yet fully implemented!</p>
  *
  * @author mirabilos (t.glaser@tarent.de)
  * @see Path
- * @deprecated not yet implemented
  */
-@Deprecated
 public class UXAddress extends Path {
 
 /**
@@ -58,6 +62,14 @@ of(final String addresses)
 protected UXAddress(final String input)
 {
 	super(input);
+}
+
+@Override
+protected AddrSpecSIDE pDomainDotAtom(final Substring da)
+{
+	if (cur() == '.')
+		accept();
+	return super.pDomainDotAtom(da);
 }
 
 }

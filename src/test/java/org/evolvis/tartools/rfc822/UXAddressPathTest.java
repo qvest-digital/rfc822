@@ -37,7 +37,7 @@ import static org.junit.jupiter.api.Assertions.*;
  *
  * @author mirabilos (t.glaser@tarent.de)
  */
-@SuppressWarnings("deprecation") class UXAddressPathTest {
+class UXAddressPathTest {
 
 private static final byte RN = 0;        // does not parse
 private static final byte PI = 1;        // parses, not valid, result = original
@@ -275,7 +275,7 @@ testPos()
 	t(S(WO, "hal@ai"), s0, s0, s0, "hal@ai", null);
 	// RFC821/822 do not accept a trailing dot after the Domain/dot-atom
 	// so this is required to fail; UXAddress can make it succeed though
-	t(SN, SN, SN, SN, "hal@ai.", null);//UXAddress-trailing-dot-test
+	t(S(WO, "hal@ai"), s0, s0, s0, "hal@ai.", null);//UXAddress-trailing-dot-test
 	val s1 = S(VO, "a@example.com");
 	t(S(WO, "a@example.com"), s1, s1, s1, " a @ example.com \t ", (l) -> {
 		assertNull(l.invalidsToString(), "invalids present");
@@ -494,7 +494,7 @@ testPos()
 	    "user@domain (comment(nested(ad(absurdum \\(-:))(et\\c)).pp)", null);
 	t(SN, null, null, null, "user@domain (comment", null);
 	t(SN, null, null, null, "user@", null);
-	t(SN, null, null, null, "user@domain.", null);
+	t(SN, null, null, null, "user@domain..", null);
 	t(S(BO, "user@[do main]"), null, null, null, "user@[do\r\n main]", null);
 	t(SN, null, null, null, "user@[IPv6:fec0::1", null);
 	t(SW, null, null, SV, "user@[IPv6:fec0::1]", (l) -> {
