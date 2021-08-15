@@ -57,7 +57,7 @@ one(Path.ParserResult arg)
 		System.exit(41);
 	if (!arg.isValid())
 		System.exit(42);
-	System.out.println(arg.toString());
+	System.out.println(arg);
 	System.exit(0);
 }
 
@@ -165,7 +165,7 @@ main(String[] argv)
 		    i6 == null ? BAD : VALID, i4 == null ? BAD : VALID);
 		if (rmail != null && rmail.isValid())
 			System.out.printf("\teMail: " + BOLD + "%s" + CLR + "%n",
-			    rmail.toString());
+			    rmail);
 		if (i6 != null || i4 != null)
 			System.out.printf("\tIP: " + BOLD + "%s" + CLR + "%n",
 			    (i6 == null ? i4 : i6).getHostAddress());
