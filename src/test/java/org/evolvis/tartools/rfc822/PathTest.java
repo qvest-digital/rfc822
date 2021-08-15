@@ -263,6 +263,8 @@ testPos()
 		assertIterableEquals(e, l.flattenAddrSpecs());
 	});
 	t(SN, SN, SN, SN, "@", null);
+	val s0 = S(VO, "hal@ai");
+	t(S(WO, "hal@ai"), s0, s0, s0, "hal@ai", null);
 	val s1 = S(VO, "a@example.com");
 	t(S(WO, "a@example.com"), s1, s1, s1, " a @ example.com \t ", (l) -> {
 		assertNull(l.invalidsToString(), "invalids present");

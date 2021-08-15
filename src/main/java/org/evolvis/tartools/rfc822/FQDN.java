@@ -33,9 +33,9 @@ public class FQDN extends Parser {
 /**
  * Creates and initialises a new parser for Fully-Qualified Domain Names.
  *
- * @param hostname to parse
+ * @param hostname to parse (trailing dots are removed prior to parsing)
  *
- * @return null if {@code hostname} was null or longer than 254 characters,
+ * @return null if {@code hostname} was null or longer than 253 characters,
  *     the new parser instance otherwise
  */
 public static FQDN
@@ -51,18 +51,32 @@ of(final String hostname)
  */
 protected FQDN(final String input)
 {
-	super(input, /* RFC5321 Forward-path limit */ 254);
+	super(stripTrailingDots(input), /* see isDomain() javadoc */ 253);
+}
+
+private static String
+stripTrailingDots(final String s)
+{
+	int len;
+	if (s == null || (len = s.length()) < 1)
+		return s;
+	while (len > 0 && s.charAt(len - 1) == '.')
+		--len;
+	return s.substring(0, len);
 }
 
 /**
  * <p>Checks if a supposed hostname is a valid Fully-Qualified Domain Name.</p>
  *
- * <p>Valid FQDNs are up to 254 octets in length, comprised only of labels
+ * <p>Valid FQDNs are up to 253 octets in length, comprised only of labels
  * (letters, digits and hyphen-minus, but not beginning or ending with
  * a hyphen-minus) up to 63 octets long, separated by dots (‘.’).</p>
  *
- * <p>Strictly speaking an FQDN could be 255 octets in length, but these may
- * cause problems with DNS and will not work in SMTP anyway.</p>
+ * <p>Strictly speaking an FQDN could be 255 octets in length, but these will
+ * not work with DNS (the separating dots are matched by the length octets of
+ * their succeeding label, but two extra octets are needed for the length octet
+ * of the first label and of the root (i.e. nil) domain; SMTP has a 254-octet
+ * limit for the Forward-path (in RFC5321) as well.</p>
  *
  * @return true if the hostname passed during construction is valid, else false
  */
@@ -95,14 +109,17 @@ isDomain()
 /**
  * <p>Checks if a supposed hostname is a valid Fully-Qualified Domain Name.</p>
  *
- * <p>Valid FQDNs are up to 254 octets in length, comprised only of labels
+ * <p>Valid FQDNs are up to 253 octets in length, comprised only of labels
  * (letters, digits and hyphen-minus, but not beginning or ending with
  * a hyphen-minus) up to 63 octets long, separated by dots (‘.’).</p>
  *
- * <p>Strictly speaking an FQDN could be 255 octets in length, but these may
- * cause problems with DNS and will not work in SMTP anyway.</p>
+ * <p>Strictly speaking an FQDN could be 255 octets in length, but these will
+ * not work with DNS (the separating dots are matched by the length octets of
+ * their succeeding label, but two extra octets are needed for the length octet
+ * of the first label and of the root (i.e. nil) domain; SMTP has a 254-octet
+ * limit for the Forward-path (in RFC5321) as well.</p>
  *
- * @param hostname to check
+ * @param hostname to check (trailing dots are removed prior to checking)
  *
  * @return true if {@code hostname} is valid, false otherwise
  */
