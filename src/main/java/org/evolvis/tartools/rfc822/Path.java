@@ -318,6 +318,7 @@ unfold(final Substring ss)
  *
  * @author mirabilos (t.glaser@tarent.de)
  */
+@SuppressWarnings("ProtectedMemberInFinalClass")
 @AllArgsConstructor
 private static final class Word {
 
