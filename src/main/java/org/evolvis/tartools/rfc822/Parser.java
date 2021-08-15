@@ -346,6 +346,7 @@ final class Txn implements AutoCloseable {
 	 * <p>Creates a new parser position transaction instance.</p>
 	 * <p>The current position, upon creation, is committed immediately.</p>
 	 */
+	@SuppressWarnings("ProtectedMemberInFinalClass")
 	protected Txn()
 	{
 		commit();
