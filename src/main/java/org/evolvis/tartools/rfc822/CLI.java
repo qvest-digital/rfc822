@@ -96,7 +96,7 @@ batch(final String flag, final String input)
 		val asDomain = FQDN.asDomain(input);
 		if (asDomain == null)
 			System.exit(43);
-		System.out.println(asDomain.toLowerCase(Locale.ENGLISH));
+		System.out.println(asDomain.toLowerCase(Locale.ROOT));
 		System.exit(0);
 	} else if ("-ipv4".equals(flag)) {
 		val i4 = IPAddress.v4(input);
@@ -174,7 +174,7 @@ main(String[] argv)
 			    (i6 == null ? i4 : i6).getHostAddress());
 		if (isDom != null)
 			System.out.printf("\tFQDN: " + BOLD + "%s" + CLR + "%n",
-			    isDom);
+			    isDom.toLowerCase(Locale.ROOT));
 		System.out.println();
 	}
 	System.exit(40);
