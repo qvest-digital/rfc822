@@ -46,7 +46,7 @@
 		<maven.owasp.dependency-check.version>6.1.0</maven.owasp.dependency-check.version>
 		<!-- ‣ dependency management -->
 		<junit.version>5.7.1</junit.version>
-		<lombok.version>1.18.18</lombok.version>
+		<lombok.version>1.18.20</lombok.version>
 	</properties>
 	<scm>
 		<connection>scm:git:https://evolvis.org/anonscm/git/useful-scripts/rfc822.git</connection>
