@@ -357,7 +357,7 @@ final class Txn implements AutoCloseable {
 	 *
 	 * @return position of last commit
 	 */
-	final int
+	int
 	savepoint()
 	{
 		return pos;
@@ -366,7 +366,7 @@ final class Txn implements AutoCloseable {
 	/**
 	 * Commits the current parser position (stores it in the transaction).
 	 */
-	final void
+	void
 	commit()
 	{
 		pos = Parser.this.ofs;
@@ -377,7 +377,7 @@ final class Txn implements AutoCloseable {
 	 *
 	 * @return the codepoint at the new position, see {@link Parser#cur()}
 	 */
-	final int
+	int
 	rollback()
 	{
 		return Parser.this.jmp(savepoint());
@@ -388,7 +388,7 @@ final class Txn implements AutoCloseable {
 	 * parser position transaction. Just calls {@link #rollback()}.
 	 */
 	@Override
-	public final void
+	public void
 	close()
 	{
 		rollback();
@@ -403,7 +403,7 @@ final class Txn implements AutoCloseable {
 	 *
 	 * @return returnValue
 	 */
-	final <T> T
+	<T> T
 	accept(final T returnValue)
 	{
 		commit();
@@ -418,7 +418,7 @@ final class Txn implements AutoCloseable {
 	 *
 	 * @see #savepoint()
 	 */
-	final Substring
+	Substring
 	substring()
 	{
 		return new Substring(savepoint(), Parser.this.ofs);
@@ -434,7 +434,7 @@ final class Txn implements AutoCloseable {
 	 *
 	 * @see #savepoint()
 	 */
-	final Substring
+	Substring
 	substring(final Object data)
 	{
 		return new Substring(savepoint(), Parser.this.ofs, data);
