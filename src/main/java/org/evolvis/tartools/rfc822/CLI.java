@@ -152,7 +152,7 @@ extract(final String[] args, int skip)
 			continue;
 		}
 		val p = UXAddress.of(arg);
-		val l = p == null ? null : p.asAddressList();
+		val l = p != null ? p.asAddressList() : null;
 		if (l != null && l.isValid()) {
 			System.out.println(String.join(", ", l.flattenAddrSpecs()));
 			anyValid = true;
