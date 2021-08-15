@@ -273,6 +273,9 @@ testPos()
 	t(SN, SN, SN, SN, "@", null);
 	val s0 = S(VO, "hal@ai");
 	t(S(WO, "hal@ai"), s0, s0, s0, "hal@ai", null);
+	// RFC821/822 do not accept a trailing dot after the Domain/dot-atom
+	// so this is required to fail; UXAddress can make it succeed though
+	t(SN, SN, SN, SN, "hal@ai.", null);//UXAddress-trailing-dot-test
 	val s1 = S(VO, "a@example.com");
 	t(S(WO, "a@example.com"), s1, s1, s1, " a @ example.com \t ", (l) -> {
 		assertNull(l.invalidsToString(), "invalids present");
