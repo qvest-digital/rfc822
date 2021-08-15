@@ -59,7 +59,7 @@ protected FQDN(final String input)
  *
  * <p>Valid FQDNs are up to 253 octets in length, comprised only of labels
  * (letters, digits and hyphen-minus, but not beginning or ending with
- * a hyphen-minus) up to 63 octets long, separated by dots (‘.’).</p>
+ * a hyphen-minus) one up to 63 octets long, separated by dots (‘.’).</p>
  *
  * <p>Strictly speaking an FQDN could be 255 octets in length, but these will
  * not work with DNS (the separating dots are matched by the length octets of
@@ -100,7 +100,7 @@ isDomain()
  *
  * <p>Valid FQDNs are up to 253 octets in length, comprised only of labels
  * (letters, digits and hyphen-minus, but not beginning or ending with
- * a hyphen-minus) up to 63 octets long, separated by dots (‘.’).</p>
+ * a hyphen-minus) one up to 63 octets long, separated by dots (‘.’).</p>
  *
  * <p>Strictly speaking an FQDN could be 255 octets in length, but these will
  * not work with DNS (the separating dots are matched by the length octets of
@@ -121,11 +121,12 @@ isDomain(final String hostname)
 
 /**
  * <p>Checks if a supposed hostname is a valid Fully-Qualified Domain Name
- * and retrieves its dot-atom form.</p>
+ * and retrieves a more canonical form.</p>
  *
  * <p>Valid FQDNs are up to 253 octets in length, comprised only of labels
  * (letters, digits and hyphen-minus, but not beginning or ending with
- * a hyphen-minus) up to 63 octets long, separated by dots (‘.’).</p>
+ * a hyphen-minus) one up to 63 octets long, separated by dots (‘.’). This
+ * method accepts the trailing dot commonly seen in DNS data files.</p>
  *
  * <p>Strictly speaking an FQDN could be 255 octets in length, but these will
  * not work with DNS (the separating dots are matched by the length octets of
