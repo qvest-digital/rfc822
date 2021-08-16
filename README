@@ -191,21 +191,20 @@ Future directions
 
 Pass more of the structure up (comments, for example).
 
-Add a DWIM mode that parses semicolons as list separators as
-well and MIME-encodes problematic headers, so we can handle:
+Improve UXAddress (the “DWIM mode” Path parser) to handle more
+input varieties users will enter into webforms such as:
 
 	Es „ß“ Zett <sz@example.com>; Shaun D. Mäh <sheep@example.com>
-
-This will be part of the 1.0 release *except* for the MIME
-encoding that would be necessary to reflect the input. But…
-
 	James T. Kirk, III. <jim@example.com>
 
-… will work, semicolons will work, and the nōn-ASCII ones
-will just lack in wire representation but have the addr-spec.
+Currently, the following deviations are accepted:
+• <hal@ai.> (trailing dot)
+• use of semicolon (‘;’) as mailbox-list separator
 
-UXAddress currently already accepts <hal@ai.> (trailing dot).
-It accepts semicolon as mailbox-list separator.
+The following further ones are planned:
+• accept and encode extra punctuation for display names (jim)
+• accept, but drop at first, nōn-ASCII display names
+• later MIME-encode them
 
 For more though…
 Sorry, no time…
