@@ -40,7 +40,7 @@ private MiscUtils()
  *
  * @param s String to escape
  *
- * @return string with {@code \uNNNN} and {@code \U000NNNNN} escapes
+ * @return string with <code>&#92;uNNNN</code> and <code>&#92;U000NNNNN</code> escapes
  */
 static String
 escapeNonPrintASCII(@NonNull final String s)
