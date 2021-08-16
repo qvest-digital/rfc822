@@ -77,6 +77,7 @@ usage()
 	System.err.println("exit code 43 = unspecified bad input, 42 = invalid, 41 = cannot even be parsed");
 	System.err.println("       java -jar rfc822.jar -extract input ...  # list addr-spec of each input");
 	System.err.println("exit code 45 = no valid input, 0 = all inputs valid, 44 = some invalid present");
+	System.err.println("Extra options (pass before others): -lax use user-friendly parsing");
 	System.exit(1);
 }
 
@@ -91,19 +92,19 @@ private static void
 batch(final String flag, final String input)
 {
 	if ("-addrspec".equals(flag)) {
-		val asPath = Path.of(input);
+		val asPath = lax ? UXAddress.of(input) : Path.of(input);
 		one(asPath.asAddrSpec());
 	} else if ("-mailbox".equals(flag)) {
-		val asPath = Path.of(input);
+		val asPath = lax ? UXAddress.of(input) : Path.of(input);
 		one(asPath.forSender(false));
 	} else if ("-address".equals(flag)) {
-		val asPath = Path.of(input);
+		val asPath = lax ? UXAddress.of(input) : Path.of(input);
 		one(asPath.forSender(true));
 	} else if ("-mailboxlist".equals(flag)) {
-		val asPath = Path.of(input);
+		val asPath = lax ? UXAddress.of(input) : Path.of(input);
 		one(asPath.asMailboxList());
 	} else if ("-addresslist".equals(flag)) {
-		val asPath = Path.of(input);
+		val asPath = lax ? UXAddress.of(input) : Path.of(input);
 		one(asPath.asAddressList());
 	} else if ("-domain".equals(flag)) {
 		val asDomain = canonicaliseParsedFQDN(FQDN.asDomain(input));
@@ -162,7 +163,7 @@ extract(final String[] args, int skip)
 			--skip;
 			continue;
 		}
-		val p = UXAddress.of(arg);
+		val p = lax ? UXAddress.of(arg) : Path.of(arg);
 		val l = p != null ? p.asAddressList() : null;
 		if (l != null && l.isValid()) {
 			System.out.println(String.join(", ", l.flattenAddrSpecs()));
@@ -183,6 +184,8 @@ extract(final String[] args, int skip)
 	System.exit(44);
 }
 
+private static boolean lax = false;
+
 @SuppressWarnings("squid:S3776")
 public static void
 main(final String[] argv) throws IOException
@@ -195,6 +198,10 @@ main(final String[] argv) throws IOException
 			++optind;
 			--argc;
 			break;
+		} else if ("-lax".equals(argv[optind])) {
+			++optind;
+			--argc;
+			lax = true;
 		} else if ("-extract".equals(argv[optind])) {
 			++optind;
 			--argc;
@@ -272,7 +279,7 @@ repl() throws IOException
 private static void
 interactive(final String arg)
 {
-	val asPath = Path.of(arg);
+	val asPath = lax ? UXAddress.of(arg) : Path.of(arg);
 	val asAS = asPath.asAddrSpec();
 	val asMbox = asPath.forSender(false);
 	val asAddr = asPath.forSender(true);

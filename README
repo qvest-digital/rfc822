@@ -101,9 +101,9 @@ validation functionality from the command line. (The run.sh
 launcher can be extracted with jar or unzip then placed in the
 same directory as the JAR. It can be used from PATH.) Usage:
 
-$ java -jar rfc822-0.6.jar [--] input …
+$ java -jar rfc822-0.6.jar [-lax] [--] [input …]
 or
-$ ./run.sh [--] input …
+$ ./run.sh [-lax] [--] [input …]
 
 This will show (in a colourful format intended for human con‐
 sumption only!) for each argument which productions match it.
@@ -114,15 +114,20 @@ sent an interactive REPL is started, prompting if stdin isn’t
 redirected (d̲o̲n̲’̲t̲ redirect stdout/stderr!), exiting on end of
 input (^D on Unix, ^Z on DOS).
 
+The -lax option enables the “UX” (more user-friendly) parser,
+which allows some more constructs on input but converts those
+to their respective standard forms on output, for all parsing
+regarding eMail addresses (Path).
+
 $ java -jar rfc822-0.6.jar -h
 or
 $ ./run.sh -h
 
 Show short usage info on stderr and exit nonzero.
 
-$ java -jar rfc822-0.6.jar -TYPE [--] input
+$ java -jar rfc822-0.6.jar [-lax] -TYPE [--] input
 or
-$ ./run.sh -TYPE [--] input
+$ ./run.sh [-lax] -TYPE [--] input
 
 Validates the one given “input” for the specified TYPE.
 Possible TYPEs are:
@@ -147,13 +152,12 @@ ipv4, ipv6; with errorlevel 41 (cannot be parsed) or 42 (fails
 post-parsing validation) for the others (eMail-related types);
 nothing is printed on standard output in this case.
 
-$ java -jar rfc822-0.6.jar -extract [--] input …
+$ java -jar rfc822-0.6.jar [-lax] -extract [--] input …
 
-Validates each given “input” item as address-list using the UX
-parser. Invalid inputs generate diagnostic on stderr. The exit
-status will be 45 if no valid inputs were provided; if all in‐
-puts given were valid, 0; 44 otherwise (both invalid and valid
-inputs were present).
+Validates each given “input” item as address-list. Diagnostics
+will be shown on stderr for invalid inputs. The exit status is
+45 if no valid inputs were provided; 0 if all input given were
+valid; 44 otherwise (both invalid and valid input presented).
 
 Additionally, one corresponding line will be written to stdout
 for every input: an empty line if invalid; the addr-spec items
