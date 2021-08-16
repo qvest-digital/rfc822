@@ -21,6 +21,7 @@ package org.evolvis.tartools.rfc822;
 
 import org.junit.jupiter.api.Test;
 
+import static net.trajano.commons.testing.UtilityClassTestUtil.assertUtilityClassWellDefined;
 import static org.junit.jupiter.api.Assertions.*;
 
 /**
@@ -29,6 +30,13 @@ import static org.junit.jupiter.api.Assertions.*;
  * @author mirabilos (m@mirbsd.org)
  */
 class MiscUtilsTest {
+
+@Test
+public void
+testUtilityClass() throws ReflectiveOperationException
+{
+	assertUtilityClassWellDefined(MiscUtils.class);
+}
 
 private static void
 te(final String expected, final String src)

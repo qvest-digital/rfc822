@@ -28,6 +28,13 @@ import lombok.NonNull;
  */
 final class MiscUtils {
 
+/**
+ * Prevent instantiation (this is a utility class with only static methods)
+ */
+private MiscUtils()
+{
+}
+
 static String
 escapeNonPrintASCII(@NonNull final String s)
 {
