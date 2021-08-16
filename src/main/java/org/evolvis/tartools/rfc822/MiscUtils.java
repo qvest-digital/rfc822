@@ -35,6 +35,13 @@ private MiscUtils()
 {
 }
 
+/**
+ * <p>Escapes all codepoints that are not printable ASCII (graph class or SPACE).</p>
+ *
+ * @param s String to escape
+ *
+ * @return string with {@code \uNNNN} and {@code \U000NNNNN} escapes
+ */
 static String
 escapeNonPrintASCII(@NonNull final String s)
 {
@@ -56,6 +63,15 @@ escapeNonPrintASCII(@NonNull final String s)
 	return sb.toString();
 }
 
+/**
+ * <p>Trims all leading and trailing whitespace off the string.</p>
+ *
+ * <p>The {@link Character#isWhitespace(int)} definition is used.</p>
+ *
+ * @param s String to trim
+ *
+ * @return string with leading and trailing whitespace removed
+ */
 static String
 trim(@NonNull final String s)
 {
