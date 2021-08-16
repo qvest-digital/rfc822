@@ -82,7 +82,7 @@ usage()
 	System.err.println("exit code 43 = unspecified bad input, 42 = invalid, 41 = cannot even be parsed");
 	System.err.println("       java -jar rfc822.jar -extract input ...  # list addr-spec of each input");
 	System.err.println("exit code 45 = no valid input, 0 = all inputs valid, 44 = some invalid present");
-	System.err.println("Extra options (pass before others): -lax use user-friendly parsing");
+	System.err.println("Extra options (pass before others): -lax use user-friendly parsing, trim input");
 	System.exit(1);
 }
 
