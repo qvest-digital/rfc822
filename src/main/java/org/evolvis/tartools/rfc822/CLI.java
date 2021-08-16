@@ -27,6 +27,9 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.util.Locale;
 
+import static org.evolvis.tartools.rfc822.MiscUtils.escapeNonPrintASCII;
+import static org.evolvis.tartools.rfc822.MiscUtils.trim;
+
 /**
  * <p>Utility to parse and validate strings from the command line.</p>
  * <p>See {@link #usage()} for usage information.</p>
@@ -94,29 +97,7 @@ prepareArg(final String arg)
 {
 	if (arg == null || !lax)
 		return arg;
-	final int len = arg.length();
-	int ofs = 0;
-
-	while (ofs < len) {
-		final int ch = arg.codePointAt(ofs);
-
-		if (!Character.isWhitespace(ch))
-			break;
-		ofs += ch > 0xFFFF ? 2 : 1;
-	}
-	if (ofs == len)
-		return "";
-	int beg = ofs;
-
-	int max = ofs;
-	while (ofs < len) {
-		final int ch = arg.codePointAt(ofs);
-
-		ofs += ch > 0xFFFF ? 2 : 1;
-		if (!Character.isWhitespace(ch))
-			max = ofs;
-	}
-	return arg.substring(beg, max);
+	return trim(arg);
 }
 
 @SuppressWarnings("squid:S3776")
@@ -158,30 +139,6 @@ batch(final String flag, final String input)
 		System.exit(0);
 	}
 	usage();
-}
-
-private static String
-escapeNonPrintASCII(final String s)
-{
-	final int len = s.length();
-	final StringBuilder sb = new StringBuilder(len);
-	int ofs = 0;
-
-	while (ofs < len) {
-		final int ch = s.codePointAt(ofs);
-
-		if (ch >= 0x20 && ch <= 0x7E) {
-			sb.append((char)ch);
-			++ofs;
-		} else if (ch <= 0xFFFF) {
-			sb.append(String.format("\\u%04X", ch));
-			++ofs;
-		} else {
-			sb.append(String.format("\\U%08X", ch));
-			ofs += 2;
-		}
-	}
-	return sb.toString();
 }
 
 private static void
