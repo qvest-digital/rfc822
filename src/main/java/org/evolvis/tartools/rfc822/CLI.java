@@ -187,18 +187,27 @@ extract(final String[] args, int skip)
 public static void
 main(final String[] argv) throws IOException
 {
-	boolean skipfirst = false;
+	int optind = 0;
+	int argc = argv.length;
 
-	if (argv.length > 0 && argv[0].startsWith("-")) {
-		if ("--".equals(argv[0]))
-			skipfirst = true;
-		else if (argv.length > 1 && "-extract".equals(argv[0]) &&
-		    (!"--".equals(argv[1]) || argv.length > 2))
-			extract(argv, "--".equals(argv[1]) ? 2 : 1);
-		else if (argv.length == 2)
-			batch(argv[0], argv[1]);
-		else if (argv.length == 3 && "--".equals(argv[1]))
-			batch(argv[0], argv[2]);
+	while (argc > 0 && argv[optind].startsWith("-")) {
+		if ("--".equals(argv[optind])) {
+			++optind;
+			--argc;
+			break;
+		} else if ("-extract".equals(argv[optind])) {
+			++optind;
+			--argc;
+			if (argc > 0 && "--".equals(argv[optind])) {
+				++optind;
+				--argc;
+			}
+			if (argc > 0)
+				extract(argv, optind);
+		} else if (argc == 3 && "--".equals(argv[optind + 1]))
+			batch(argv[optind], argv[optind + 2]);
+		else if (argc == 2)
+			batch(argv[optind], argv[optind + 1]);
 		else
 			usage();
 	}
@@ -207,10 +216,10 @@ main(final String[] argv) throws IOException
 	Runtime.getRuntime().addShutdownHook(new Thread(CLI::cleanUpInputOrLastOutputLine));
 
 	System.out.println(CLR);
-	if (argv.length > 0)
+	if (argc > 0)
 		for (String arg : argv) {
-			if (skipfirst)
-				skipfirst = false;
+			if (optind > 0)
+				--optind;
 			else
 				interactive(arg);
 		}
