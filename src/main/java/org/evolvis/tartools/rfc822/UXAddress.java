@@ -81,4 +81,14 @@ isMailboxListSeparator()
 	return cur() == ',' || cur() == ';';
 }
 
+@Override
+public AddressList asAddressList()
+{
+	final AddressList p = super.asAddressList();
+	if (p != null)
+		return p;
+	/* reparse as mailbox-list since we accept more separators there */
+	return asMailboxList();
+}
+
 }
