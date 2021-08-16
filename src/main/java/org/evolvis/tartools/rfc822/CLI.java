@@ -93,19 +93,19 @@ batch(final String flag, final String input)
 {
 	if ("-addrspec".equals(flag)) {
 		val asPath = lax ? UXAddress.of(input) : Path.of(input);
-		one(asPath.asAddrSpec());
+		one(asPath != null ? asPath.asAddrSpec() : null);
 	} else if ("-mailbox".equals(flag)) {
 		val asPath = lax ? UXAddress.of(input) : Path.of(input);
-		one(asPath.forSender(false));
+		one(asPath != null ? asPath.forSender(false) : null);
 	} else if ("-address".equals(flag)) {
 		val asPath = lax ? UXAddress.of(input) : Path.of(input);
-		one(asPath.forSender(true));
+		one(asPath != null ? asPath.forSender(true) : null);
 	} else if ("-mailboxlist".equals(flag)) {
 		val asPath = lax ? UXAddress.of(input) : Path.of(input);
-		one(asPath.asMailboxList());
+		one(asPath != null ? asPath.asMailboxList() : null);
 	} else if ("-addresslist".equals(flag)) {
 		val asPath = lax ? UXAddress.of(input) : Path.of(input);
-		one(asPath.asAddressList());
+		one(asPath != null ? asPath.asAddressList() : null);
 	} else if ("-domain".equals(flag)) {
 		val asDomain = canonicaliseParsedFQDN(FQDN.asDomain(input));
 		if (asDomain == null)
@@ -280,11 +280,11 @@ private static void
 interactive(final String arg)
 {
 	val asPath = lax ? UXAddress.of(arg) : Path.of(arg);
-	val asAS = asPath.asAddrSpec();
-	val asMbox = asPath.forSender(false);
-	val asAddr = asPath.forSender(true);
-	val asML = asPath.asMailboxList();
-	val asAL = asPath.asAddressList();
+	val asAS = asPath != null ? asPath.asAddrSpec() : null;
+	val asMbox = asPath != null ? asPath.forSender(false) : null;
+	val asAddr = asPath != null ? asPath.forSender(true) : null;
+	val asML = asPath != null ? asPath.asMailboxList() : null;
+	val asAL = asPath != null ? asPath.asAddressList() : null;
 	val isDom = canonicaliseParsedFQDN(FQDN.asDomain(arg));
 	val i6 = IPAddress.v6(arg);
 	val i4 = IPAddress.v4(arg);
