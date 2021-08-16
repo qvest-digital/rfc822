@@ -51,6 +51,8 @@ private static final String BOLD = "\u001B[1m";
 private static final String INVERSE = "\u001B[7m";
 private static final String PROMPT = CLR + "\r" + INVERSE + "rfc822>" + CLR + " ";
 
+private static boolean lax = false;
+
 private static String
 chk(final Path.ParserResult arg)
 {
@@ -184,9 +186,7 @@ extract(final String[] args, int skip)
 	System.exit(44);
 }
 
-private static boolean lax = false;
-
-@SuppressWarnings("squid:S3776")
+@SuppressWarnings({ "squid:S3776", /* Sonar bug? */ "squid:S3973" })
 public static void
 main(final String[] argv) throws IOException
 {
@@ -276,6 +276,7 @@ repl() throws IOException
 	}
 }
 
+@SuppressWarnings("squid:S3776")
 private static void
 interactive(final String arg)
 {
