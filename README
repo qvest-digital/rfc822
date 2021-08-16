@@ -25,7 +25,7 @@ Add a suitable dependency to your project, for example with Maven:
 <dependency>
 	<groupId>org.evolvis.tartools</groupId>
 	<artifactId>rfc822</artifactId>
-	<version>0.6</version>
+	<version>0.7</version>
 </dependency>
 
 Or download releases manually from Maven Central:
@@ -101,7 +101,7 @@ validation functionality from the command line. (The run.sh
 launcher can be extracted with jar or unzip then placed in the
 same directory as the JAR. It can be used from PATH.) Usage:
 
-$ java -jar rfc822-0.6.jar [-lax] [--] [input …]
+$ java -jar rfc822-0.7.jar [-lax] [--] [input …]
 or
 $ ./run.sh [-lax] [--] [input …]
 
@@ -121,13 +121,13 @@ regarding eMail addresses (Path). In lax mode, all inputs are
 additionally whitespace-trimmed on both sides (no matter what
 parse mode is selected).
 
-$ java -jar rfc822-0.6.jar -h
+$ java -jar rfc822-0.7.jar -h
 or
 $ ./run.sh -h
 
 Show short usage info on stderr and exit nonzero.
 
-$ java -jar rfc822-0.6.jar [-lax] -TYPE [--] input
+$ java -jar rfc822-0.7.jar [-lax] -TYPE [--] input
 or
 $ ./run.sh [-lax] -TYPE [--] input
 
@@ -154,7 +154,7 @@ ipv4, ipv6; with errorlevel 41 (cannot be parsed) or 42 (fails
 post-parsing validation) for the others (eMail-related types);
 nothing is printed on standard output in this case.
 
-$ java -jar rfc822-0.6.jar [-lax] -extract [--] input …
+$ java -jar rfc822-0.7.jar [-lax] -extract [--] input …
 
 Validates each given “input” item as address-list. Diagnostics
 will be shown on stderr for invalid inputs. The exit status is
