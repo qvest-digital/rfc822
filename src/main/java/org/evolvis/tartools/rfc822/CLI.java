@@ -204,6 +204,9 @@ main(final String[] argv) throws IOException
 			usage();
 	}
 
+	// clean up output on ^C, cf. https://stackoverflow.com/a/1611951/2171120
+	Runtime.getRuntime().addShutdownHook(new Thread(CLI::cleanUpInputOrLastOutputLine));
+
 	System.out.println(CLR);
 	if (argv.length > 0)
 		for (String arg : argv) {
@@ -218,6 +221,13 @@ main(final String[] argv) throws IOException
 }
 
 private static void
+cleanUpInputOrLastOutputLine()
+{
+	System.out.print(CLR + "\r");
+	System.out.flush();
+}
+
+private static void
 repl() throws IOException
 {
 	val console = System.console();
@@ -225,8 +235,7 @@ repl() throws IOException
 	if (console != null)
 		while (true) {
 			final String input = console.readLine("%s", PROMPT);
-			System.out.print(CLR + "\r");
-			System.out.flush();
+			cleanUpInputOrLastOutputLine();
 			if (input == null)
 				return;
 			if (!"".equals(input))
