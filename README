@@ -117,7 +117,9 @@ input (^D on Unix, ^Z on DOS).
 The -lax option enables the “UX” (more user-friendly) parser,
 which allows some more constructs on input but converts those
 to their respective standard forms on output, for all parsing
-regarding eMail addresses (Path).
+regarding eMail addresses (Path). In lax mode, all inputs are
+additionally whitespace-trimmed on both sides (no matter what
+parse mode is selected).
 
 $ java -jar rfc822-0.6.jar -h
 or

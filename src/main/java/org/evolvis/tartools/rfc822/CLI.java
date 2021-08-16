@@ -89,6 +89,36 @@ canonicaliseParsedFQDN(final String s)
 	return s == null ? null : s.toLowerCase(Locale.ROOT);
 }
 
+private static String
+prepareArg(final String arg)
+{
+	if (arg == null || !lax)
+		return arg;
+	final int len = arg.length();
+	int ofs = 0;
+
+	while (ofs < len) {
+		final int ch = arg.codePointAt(ofs);
+
+		if (!Character.isWhitespace(ch))
+			break;
+		ofs += ch > 0xFFFF ? 2 : 1;
+	}
+	if (ofs == len)
+		return "";
+	int beg = ofs;
+
+	int max = ofs;
+	while (ofs < len) {
+		final int ch = arg.codePointAt(ofs);
+
+		ofs += ch > 0xFFFF ? 2 : 1;
+		if (!Character.isWhitespace(ch))
+			max = ofs;
+	}
+	return arg.substring(beg, max);
+}
+
 @SuppressWarnings("squid:S3776")
 private static void
 batch(final String flag, final String input)
@@ -160,11 +190,12 @@ extract(final String[] args, int skip)
 	boolean anyValid = false;
 	boolean anyInvalid = false;
 
-	for (String arg : args) {
+	for (String el : args) {
 		if (skip > 0) {
 			--skip;
 			continue;
 		}
+		val arg = prepareArg(el);
 		val p = lax ? UXAddress.of(arg) : Path.of(arg);
 		val l = p != null ? p.asAddressList() : null;
 		if (l != null && l.isValid()) {
@@ -212,9 +243,9 @@ main(final String[] argv) throws IOException
 			if (argc > 0)
 				extract(argv, optind);
 		} else if (argc == 3 && "--".equals(argv[optind + 1]))
-			batch(argv[optind], argv[optind + 2]);
+			batch(argv[optind], prepareArg(argv[optind + 2]));
 		else if (argc == 2)
-			batch(argv[optind], argv[optind + 1]);
+			batch(argv[optind], prepareArg(argv[optind + 1]));
 		else
 			usage();
 	}
@@ -228,7 +259,7 @@ main(final String[] argv) throws IOException
 			if (optind > 0)
 				--optind;
 			else
-				interactive(arg);
+				interactive(prepareArg(arg));
 		}
 	else
 		repl();
@@ -249,7 +280,7 @@ repl() throws IOException
 
 	if (console != null)
 		while (true) {
-			final String input = console.readLine("%s", PROMPT);
+			final String input = prepareArg(console.readLine("%s", PROMPT));
 			cleanUpInputOrLastOutputLine();
 			if (input == null)
 				return;
@@ -267,7 +298,7 @@ repl() throws IOException
 
 	try (final BufferedReader r = new BufferedReader(new InputStreamReader(System.in))) {
 		while (true) {
-			final String input = r.readLine();
+			final String input = prepareArg(r.readLine());
 			if (input == null)
 				return;
 			if (!"".equals(input))
