@@ -99,7 +99,12 @@ CLI (command-line interface) utility
 This project ships an executable JAR, offering access to most
 validation functionality from the command line. (The run.sh
 launcher can be extracted with jar or unzip then placed in the
-same directory as the JAR. It can be used from PATH.) Usage:
+same directory as the JAR. It can be used from PATH.) On the
+other hand, the downloads available from the Maven Central repo
+at https://repo1.maven.org/maven2/org/evolvis/tartools/rfc822/
+only offer the .jar file anyway, so maybe use that…
+
+Usage:
 
 $ java -jar rfc822-0.7.jar [-lax] [--] [input …]
 or
