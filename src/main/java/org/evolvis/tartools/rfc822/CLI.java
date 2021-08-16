@@ -338,7 +338,7 @@ interactive(final String arg)
 		rmail = asAL == null ? asML : asAL;
 	}
 
-	System.out.printf("‣ %s" + CLR + "%n\t", arg);
+	System.out.printf("‣ %s" + CLR + "%n\t", escapeNonPrintASCII(arg));
 	System.out.printf((desc) + "%n",
 	    chk(asAS), dmbx, dadr, isDom != null ? VALID : BAD,
 	    i6 == null ? BAD : VALID, i4 == null ? BAD : VALID);
