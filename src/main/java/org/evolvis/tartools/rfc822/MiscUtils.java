@@ -38,16 +38,13 @@ escapeNonPrintASCII(@NonNull final String s)
 	while (ofs < len) {
 		final int ch = s.codePointAt(ofs);
 
-		if (ch >= 0x20 && ch <= 0x7E) {
+		if (ch >= 0x20 && ch <= 0x7E)
 			sb.append((char)ch);
-			++ofs;
-		} else if (ch <= 0xFFFF) {
+		else if (ch <= 0xFFFF)
 			sb.append(String.format("\\u%04X", ch));
-			++ofs;
-		} else {
+		else
 			sb.append(String.format("\\U%08X", ch));
-			ofs += 2;
-		}
+		ofs += Character.charCount(ch);
 	}
 	return sb.toString();
 }
@@ -63,7 +60,6 @@ trim(@NonNull final String s)
 
 		if (!Character.isWhitespace(ch))
 			break;
-
 		ofs += Character.charCount(ch);
 	}
 	if (ofs == len)
