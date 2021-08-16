@@ -91,7 +91,7 @@ canonicaliseParsedFQDN(final String s)
 private static void
 batch(final String flag, final String input)
 {
-	if ("-addrspec".equals(flag)) {
+	if ("-addrspec".equals(flag) || "-addr-spec".equals(flag)) {
 		val asPath = lax ? UXAddress.of(input) : Path.of(input);
 		one(asPath != null ? asPath.asAddrSpec() : null);
 	} else if ("-mailbox".equals(flag)) {
@@ -100,13 +100,13 @@ batch(final String flag, final String input)
 	} else if ("-address".equals(flag)) {
 		val asPath = lax ? UXAddress.of(input) : Path.of(input);
 		one(asPath != null ? asPath.forSender(true) : null);
-	} else if ("-mailboxlist".equals(flag)) {
+	} else if ("-mailboxlist".equals(flag) || "-mailbox-list".equals(flag)) {
 		val asPath = lax ? UXAddress.of(input) : Path.of(input);
 		one(asPath != null ? asPath.asMailboxList() : null);
-	} else if ("-addresslist".equals(flag)) {
+	} else if ("-addresslist".equals(flag) || "-address-list".equals(flag)) {
 		val asPath = lax ? UXAddress.of(input) : Path.of(input);
 		one(asPath != null ? asPath.asAddressList() : null);
-	} else if ("-domain".equals(flag)) {
+	} else if ("-domain".equals(flag) || "-fqdn".equals(flag)) {
 		val asDomain = canonicaliseParsedFQDN(FQDN.asDomain(input));
 		if (asDomain == null)
 			System.exit(43);
