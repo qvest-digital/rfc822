@@ -45,8 +45,8 @@
 		<!-- ‣ maven plugins -->
 		<maven.owasp.dependency-check.version>6.5.0</maven.owasp.dependency-check.version>
 		<!-- ‣ dependency management -->
-		<junit.version>5.7.2</junit.version>
-		<lombok.version>1.18.20</lombok.version>
+		<junit.version>5.8.2</junit.version>
+		<lombok.version>1.18.22</lombok.version>
 		<trajano.version>2.1.0</trajano.version>
 	</properties>
 	<scm>
