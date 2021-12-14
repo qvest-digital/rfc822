@@ -1,5 +1,5 @@
 <?xml version='1.0' encoding='UTF-8'?>
-<maven2-moduleset plugin="maven-plugin@2.10">
+<maven2-moduleset plugin="maven-plugin@2.10.666">
   <actions/>
   <description>eMail validation utilities&#xd;
 (including FQDNs/hostnames/domains, IP (IPv6) and Legacy IP (IPv4) addresses)</description>
