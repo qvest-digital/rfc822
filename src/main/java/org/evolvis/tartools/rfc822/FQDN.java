@@ -23,7 +23,8 @@ package org.evolvis.tartools.rfc822;
 /**
  * <p>Represents an FQDN (“domain” production) for use in eMail.</p>
  *
- * <p>The main entry point is the {@link #isDomain(String)} method.
+ * <p>The main entry points are the {@link #isDomain(String)} and
+ * {@link #asDomain(String)} methods.
  * The parser does not trim surrounding whitespace by itself.</p>
  *
  * @author mirabilos (t.glaser@tarent.de)
@@ -59,7 +60,8 @@ protected FQDN(final String input)
  *
  * <p>Valid FQDNs are up to 253 octets in length, comprised only of labels
  * (letters, digits and hyphen-minus, but not beginning or ending with
- * a hyphen-minus) one up to 63 octets long, separated by dots (‘.’).</p>
+ * a hyphen-minus) one up to 63 octets long, separated by dots (‘.’). This
+ * method accepts the dot-atom form only, without trailing dot.</p>
  *
  * <p>Strictly speaking an FQDN could be 255 octets in length, but these will
  * not work with DNS (the separating dots are matched by the length octets of
@@ -100,7 +102,8 @@ isDomain()
  *
  * <p>Valid FQDNs are up to 253 octets in length, comprised only of labels
  * (letters, digits and hyphen-minus, but not beginning or ending with
- * a hyphen-minus) one up to 63 octets long, separated by dots (‘.’).</p>
+ * a hyphen-minus) one up to 63 octets long, separated by dots (‘.’). This
+ * method accepts the dot-atom form only, without trailing dot.</p>
  *
  * <p>Strictly speaking an FQDN could be 255 octets in length, but these will
  * not work with DNS (the separating dots are matched by the length octets of
@@ -126,7 +129,9 @@ isDomain(final String hostname)
  * <p>Valid FQDNs are up to 253 octets in length, comprised only of labels
  * (letters, digits and hyphen-minus, but not beginning or ending with
  * a hyphen-minus) one up to 63 octets long, separated by dots (‘.’). This
- * method accepts the trailing dot commonly seen in DNS data files.</p>
+ * method accepts an optional additional trailing dot as commonly seen in
+ * DNS data files, and which may be valid for some contexts; if present, the
+ * input may be 254 octets long.</p>
  *
  * <p>Strictly speaking an FQDN could be 255 octets in length, but these will
  * not work with DNS (the separating dots are matched by the length octets of
