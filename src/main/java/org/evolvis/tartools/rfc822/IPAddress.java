@@ -210,7 +210,7 @@ dec(final int c, final int limit)
 	return c >= '0' && c <= limit;
 }
 
-@SuppressWarnings({ "fallthrough", "squid:SwitchLastCaseIsDefaultCheck" })
+@SuppressWarnings("squid:SwitchLastCaseIsDefaultCheck")
 protected byte[]
 pIPv4Address()
 {
