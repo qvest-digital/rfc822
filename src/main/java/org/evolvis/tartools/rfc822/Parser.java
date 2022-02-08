@@ -377,6 +377,7 @@ final class Txn implements AutoCloseable {
 	 *
 	 * @return the codepoint at the new position, see {@link Parser#cur()}
 	 */
+	@SuppressWarnings("UnusedReturnValue")
 	int
 	rollback()
 	{

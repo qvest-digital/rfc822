@@ -52,6 +52,7 @@ protected TestParser(final String input)
 	super(input, 16);
 }
 
+@SuppressWarnings("unused")
 static boolean
 isWsp(final int cur, final int next)
 {
