@@ -99,14 +99,7 @@ H * * * *
   <blockTriggerWhenBuilding>true</blockTriggerWhenBuilding>
   <settings class="jenkins.mvn.DefaultSettingsProvider"/>
   <globalSettings class="jenkins.mvn.DefaultGlobalSettingsProvider"/>
-  <reporters>
-    <hudson.maven.reporters.MavenMailer>
-      <recipients>useful-scripts-commits@lists.evolvis.org</recipients>
-      <dontNotifyEveryUnstableBuild>false</dontNotifyEveryUnstableBuild>
-      <sendToIndividuals>false</sendToIndividuals>
-      <perModuleEmail>false</perModuleEmail>
-    </hudson.maven.reporters.MavenMailer>
-  </reporters>
+  <reporters/>
   <publishers>
     <hudson.plugins.sonar.SonarPublisher plugin="sonar@2.1">
       <jdk>OpenJDK 8 (System)</jdk>
