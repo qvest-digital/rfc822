@@ -212,6 +212,7 @@ The following further ones are planned:
 • accept and encode extra punctuation for display names (jim)
 • accept, but drop at first, nōn-ASCII display names
 • later MIME-encode them
+• new “local uses allowed” mode that supports link-local IPs
 
 For more though…
 Sorry, no time…
