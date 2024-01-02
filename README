@@ -33,7 +33,7 @@ Or download releases manually from Maven Central:
 Building the library yourself is also possible, of course. The
 source code may be retrieved (via anonymous read-only git access) or
 inspected (per gitweb) at the Evolvis repository; a mirror on another
-platform is also available: https://github.com/tarent/rfc822
+platform is also available: https://github.com/qvest-digital/rfc822
 
 Make sure your project can handle Java 8 bytecode.
 
