@@ -2,7 +2,7 @@ package org.evolvis.tartools.rfc822;
 
 /*-
  * Copyright © 2020, 2021 mirabilos (m@mirbsd.org)
- * Copyright © 2021 mirabilos (t.glaser@tarent.de)
+ * Copyright © 2021 mirabilos (t.glaser@qvest-digital.com)
  *
  * Provided that these terms and disclaimer and all copyright notices
  * are retained or reproduced in an accompanying document, permission

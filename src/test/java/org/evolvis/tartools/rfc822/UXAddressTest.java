@@ -1,8 +1,8 @@
 package org.evolvis.tartools.rfc822;
 
 /*-
- * Copyright © 2020 mirabilos (t.glaser@tarent.de)
- * Licensor: tarent solutions GmbH, Bonn
+ * Copyright © 2020 mirabilos (t.glaser@qvest-digital.com)
+ * Licensor: Qvest Digital AG, Bonn, Germany
  *
  * Provided that these terms and disclaimer and all copyright notices
  * are retained or reproduced in an accompanying document, permission
@@ -27,7 +27,7 @@ import static org.junit.jupiter.api.Assertions.*;
 /**
  * Test {@link UXAddress} class
  *
- * @author mirabilos (t.glaser@tarent.de)
+ * @author mirabilos (t.glaser@qvest-digital.com)
  */
 class UXAddressTest {
 

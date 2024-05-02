@@ -1,8 +1,8 @@
 package org.evolvis.tartools.rfc822;
 
 /*-
- * Copyright © 2020 mirabilos (t.glaser@tarent.de)
- * Licensor: tarent solutions GmbH, Bonn
+ * Copyright © 2020 mirabilos (t.glaser@qvest-digital.com)
+ * Licensor: Qvest Digital AG, Bonn, Germany
  *
  * Provided that these terms and disclaimer and all copyright notices
  * are retained or reproduced in an accompanying document, permission
@@ -30,7 +30,7 @@ import java.util.Base64;
 /**
  * Some test utilities
  *
- * @author mirabilos (t.glaser@tarent.de)
+ * @author mirabilos (t.glaser@qvest-digital.com)
  */
 final class TestUtils {
 

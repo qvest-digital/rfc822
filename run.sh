@@ -2,7 +2,7 @@
 # -*- mode: sh -*-
 #-
 # Copyright © 2021
-#	mirabilos <t.glaser@tarent.de>
+#	mirabilos <t.glaser@qvest-digital.com>
 # Licensor: Deutsche Telekom LLCTO
 #
 # Provided that these terms and disclaimer and all copyright notices

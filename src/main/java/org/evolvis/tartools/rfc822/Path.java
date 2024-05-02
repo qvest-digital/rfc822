@@ -2,8 +2,8 @@ package org.evolvis.tartools.rfc822;
 
 /*-
  * Copyright © 2020 mirabilos (m@mirbsd.org)
- * Copyright © 2020, 2021 mirabilos (t.glaser@tarent.de)
- * Licensor: tarent solutions GmbH, Bonn
+ * Copyright © 2020, 2021 mirabilos (t.glaser@qvest-digital.com)
+ * Licensor: Qvest Digital AG, Bonn, Germany
  *
  * Provided that these terms and disclaimer and all copyright notices
  * are retained or reproduced in an accompanying document, permission
@@ -74,7 +74,7 @@ import java.util.stream.Collectors;
  * pretty-prints the on-wire representation. Some result objects may have extra
  * methods that can be useful.</p>
  *
- * @author mirabilos (t.glaser@tarent.de)
+ * @author mirabilos (t.glaser@qvest-digital.com)
  */
 public class Path extends Parser {
 
@@ -195,7 +195,7 @@ isQtext(final int c)
  * substrings of the input any more if unfolding, as in {@link #unfold(String)},
  * was necessary.</p>
  *
- * @author mirabilos (t.glaser@tarent.de)
+ * @author mirabilos (t.glaser@qvest-digital.com)
  */
 protected final class UnfoldedSubstring extends Substring {
 
@@ -234,7 +234,7 @@ protected final class UnfoldedSubstring extends Substring {
  * <p>Representation for a local-part (FWS unfolded) or a domain (dot-atom only).</p>
  * <p>Check isValid() first.</p>
  *
- * @author mirabilos (t.glaser@tarent.de)
+ * @author mirabilos (t.glaser@qvest-digital.com)
  */
 @Getter
 protected final class AddrSpecSIDE extends Substring {
@@ -316,7 +316,7 @@ unfold(final Substring ss)
  *
  * <p>The {@code cfws} member (optional trailing CFWS) is <i>not</i> unfolded.</p>
  *
- * @author mirabilos (t.glaser@tarent.de)
+ * @author mirabilos (t.glaser@qvest-digital.com)
  */
 @SuppressWarnings("ProtectedMemberInFinalClass")
 @AllArgsConstructor
@@ -358,7 +358,7 @@ public interface ParserResult {
  * <p>Representation for an {@code addr-spec} (eMail address). These are
  * comprised of {@code localPart} and {@code domain}.</p>
  *
- * @author mirabilos (t.glaser@tarent.de)
+ * @author mirabilos (t.glaser@qvest-digital.com)
  */
 @AllArgsConstructor(access = AccessLevel.PROTECTED)
 @Getter
@@ -407,7 +407,7 @@ public static final class AddrSpec implements ParserResult {
 /**
  * Representation for an {@code address} (either {@code mailbox} or {@code group}).
  *
- * @author mirabilos (t.glaser@tarent.de)
+ * @author mirabilos (t.glaser@qvest-digital.com)
  */
 @Getter
 public static final class Address implements ParserResult {
@@ -487,7 +487,7 @@ public static final class Address implements ParserResult {
 /**
  * Representation for an {@code address-list} or a {@code mailbox-list}.
  *
- * @author mirabilos (t.glaser@tarent.de)
+ * @author mirabilos (t.glaser@qvest-digital.com)
  */
 @Getter
 public static final class AddressList implements ParserResult {

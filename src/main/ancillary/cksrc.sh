@@ -1,5 +1,5 @@
 # configuration for ckdep.sh, depsrc.sh and mksrc.sh
-# © 2016, 2017, 2018, 2019, 2020 mirabilos <t.glaser@tarent.de> Ⓕ MirBSD
+# © 2016, 2017, 2018, 2019, 2020 mirabilos <t.glaser@qvest-digital.com> Ⓕ MirBSD
 
 # location of parent POM relative to this directory
 parentpompath=../../..	# src/main/ancillary/

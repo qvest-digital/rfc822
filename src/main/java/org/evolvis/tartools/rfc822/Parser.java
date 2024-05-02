@@ -1,8 +1,8 @@
 package org.evolvis.tartools.rfc822;
 
 /*-
- * Copyright © 2020, 2021 mirabilos (t.glaser@tarent.de)
- * Licensor: tarent solutions GmbH, Bonn
+ * Copyright © 2020, 2021 mirabilos (t.glaser@qvest-digital.com)
+ * Licensor: Qvest Digital AG, Bonn, Germany
  *
  * Provided that these terms and disclaimer and all copyright notices
  * are retained or reproduced in an accompanying document, permission
@@ -26,7 +26,7 @@ import lombok.val;
 /**
  * <p>Parser base class. Abstracts initialisation and movement.</p>
  *
- * @author mirabilos (t.glaser@tarent.de)
+ * @author mirabilos (t.glaser@qvest-digital.com)
  */
 abstract class Parser {
 
@@ -254,7 +254,7 @@ skip(final ContextlessMatcher matcher)
  * real substring; {@link #getData()} will provide additional
  * information if set.
  *
- * @author mirabilos (t.glaser@tarent.de)
+ * @author mirabilos (t.glaser@qvest-digital.com)
  */
 protected class Substring {
 	// ↑ coverage: https://github.com/jacoco/jacoco/issues/1063
@@ -336,7 +336,7 @@ protected class Substring {
  * is saved, on {@link #rollback()} and closing, it is restored to the point
  * from the last commit (or creation). Implements {@link AutoCloseable}.
  *
- * @author mirabilos (t.glaser@tarent.de)
+ * @author mirabilos (t.glaser@qvest-digital.com)
  */
 final class Txn implements AutoCloseable {
 

@@ -1,8 +1,8 @@
 package org.evolvis.tartools.rfc822;
 
 /*-
- * Copyright © 2020, 2021 mirabilos (t.glaser@tarent.de)
- * Licensor: tarent solutions GmbH, Bonn
+ * Copyright © 2020, 2021 mirabilos (t.glaser@qvest-digital.com)
+ * Licensor: Qvest Digital AG, Bonn, Germany
  *
  * Provided that these terms and disclaimer and all copyright notices
  * are retained or reproduced in an accompanying document, permission
@@ -38,7 +38,7 @@ import java.util.List;
  * both the {@link #v6(String)} and {@link #v4(String)} methods.
  * The parser does not trim surrounding whitespace by itself.</p>
  *
- * @author mirabilos (t.glaser@tarent.de)
+ * @author mirabilos (t.glaser@qvest-digital.com)
  */
 public class IPAddress extends Parser {
 

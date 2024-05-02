@@ -2,7 +2,7 @@
 # -*- mode: sh -*-
 #-
 # Copyright © 2016, 2017, 2018, 2019, 2020
-#	mirabilos <t.glaser@tarent.de>
+#	mirabilos <t.glaser@qvest-digital.com>
 #
 # Provided that these terms and disclaimer and all copyright notices
 # are retained or reproduced in an accompanying document, permission

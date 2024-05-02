@@ -1,8 +1,8 @@
 package org.evolvis.tartools.rfc822;
 
 /*-
- * Copyright © 2021 mirabilos (t.glaser@tarent.de)
- * Licensor: tarent solutions GmbH, Bonn
+ * Copyright © 2021 mirabilos (t.glaser@qvest-digital.com)
+ * Licensor: Qvest Digital AG, Bonn, Germany
  *
  * Provided that these terms and disclaimer and all copyright notices
  * are retained or reproduced in an accompanying document, permission
@@ -33,7 +33,7 @@ import java.util.function.BiFunction;
  * <p>This interface is identical to {@code BiFunction<int, int, boolean>}
  * except for the name of its functional method.</p>
  *
- * @author mirabilos (t.glaser@tarent.de)
+ * @author mirabilos (t.glaser@qvest-digital.com)
  * @see ContextlessMatcher
  * @see BiFunction
  */
