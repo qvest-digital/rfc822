@@ -1,12 +1,13 @@
 # configuration for ckdep.sh, depsrc.sh and mksrc.sh
-# © 2016, 2017, 2018, 2019, 2020 mirabilos <t.glaser@qvest-digital.com> Ⓕ MirBSD
+# Copyright © 2016, 2017, 2018, 2019, 2020, 2021
+#	mirabilos <t.glaser@qvest-digital.com>
+# Ⓕ MirBSD
 
 # location of parent POM relative to this directory
 parentpompath=../../..	# src/main/ancillary/
 #parentpompath=..	# release/
 
 # Maven profiles to use when ckdep’ing
-#mvnprofiles='-Pbuild-mvnparent'
 mvnprofiles=''
 
 # groupId:artifactId vectors to include (from scopes provided, test, etc.)
