@@ -29,10 +29,12 @@
       <parameterDefinitions>
         <hudson.model.ChoiceParameterDefinition>
           <name>DSTREPO_PROFILE</name>
-          <description></description>
+          <description>Profile to select the destination
+Maven repository to deploy into.
+Only relevant when performing a release.</description>
           <choices class="java.util.Arrays$ArrayList">
             <a class="string-array">
-              <string>tarent</string>
+              <string>qd</string>
               <string>central</string>
             </a>
           </choices>
