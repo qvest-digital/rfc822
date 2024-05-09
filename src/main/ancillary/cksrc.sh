@@ -1,9 +1,8 @@
 # configuration for ckdep.sh, depsrc.sh and mksrc.sh
-# Copyright © 2016, 2017, 2018, 2019, 2020, 2021
-#	mirabilos <t.glaser@qvest-digital.com>
-# Ⓕ MirBSD
+# © mirabilos, Ⓕ MirBSD
 
 # location of parent POM relative to this directory
+# (actually: invoking POM, ckdep uses it as parent POM when recursing though)
 parentpompath=../../..	# src/main/ancillary/
 #parentpompath=..	# release/
 

@@ -1,7 +1,7 @@
 #!/usr/bin/env mksh
 # -*- mode: sh -*-
 #-
-# Copyright © 2016, 2017, 2018, 2019, 2020
+# Copyright © 2016, 2017, 2018, 2019, 2020, 2024
 #	mirabilos <t.glaser@qvest-digital.com>
 #
 # Provided that these terms and disclaimer and all copyright notices
@@ -210,6 +210,11 @@ set -A cc_where
 set -A cc_which
 set -A cc_nomvn
 ncc=0
+# ckdep.ins (embedded code copies) format:
+# [+|!]causing-artefact-gav caused-artefact-gav […]
+# ! means documentation-only (artefact not in Central)
+# + means document, obtain source JAR but don’t recurse
+# præfixless are also recursed getting their POM’s dependencies
 [[ ! -s ckdep.ins ]] || while read first rest; do
 	[[ $first != ?('#'*) ]] || continue
 	if [[ $first = [+!]* ]]; then
