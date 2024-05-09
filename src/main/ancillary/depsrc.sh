@@ -1,7 +1,7 @@
 #!/usr/bin/env mksh
 # -*- mode: sh -*-
 #-
-# Copyright © 2018, 2019, 2020
+# Copyright © 2018, 2019, 2020, 2024
 #	mirabilos <t.glaser@qvest-digital.com>
 #
 # Provided that these terms and disclaimer and all copyright notices
@@ -86,14 +86,14 @@ IFS= read -pr pVSN || e=1
     "pgID=$pgID" "paID=$paID" "pVSN=$pVSN"
 # create base directory
 rm -rf target/dep-srcs*
-mkdir -p target/dep-srcs-parent
+mkdir -p target/dep-srcs-parent target/dep-srcs-poms
 sed 's!<packaging>[^<>]*</packaging>!<packaging>pom</packaging>!g' \
     <pom.xml >target/dep-srcs-parent/pom.xml
 
 npoms=0
 function dopom {
 	has=' '
-	exec >target/pom-srcs-$npoms.xml
+	exec >target/dep-srcs-poms/pom-$npoms.xml
 	cat <<-EOF
 	<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
 		<modelVersion>4.0.0</modelVersion>
@@ -101,7 +101,7 @@ function dopom {
 			<groupId>$pgID</groupId>
 			<artifactId>$paID</artifactId>
 			<version>$pVSN</version>
-			<relativePath>dep-srcs-parent/</relativePath>
+			<relativePath>../dep-srcs-parent/</relativePath>
 		</parent>
 		<artifactId>release-sources-$npoms</artifactId>
 		<packaging>jar</packaging>
@@ -145,27 +145,28 @@ function dopom {
 			</dependency>
 		EOF
 		# </dependencies>
-	done <target/pom-srcs.in 4>target/pom-srcs.tmp 5>target/pom-srcs.out
+	done <target/dep-srcs-poms/tmp.in 4>target/dep-srcs-poms/tmp.tmp 5>target/dep-srcs-poms/tmp.out
 	cat <<-EOF
 			</dependencies>
 		</dependencyManagement>
 		<dependencies>
 	EOF
-	cat target/pom-srcs.tmp - <<-EOF
+	cat target/dep-srcs-poms/tmp.tmp - <<-EOF
 		</dependencies>
 	</project>
 	EOF
 	exec >&8
 	let ++npoms
-	mv target/pom-srcs.out target/pom-srcs.in
+	mv target/dep-srcs-poms/tmp.out target/dep-srcs-poms/tmp.in
 }
-cat "$ancillarypath"/ckdep.mvn >target/pom-srcs.in
-while [[ -s target/pom-srcs.in ]]; do
+cat "$ancillarypath"/ckdep.mvn >target/dep-srcs-poms/tmp.in
+while [[ -s target/dep-srcs-poms/tmp.in ]]; do
 	dopom
 done
+rm -f target/dep-srcs-poms/tmp*
 
 mkdir target/dep-srcs
-for pom in target/pom-srcs-*.xml; do
+for pom in target/dep-srcs-poms/pom-*.xml; do
 	[[ -e $pom ]] || break # no dependencies case
 	print -ru8 -- "downloading dependencies #${pom//[!0-9]}"
 	mvn -B -f $pom -Dwithout-implicit-dependencies \
