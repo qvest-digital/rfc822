@@ -15,7 +15,7 @@
 	</parent>
 	<groupId>org.evolvis.tartools</groupId>
 	<artifactId>rfc822</artifactId>
-	<version>0.8.1</version>
+	<version>0.9-SNAPSHOT</version>
 	<packaging>jar</packaging>
 	<name>${project.groupId}:${project.artifactId}</name>
 	<description>eMail address, IP address (v4/v6), FQDN (domain, hostname) validation utilities</description>
@@ -49,13 +49,13 @@
 		<lombok.version>1.18.32</lombok.version>
 		<trajano.version>2.1.0</trajano.version>
 		<!-- ‣ release management -->
-		<project.build.outputTimestamp>2024-05-10T17:23:12Z</project.build.outputTimestamp>
+		<project.build.outputTimestamp>2024-05-10T17:26:08Z</project.build.outputTimestamp>
 	</properties>
 	<scm>
 		<connection>scm:git:https://evolvis.org/anonscm/git/useful-scripts/rfc822.git</connection>
 		<developerConnection>scm:git:ssh://maven@evolvis.org/scmrepos/git/useful-scripts/rfc822.git</developerConnection>
 		<url>https://evolvis.org/plugins/scmgit/cgi-bin/gitweb.cgi?p=useful-scripts/rfc822.git</url>
-		<tag>rfc822-0.8.1</tag>
+		<tag>HEAD</tag>
 	</scm>
 	<profiles>
 		<profile>
