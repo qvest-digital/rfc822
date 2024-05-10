@@ -129,13 +129,16 @@ function doscopes {
 
 	while read -r ga v scope rest; do
 		# compile scope supersets provided, runtime, test scopes
-		# provided and runtimee scopes superset (only) test scope
+		# provided and runtime scopes superset (only) test scope
 		case "$lastgav $lastscope:$scope" {
 		("$ga:$v "compile:@(provided|runtime|test)) ;;
 		("$ga:$v "@(provided|runtime):test) ;;
-		(*) print -r -- $ga $v $scope $rest ;;
+		(*)
+			print -r -- $ga $v $scope $rest
+			lastgav=$ga:$v
+			lastscope=$scope
+			;;
 		}
-		lastgav=$ga:$v lastscope=$scope
 	done
 }
 { cd "$parentpompath" && domvn $mvnprofiles; } | \
