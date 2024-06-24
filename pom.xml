@@ -71,6 +71,13 @@
 					<artifactId>commons-testing</artifactId>
 				</dependency>
 				<dependency>
+					<groupId>org.evolvis.tartools.maven-parent</groupId>
+					<artifactId>bs</artifactId>
+					<version>${org.evolvis.tartools.maven-parent.version}</version>
+					<classifier>tests</classifier>
+					<scope>test</scope>
+				</dependency>
+				<dependency>
 					<groupId>org.junit.jupiter</groupId>
 					<artifactId>junit-jupiter-api</artifactId>
 				</dependency>
@@ -226,6 +233,7 @@
 						<configuration>
 							<ignoredUnusedDeclaredDependencies combine.children="append">
 								<!-- must be on the classpath -->
+								<ignoredUnusedDeclaredDependency>org.evolvis.tartools.maven-parent:bs</ignoredUnusedDeclaredDependency>
 								<ignoredUnusedDeclaredDependency>org.junit.jupiter:junit-jupiter-engine</ignoredUnusedDeclaredDependency>
 							</ignoredUnusedDeclaredDependencies>
 						</configuration>
