@@ -11,7 +11,7 @@
 	<parent>
 		<groupId>org.evolvis.tartools.maven-parent</groupId>
 		<artifactId>pom</artifactId>
-		<version>3.2-SNAPSHOT</version>
+		<version>3.3-SNAPSHOT</version>
 	</parent>
 	<groupId>org.evolvis.tartools</groupId>
 	<artifactId>rfc822</artifactId>
