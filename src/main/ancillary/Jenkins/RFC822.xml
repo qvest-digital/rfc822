@@ -96,7 +96,7 @@ Only relevant when performing a release.</description>
   <reporters/>
   <publishers>
     <hudson.plugins.sonar.SonarPublisher plugin="sonar@2.1">
-      <jdk>OpenJDK 8 (System)</jdk>
+      <jdk>OpenJDK 17 (System)</jdk>
       <branch></branch>
       <language></language>
       <mavenOpts></mavenOpts>
